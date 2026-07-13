@@ -316,6 +316,14 @@
 .pcard .cap{padding:11px 13px}
 .pcard .cap .c1{font-size:12px; font-weight:600; color:#6b4459; line-height:1.4}
 .pcard .cap .c2{font-size:10px; color:#c9b4be; margin-top:3px}
+.pcard .img .pmedia{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center top}
+.pcard .img .playbadge{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:46px; height:46px; border-radius:50%; background:rgba(255,255,255,.9); color:#c05c8b; font-size:18px; line-height:46px; text-align:center; box-shadow:0 4px 14px rgba(103,58,91,.4); pointer-events:none}
+.lbox{position:fixed; inset:0; z-index:500; background:rgba(40,24,44,.86); backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; padding:24px; opacity:0; transition:opacity .28s}
+.lbox.open{display:flex; opacity:1}
+.lbox .lbin{max-width:min(92vw,560px); max-height:88vh; display:flex; flex-direction:column; align-items:center; gap:14px}
+.lbox img,.lbox video{max-width:100%; max-height:78vh; border-radius:16px; box-shadow:0 24px 60px -18px rgba(0,0,0,.6); background:#000}
+.lbox .lbcap{color:#fff; font-size:14px; text-align:center; max-width:440px; line-height:1.5; text-shadow:0 1px 3px rgba(0,0,0,.4)}
+.lbox .lbx{position:absolute; top:18px; right:20px; width:42px; height:42px; border-radius:50%; border:none; background:rgba(255,255,255,.92); color:#a24d78; font-size:20px; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,.3)}
 .prog{background:#fff; border-radius:22px; padding:17px 20px; box-shadow:0 16px 32px -22px rgba(180,110,150,.5); margin-bottom:20px; max-width:680px}
 .prog .row{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:9px}
 .prog .row b{font-size:14px; color:#6b4459}
@@ -923,14 +931,20 @@ var RM=(function(){
       {d:'2024-09-01',type:'mile',tag:'Growing Together',who:'Catherine & Oleksandra',tx:'From middle schoolers to university students, we witnessed so much in each other’s lives — exams and new schools, first loves, family, and everything in between.',st:'🎓'},
       {d:'2026-07-14',type:'mile',tag:'Still Here',who:'Catherine & Oleksandra',tx:'One thing has never changed: we have each kept an important place for the other in our hearts. Best friends across countries, still choosing each other.',st:'💛'}
     ],
-    albums:['All','Trips','Cafés','Daily','Growing Up'],
+    albums:['All','Us','Gifts','Ukraine','Everyday'],
     photos:[
-      {cat:'Growing Up',em:'⚡',g:['#ffe0ec','#ffb9d4'],c1:'Our first shared Harry Potter universe',c2:'2018 · by Catherine & Саша'},
-      {cat:'Daily',em:'📚',g:['#e6dcfa','#c8b4ee'],c1:'After-school homework call',c2:'2020 · by Catherine & Саша'},
-      {cat:'Trips',em:'🌆',g:['#dcecff','#aecdf0'],c1:'A video walk through Ivano-Frankivsk',c2:'2021 · by Саша'},
-      {cat:'Daily',em:'🗣️',g:['#fff0dd','#ffd9ae'],c1:'A new Ukrainian word, a new Chinese phrase',c2:'2022 · by Catherine & Саша'},
-      {cat:'Growing Up',em:'🎓',g:['#ffe3ee','#f5b8d5'],c1:'From middle school to university',c2:'2024 · by Catherine & Oleksandra'},
-      {cat:'Daily',em:'💛',g:['#f3e3fa','#dcb9f0'],c1:'Still keeping a place in each other’s hearts',c2:'2026 · by Catherine & Oleksandra'}
+      {cat:'Us',src:'room-media/beach.jpg',g:['#dcecff','#aecdf0'],c1:'Two girls, one watermelon, one endless summer by the sea 🍉',c2:'Us'},
+      {cat:'Us',vid:'room-media/video-together.mp4',g:['#ffe0ec','#ffb9d4'],c1:'A little clip saved from our chat 🎥',c2:'Us'},
+      {cat:'Us',vid:'room-media/video-casa.mp4',g:['#e6dcfa','#c8b4ee'],c1:'“Casa” — a video from home 🎥',c2:'Us'},
+      {cat:'Gifts',src:'room-media/catherine-vyshyvanka.jpg',g:['#dcecff','#aecdf0'],c1:'Wearing the vyshyvanka Саша sent me all the way from Ukraine 💙',c2:'Gifts'},
+      {cat:'Gifts',src:'room-media/red-necklace.jpg',g:['#ffe0ec','#ffb9d4'],c1:'The red коралі that came with it — a piece of Ukraine in my hand ❤️',c2:'Gifts'},
+      {cat:'Gifts',src:'room-media/gift-story.jpg',g:['#ffe3ee','#f5b8d5'],c1:'A qipao for her birthday, wrapped with a hand-drawn card — “16 is a beautiful age” 🎁',c2:'Gifts'},
+      {cat:'Gifts',src:'room-media/thank-you-story.jpg',g:['#fff0dd','#ffd9ae'],c1:'“Thanks you so much” — 📍КИТАЙ to Ukraine, and back 💌',c2:'Gifts'},
+      {cat:'Ukraine',src:'room-media/sasha-park.jpg',g:['#e6f6e2','#bfe6b8'],c1:'A spring afternoon in her city, Ivano-Frankivsk 🌳',c2:'Ukraine'},
+      {cat:'Ukraine',src:'room-media/independence-day.jpg',g:['#dcecff','#aecdf0'],c1:'Watching Ukraine’s Independence Day together, learning her country’s history 🇺🇦',c2:'2021 · Ukraine'},
+      {cat:'Us',src:'room-media/sasha-mirror.jpg',g:['#f3e3fa','#dcb9f0'],c1:'Саша — with hair almost as long as our friendship 🤍',c2:'Us'},
+      {cat:'Everyday',src:'room-media/birthday-message.jpg',g:['#ffe0ec','#ffb9d4'],c1:'“You’re on my mind and in my heart” — her birthday message to me 💗',c2:'Everyday'},
+      {cat:'Everyday',src:'room-media/cafe-2022.jpg',g:['#fff0dd','#ffd9ae'],c1:'Even our little siblings grew up side by side ☕',c2:'2022 · Everyday'}
     ],
     checks:[
       {cat:'life',tx:'Visit each other’s cities for real',done:false,by:''},
@@ -1002,9 +1016,26 @@ var RM=(function(){
     var grid=$('#al-grid');grid.innerHTML='';
     st.photos.filter(function(p){return st.alFilter==='All'||p.cat===st.alFilter}).forEach(function(p,i){
       var el=document.createElement('div');el.className='pcard';el.style.animationDelay=(i*.05)+'s';
-      el.innerHTML='<div class="img" style="background:linear-gradient(140deg,'+p.g[0]+','+p.g[1]+')"><span class="frame"></span>'+p.em+'</div>'+
+      var media;
+      if(p.src)media='<img class="pmedia" src="'+p.src+'" alt="'+p.c1.replace(/"/g,'&quot;')+'" loading="lazy" onerror="this.remove()">';
+      else if(p.vid)media='<video class="pmedia" src="'+p.vid+'" muted playsinline preload="metadata"></video><span class="playbadge">▶</span>';
+      else media=p.em||'';
+      el.innerHTML='<div class="img" style="background:linear-gradient(140deg,'+p.g[0]+','+p.g[1]+')"><span class="frame"></span>'+media+'</div>'+
         '<div class="cap"><div class="c1">'+p.c1+'</div><div class="c2">'+p.cat+' · '+p.c2+'</div></div>';
+      if(p.src||p.vid)el.addEventListener('click',function(){openLightbox(p)});
       grid.appendChild(el);});}
+  function openLightbox(p){
+    var lb=$('#lbox');
+    if(!lb){lb=document.createElement('div');lb.id='lbox';lb.className='lbox';
+      lb.innerHTML='<button class="lbx" aria-label="Close">✕</button><div class="lbin"><div class="lbmedia"></div><div class="lbcap"></div></div>';
+      document.body.appendChild(lb);
+      lb.querySelector('.lbx').onclick=closeLightbox;
+      lb.addEventListener('click',function(e){if(e.target===lb)closeLightbox();});}
+    var m=lb.querySelector('.lbmedia');
+    m.innerHTML=p.vid?'<video src="'+p.vid+'" controls autoplay playsinline></video>':'<img src="'+p.src+'" alt="">';
+    lb.querySelector('.lbcap').textContent=p.c1;
+    lb.classList.add('open');}
+  function closeLightbox(){var lb=$('#lbox');if(!lb)return;lb.classList.remove('open');var v=lb.querySelector('video');if(v)v.pause();}
 
   function renderCK(){var wrap=$('#ck-groups');wrap.innerHTML='';
     Object.keys(CKCAT).forEach(function(cat){
