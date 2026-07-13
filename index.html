@@ -94,6 +94,7 @@
 .flower.story:hover{z-index:60}
 .flower.story:hover .fsvg{transform:scale(1.55)}
 .flower.story.is-awake .fsvg{filter:drop-shadow(0 0 10px rgba(255,226,119,.9)) drop-shadow(0 0 24px rgba(255,153,198,.65))}.flower.story.is-asleep{opacity:.56}.flower.story.is-asleep .fsvg{filter:saturate(.58) brightness(.82)}
+.flower.pair-bloom .fsvg{filter:drop-shadow(0 0 12px rgba(255,223,124,.95)) drop-shadow(0 0 28px rgba(218,124,234,.7))}.pair-bloom .pair-mark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:25px;height:25px;border-radius:50%;background:#fff;color:#c05c8b;font-size:13px;line-height:25px;text-align:center;box-shadow:0 3px 8px rgba(103,58,91,.35)}
 .flower.deco{pointer-events:none}
 .flower.deco .fsvg{opacity:.92}
 @keyframes sway{0%,100%{rotate:-5deg}50%{rotate:5deg}}
@@ -101,6 +102,7 @@
   box-shadow:0 3px 8px rgba(189,95,125,.4); display:flex; align-items:center; justify-content:center; overflow:hidden;
   transition:transform .3s cubic-bezier(.2,1.4,.4,1)}
 .favatar svg{width:100%; height:100%; display:block}
+.favatar img{width:100%; height:100%; display:block; object-fit:cover; object-position:center top}
 .flower.story:hover .favatar{transform:translate(-50%,-50%) scale(1.55)}
 .avportrait{display:inline-block; border-radius:50%; overflow:hidden; border:4px solid #fff; box-shadow:0 14px 30px -12px rgba(150,80,110,.55)}
 .avportrait svg{width:100%; height:100%; display:block}
@@ -344,6 +346,7 @@
 .wish .em{font-size:22px}
 .wish .w1{font-size:13px; font-weight:600; color:#6b4459}
 .wish .w2{font-size:10.5px; color:#c9b4be; margin-top:2px; line-height:1.5}
+.ig-import{margin-top:28px;padding:20px;border-radius:22px;background:linear-gradient(135deg,#fff1f6,#f2ebfb);border:1px solid #eadcec}.ig-import h4{font-family:var(--serif);font-size:18px;color:#5f4055}.ig-import p{font-size:12px;line-height:1.6;color:#927486;margin-top:6px}.ig-import .ig-action{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:10px 15px;border-radius:30px;background:#fff;color:#b1517e;border:1px solid #eec9dc;font-size:12px;font-weight:600;cursor:pointer}.ig-import input{display:none}.ig-import .ig-status{font-size:11px;line-height:1.5;color:#9d7790;margin-top:10px;min-height:17px}
 .mmask{position:fixed; inset:0; z-index:500; background:rgba(90,50,75,.35); backdrop-filter:blur(8px);
   display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:.3s}
 .mmask.on{opacity:1; pointer-events:auto}
@@ -494,13 +497,13 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
       <div class="rt-preview">
         <span class="rt-lock">🔒 Visible only to you two</span>
         <div class="rt-mock">
-          <div class="mk-pair"><div class="ava a" style="width:38px;height:38px;font-size:19px;border-width:2px">👩🏻</div><div class="ava b" style="width:38px;height:38px;font-size:19px;border-width:2px">👱🏻‍♀️</div><span class="mk-nm">Cici ✕ Anna</span></div>
+          <div class="mk-pair"><div class="ava a" style="width:38px;height:38px;font-size:19px;border-width:2px">👩🏻</div><div class="ava b" style="width:38px;height:38px;font-size:19px;border-width:2px">👩🏼</div><span class="mk-nm">Catherine ✕ Саша</span></div>
           <div class="mk-days" id="mk-days">—</div>
-          <div class="mk-dl">days of friendship · Shanghai — Kyiv</div>
+          <div class="mk-dl">days of friendship · China — Ivano-Frankivsk</div>
           <div class="mk-line">
-            <div class="mk-item"><span class="dot2"></span>First snow in Kyiv, sent with love ❄️</div>
-            <div class="mk-item"><span class="dot2"></span>HSK4 passed — together ✓</div>
-            <div class="mk-item"><span class="dot2"></span>47 days until her birthday 🎂</div>
+            <div class="mk-item"><span class="dot2"></span>After-school homework calls, across two worlds 📚</div>
+            <div class="mk-item"><span class="dot2"></span>Harry Potter was our first shared universe ✨</div>
+            <div class="mk-item"><span class="dot2"></span>From middle school to university — still here 💌</div>
           </div>
         </div>
       </div>
@@ -574,8 +577,8 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
       <div class="rm-hero">
         <span class="deco">🌸</span>
         <div class="rowtop">
-          <div style="display:flex"><div class="ava a">👩🏻</div><div class="ava b">👱🏻‍♀️</div></div>
-          <div><div class="nm">Cici ✕ Anna</div><div class="sub2">🇨🇳 Shanghai — Kyiv 🇺🇦</div></div>
+          <div style="display:flex"><div class="ava a">👩🏻</div><div class="ava b">👩🏼</div></div>
+          <div><div class="nm">Catherine ✕ Oleksandra</div><div class="sub2">🇨🇳 China — Ivano-Frankivsk 🇺🇦</div></div>
         </div>
         <div class="daysrow"><span class="n" id="rm-days">0</span><span class="l">days of friendship<br>year <b id="rm-years"></b> together</span></div>
         <div class="anni">🎂 <b id="rm-anni" style="margin:0 3px"></b> days to your anniversary</div>
@@ -624,6 +627,7 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
         <div class="cdgrid" id="cd-grid"></div>
         <div class="rm-secthead"><div><h3>Her Wish List 🎁</h3><div class="mini">Gifts, tastes and little notes — birthday reminders included.</div></div></div>
         <div class="wishgrid" id="wish-list"></div>
+        <div class="ig-import"><h4>📥 Instagram chat archive</h4><p>Choose Instagram’s exported <b>message_1.json</b>. It is read only in this browser and turns your messages into private timeline notes — nothing is uploaded.</p><label class="ig-action">Choose exported chat file<input type="file" id="rm-ig-file" accept="application/json,.json" onchange="RM.importIG(this)"></label><div class="ig-status" id="ig-status">No chat archive imported yet.</div></div>
       </div>
     </div>
   </div>
@@ -744,12 +748,20 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
       d.innerHTML=blossom(decoCols[k%5],14+Math.random()*12);flayer.appendChild(d);}
     var fl=document.createElement('div');fl.className='flower story';fl.style.left=fx+'%';fl.style.top=fy+'%';fl.style.animationDelay=(i*.3)+'s';
     var inner=blossom(x.col,46);
-    if(AV[x.n])inner+='<div class="favatar" style="width:26px;height:26px">'+AV[x.n]+'</div>';
+    if(x.img)inner+='<div class="favatar" style="width:28px;height:28px;font-size:15px;background:linear-gradient(150deg,'+GR[x.col][0]+','+GR[x.col][1]+')"><img src="'+x.img+'" alt="'+x.n+'" onerror="this.remove()"></div>';
+    else if(AV[x.n])inner+='<div class="favatar" style="width:26px;height:26px">'+AV[x.n]+'</div>';
     else if(x.av)inner+='<div class="favatar" style="width:22px;height:22px;font-size:15px;background:linear-gradient(150deg,'+GR[x.col][0]+','+GR[x.col][1]+')">'+x.av+'</div>';
     var below=fy<32; /* 顶部的花朵，卡片朝下弹，避免被裁切 */
     var li=localInfo(x);fl.classList.add(li.awake?'is-awake':'is-asleep');
     fl.innerHTML=inner+'<div class="ftip'+(below?' below':'')+'"><div class="nm">'+x.n+'</div><div class="ct">'+x.f+' '+li.p.city+' · '+li.time+'</div><div class="dr"><b>'+(li.awake?'In bloom':'Resting')+'</b>'+li.p.climate+'</div></div>';
     fl.addEventListener('click',function(){openStory(x)});flayer.appendChild(fl);
+  });
+  /* The private friendship room is also a living exhibit: two paired flowers mark Catherine and Саша. */
+  [{n:'Catherine',f:'🇨🇳',col:'pink',lat:31.23,lon:121.47,city:'China'},{n:'Oleksandra · Саша',f:'🇺🇦',col:'lav',lat:48.9226,lon:24.7111,city:'Ivano-Frankivsk'}].forEach(function(x,i){
+    var fl=document.createElement('div'),fx=(x.lon+180)/360*100,fy=(90-x.lat)/180*100;
+    fl.className='flower story pair-bloom is-awake';fl.style.left=fx+'%';fl.style.top=fy+'%';fl.style.zIndex=20;fl.style.animationDelay=(i*.35)+'s';
+    fl.innerHTML=blossom(x.col,58)+'<span class="pair-mark">✦</span><div class="ftip'+(fy<32?' below':'')+'"><div class="nm">'+x.n+'</div><div class="ct">'+x.f+' '+x.city+'</div><div class="dr"><b>Private bloom</b>A friendship growing since 2018.</div></div>';
+    fl.addEventListener('click',function(){RM.open()});flayer.appendChild(fl);
   });
 
   (function(){var s=1,panX=0,panY=0,vp=document.getElementById('mapvp'),mc=document.getElementById('mapcontent'),drag=false,sx,sy;
@@ -899,43 +911,46 @@ var RM=(function(){
   var $=function(s){return document.querySelector(s)};
   var $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
   var MEET='2018-09-01';
+  var ME='Catherine',HER='Oleksandra (Саша)';
   var st={
     code:'',entered:false,alFilter:'All',
     timeline:[
-      {d:'2018-09-01',type:'mile',tag:'First Hello',who:'Auto milestone',tx:'第一句「你好 / Привіт」in a language exchange app. 谁能想到一聊就是八年。',st:'🌱'},
-      {d:'2021-08-14',type:'trip',tag:'Trip',who:'Cici',tx:'第一次"视频旅行"：我举着手机带她逛豫园，她带我云看第聂伯河的日落。',st:'🌇'},
-      {d:'2024-09-01',type:'mile',tag:'6th Anniversary',who:'Auto milestone',tx:'相识 2192 天。她说：我们的友谊比很多人的恋爱都长寿。',st:'🎂'},
-      {d:'2025-11-20',type:'word',tag:'Little Words',who:'Anna',tx:'今天很想你。Kyiv 下第一场雪了，拍给你看。等你来，我们一起堆一个会说中文的雪人。',st:'❄️'},
-      {d:'2026-05-06',type:'trip',tag:'Trip',who:'Cici',tx:'合艾之旅回来啦！给 Anna 寄了明信片和小象钥匙扣，估计三周后到 Kyiv～',st:'🐘'}
+      {d:'2018-09-01',type:'mile',tag:'First Hello',who:'Catherine & Oleksandra',tx:'We met when we were twelve, two girls the same age who loved languages, Harry Potter, and a world larger than our own. Even our younger siblings turned out to be the same age — as if our families were quietly meant to mirror each other.',st:'🌱'},
+      {d:'2019-03-15',type:'word',tag:'Little Words',who:'Catherine & Саша',tx:'We began teaching each other our mother tongues, turning new words into our own small bridge between Chinese and Ukrainian.',st:'🗣️'},
+      {d:'2020-10-08',type:'day',tag:'Daily',who:'Catherine & Саша',tx:'After school, we would call to do homework together. Even through a phone screen, ordinary afternoons became shared time.',st:'📚'},
+      {d:'2021-06-12',type:'trip',tag:'A City Through Her Phone',who:'Catherine & Саша',tx:'We took each other on video walks through our cities — streets, windows, skies, and the little places that made home feel real.',st:'🌆'},
+      {d:'2022-02-24',type:'mile',tag:'Through the Hardest Days',who:'Catherine & Саша',tx:'When war came to Ukraine, the distance between us felt unbearable. All I could do was keep showing up on the other end of the call — and she kept answering. Some friendships are proven by how they hold on.',st:'🕊️'},
+      {d:'2024-09-01',type:'mile',tag:'Growing Together',who:'Catherine & Oleksandra',tx:'From middle schoolers to university students, we witnessed so much in each other’s lives — exams and new schools, first loves, family, and everything in between.',st:'🎓'},
+      {d:'2026-07-14',type:'mile',tag:'Still Here',who:'Catherine & Oleksandra',tx:'One thing has never changed: we have each kept an important place for the other in our hearts. Best friends across countries, still choosing each other.',st:'💛'}
     ],
     albums:['All','Trips','Cafés','Daily','Growing Up'],
     photos:[
-      {cat:'Daily',em:'🐱',g:['#ffe0ec','#ffb9d4'],c1:'Gregory 蹭镜头打断视频通话',c2:'2026.06 · by Cici'},
-      {cat:'Growing Up',em:'📮',g:['#e6dcfa','#c8b4ee'],c1:'寄往 Kyiv 的第 14 封信',c2:'2026.05 · by Cici'},
-      {cat:'Trips',em:'🏝️',g:['#dcecff','#aecdf0'],c1:'Hat Yai 海边替 Anna 捡的贝壳',c2:'2026.05 · by Cici'},
-      {cat:'Daily',em:'☕',g:['#fff0dd','#ffd9ae'],c1:'同款拿铁 · 异国同步下午茶',c2:'2026.04 · by Anna'},
-      {cat:'Growing Up',em:'🎓',g:['#ffe3ee','#f5b8d5'],c1:'她的期末满分卷子！',c2:'2026.02 · by Anna'},
-      {cat:'Cafés',em:'🍰',g:['#f3e3fa','#dcb9f0'],c1:'KL 法式甜品店探店',c2:'2026.01 · by Cici'}
+      {cat:'Growing Up',em:'⚡',g:['#ffe0ec','#ffb9d4'],c1:'Our first shared Harry Potter universe',c2:'2018 · by Catherine & Саша'},
+      {cat:'Daily',em:'📚',g:['#e6dcfa','#c8b4ee'],c1:'After-school homework call',c2:'2020 · by Catherine & Саша'},
+      {cat:'Trips',em:'🌆',g:['#dcecff','#aecdf0'],c1:'A video walk through Ivano-Frankivsk',c2:'2021 · by Саша'},
+      {cat:'Daily',em:'🗣️',g:['#fff0dd','#ffd9ae'],c1:'A new Ukrainian word, a new Chinese phrase',c2:'2022 · by Catherine & Саша'},
+      {cat:'Growing Up',em:'🎓',g:['#ffe3ee','#f5b8d5'],c1:'From middle school to university',c2:'2024 · by Catherine & Oleksandra'},
+      {cat:'Daily',em:'💛',g:['#f3e3fa','#dcb9f0'],c1:'Still keeping a place in each other’s hearts',c2:'2026 · by Catherine & Oleksandra'}
     ],
     checks:[
-      {cat:'life',tx:'一起去土耳其看热气球 🎈',done:false,by:''},
-      {cat:'life',tx:'她来上海，带她吃一整天小笼包',done:false,by:''},
-      {cat:'grow',tx:'Cici: IELTS 冲 7.5',done:false,by:''},
-      {cat:'grow',tx:'Anna: 中文 HSK4 通过',done:true,by:'Anna ✓'},
-      {cat:'grow',tx:'一起完成 UNESCO 黑客松作品',done:true,by:'Together ✓'},
-      {cat:'heal',tx:'互相监督：每周读书 30 页',done:false,by:''},
-      {cat:'heal',tx:'我教她上海话，她教我乌克兰语',done:true,by:'Together ✓'}
+      {cat:'life',tx:'Visit each other’s cities for real',done:false,by:''},
+      {cat:'life',tx:'Take a train trip through Ukraine together',done:false,by:''},
+      {cat:'grow',tx:'Keep teaching each other Chinese and Ukrainian',done:true,by:'Together ✓'},
+      {cat:'grow',tx:'Read Harry Potter again in each other’s languages',done:false,by:''},
+      {cat:'grow',tx:'Celebrate the next university milestone together',done:false,by:''},
+      {cat:'heal',tx:'Keep our weekly call, no matter the time zone',done:false,by:''},
+      {cat:'heal',tx:'Keep making room for each other’s real lives',done:true,by:'Together ✓'}
     ],
     cds:[
       {t:'Next video call',days:2,em:'📞',g:['#ff9ec6','#f5a8cf']},
-      {t:"Anna's birthday",days:47,em:'🎂',g:['#c9a6ec','#b8a4ee']},
-      {t:'Taiwan trip departure',days:131,em:'🚄',g:['#8fc3f0','#aecdf0']},
-      {t:'Reunion fund · ¥10k',days:null,em:'💰',g:['#ffc39a','#ffd9ae'],custom:'62%'}
+      {t:'Our friendship anniversary',days:null,em:'🌱',g:['#c9a6ec','#b8a4ee'],custom:'Sept 1'},
+      {t:'A real walk through Ivano-Frankivsk',days:null,em:'🌆',g:['#8fc3f0','#aecdf0'],custom:'someday'},
+      {t:'Reunion fund',days:null,em:'💰',g:['#ffc39a','#ffd9ae'],custom:'in progress'}
     ],
     wishes:[
-      {em:'🧣',w1:'Cream cashmere scarf',w2:'她提过 Kyiv 冬天手会冻僵 · remind 2 weeks before birthday'},
-      {em:'📖',w1:'《小王子》中文版',w2:'练中文用 · note: 不吃香菜（认真的）'},
-      {em:'💿',w1:'周杰伦黑胶唱片',w2:'她最近在学《晴天》'}
+      {em:'📖',w1:'Harry Potter in Ukrainian',w2:'For the first universe we shared'},
+      {em:'🗣️',w1:'A notebook for new Chinese & Ukrainian words',w2:'Our language bridge, still growing'},
+      {em:'📮',w1:'A postcard from a city walk',w2:'For the day a phone screen becomes a real street'}
     ]
   };
   var CKCAT={life:{em:'🌏',name:'Life'},grow:{em:'📚',name:'Growth'},heal:{em:'🫧',name:'Healing'}};
@@ -1000,7 +1015,7 @@ var RM=(function(){
       items.forEach(function(c){
         var el=document.createElement('div');el.className='ck'+(c.done?' done':'');
         el.innerHTML='<span class="box">'+(c.done?'✓':'')+'</span><span class="tx">'+c.tx+'</span>'+(c.by?'<span class="by">'+c.by+'</span>':'');
-        el.onclick=function(){c.done=!c.done;c.by=c.done?'Cici ✓':'';renderCK();if(c.done)toast('Checked! Synced to Anna 💗');};
+        el.onclick=function(){c.done=!c.done;c.by=c.done?ME+' ✓':'';renderCK();if(c.done)toast('Checked! Synced to '+HER+' 💗');};
         g.appendChild(el);});
       wrap.appendChild(g);});
     var total=st.checks.length,dn=st.checks.filter(function(c){return c.done}).length;
@@ -1055,11 +1070,11 @@ var RM=(function(){
   function closeModal(){$('#mmask').classList.remove('on')}
   function saveTL(){var tx=$('#m-tx').value.trim();if(!tx){toast('写一点点也好呀 ✍️');return;}
     var map={'Daily':'day','Trip':'trip','Little Words':'word','Milestone':'mile'};
-    st.timeline.push({d:$('#m-date').value,type:map[mState.tag]||'day',tag:mState.tag,who:'Cici',tx:tx,st:mState.st});
+    st.timeline.push({d:$('#m-date').value,type:map[mState.tag]||'day',tag:mState.tag,who:ME,tx:tx,st:mState.st});
     closeModal();renderTL();toast('Pinned — she can see it too 💗');}
   function saveAL(){var tx=$('#m-tx').value.trim()||'Our little moment';
     var gs=[['#ffe0ec','#ffb9d4'],['#e6dcfa','#c8b4ee'],['#dcecff','#aecdf0'],['#fff0dd','#ffd9ae']];
-    st.photos.unshift({cat:mState.alcat,em:mState.st,g:gs[(Math.random()*4)|0],c1:tx,c2:'just now · by Cici'});
+    st.photos.unshift({cat:mState.alcat,em:mState.st,g:gs[(Math.random()*4)|0],c1:tx,c2:'just now · by '+ME});
     closeModal();renderAL();toast('Added to the album ✨');}
   function saveCK(){var tx=$('#m-tx').value.trim();if(!tx){toast('The goal can\u2019t be empty');return;}
     var map={'🌏 Life':'life','📚 Growth':'grow','🫧 Healing':'heal'};
@@ -1067,11 +1082,24 @@ var RM=(function(){
     closeModal();renderCK();toast('New promise synced ✅');}
   function exportPreview(){var s=$('#msheet');
     var items=st.timeline.slice().sort(function(a,b){return a.d<b.d?-1:1});
-    var html='<h4>Memoir preview 📜</h4><div class="expwrap"><div class="eh"><div class="et">Cici ✕ Anna</div><div class="s">FRIENDSHIP MEMOIR · SINCE 2018</div></div>';
+    var html='<h4>Memoir preview 📜</h4><div class="expwrap"><div class="eh"><div class="et">Catherine ✕ Oleksandra</div><div class="s">FRIENDSHIP MEMOIR · SINCE 2018</div></div>';
     items.forEach(function(e){html+='<div class="expitem"><b>'+e.d+' · '+e.tag+'</b><br>'+e.tx+' '+e.st+'</div>'});
     html+='</div><button class="msave" onclick="RM.fakeExport()">Export as printable PDF (full version)</button><button class="mcancel" onclick="RM.closeModal()">Back</button>';
     s.innerHTML=html;$('#mmask').classList.add('on');}
   function fakeExport(){closeModal();toast('Full version exports a print-ready PDF memoir 📜');}
+  function importIG(input){
+    var file=input&&input.files&&input.files[0],status=$('#ig-status');if(!file)return;
+    status.textContent='Reading '+file.name+' privately in this browser…';
+    var reader=new FileReader();reader.onload=function(){try{
+      var data=JSON.parse(reader.result),msgs=Array.isArray(data.messages)?data.messages:[];
+      var clean=msgs.map(function(m){return {text:(m.content||'').trim(),date:m.timestamp_ms?new Date(m.timestamp_ms):null,who:m.sender_name||HER};}).filter(function(m){return m.text&&m.date&&!isNaN(m.date)}).sort(function(a,b){return a.date-b.date});
+      if(!clean.length)throw new Error('No readable text messages found');
+      clean.slice(-500).forEach(function(m){st.timeline.push({d:m.date.toISOString().slice(0,10),type:'word',tag:'Instagram chat',who:m.who,tx:m.text,st:'💬'});});
+      status.textContent='Imported '+clean.length.toLocaleString()+' text messages; the latest '+Math.min(500,clean.length)+' are now in this room’s timeline. Nothing was uploaded.';
+      renderTL();toast('Instagram chat archive added privately 💬');
+    }catch(e){status.textContent='This file could not be read. Please choose Instagram’s message_1.json from your downloaded messages folder.';}finally{input.value='';}};
+    reader.readAsText(file);
+  }
 
   function renderAll(){calcDays();renderTL();renderAL();renderCK();renderMO();}
   buildJoin();calcDays();
@@ -1079,7 +1107,7 @@ var RM=(function(){
 
   return {open:open,close:close,go:go,copyCode:copyCode,enter:enter,tab:tab,
     openModal:openModal,closeModal:closeModal,saveTL:saveTL,saveAL:saveAL,saveCK:saveCK,
-    exportPreview:exportPreview,fakeExport:fakeExport};
+    exportPreview:exportPreview,fakeExport:fakeExport,importIG:importIG};
 })();
 </script>
 </div>
