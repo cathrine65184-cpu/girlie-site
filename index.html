@@ -63,6 +63,22 @@
 @keyframes cue{0%,100%{opacity:.3; transform:scaleY(.6)}50%{opacity:1; transform:scaleY(1)}}
 #hero-particles{position:absolute; inset:0; z-index:1; pointer-events:none}
 
+/* ═══ TWILIGHT GARDEN ═══ */
+.hero{background:radial-gradient(60% 58% at 50% 8%,rgba(172,148,230,.55),transparent 62%),radial-gradient(58% 45% at 83% 77%,rgba(240,140,183,.28),transparent 64%),linear-gradient(180deg,#17122e 0%,#30204b 54%,#693b66 100%)}
+.hero:before{content:""; position:absolute; inset:0; z-index:1; pointer-events:none; opacity:.75; background-image:radial-gradient(circle at 18% 20%,#fff 0 1px,transparent 1.8px),radial-gradient(circle at 73% 14%,#fff 0 1.2px,transparent 2px),radial-gradient(circle at 88% 36%,#f9d9ff 0 1px,transparent 1.7px),radial-gradient(circle at 35% 42%,#fff 0 1px,transparent 1.8px); background-size:230px 170px,310px 240px,280px 220px,190px 190px}
+.hero h1{background:linear-gradient(110deg,#fff6fa,#ffd2e5 47%,#d9ccff);-webkit-background-clip:text;background-clip:text}.hero .sub,.hero .scrollcue{color:#eee3f5}.hero .kicker{color:#ffc3db}
+.garden-arch{position:absolute; z-index:2; inset:auto 0 0; height:34%; pointer-events:none; opacity:.9; background:radial-gradient(75% 70% at 50% 140%,#192536 0 39%,transparent 40%),radial-gradient(48% 70% at 3% 115%,#12202a 0 45%,transparent 46%),radial-gradient(48% 70% at 97% 115%,#12202a 0 45%,transparent 46%)}
+.garden-status{position:absolute; bottom:30px; right:clamp(18px,5vw,70px); z-index:4; color:#f3eaff; text-align:right; font-size:11px; letter-spacing:1.6px; text-transform:uppercase; line-height:1.7; opacity:.86}.garden-status b{display:block; color:#ffb5d1; font-size:12px}
+.garden-sprig{position:absolute; z-index:2; bottom:-4px; width:220px; height:190px; pointer-events:none; opacity:.88; filter:drop-shadow(0 12px 12px rgba(0,0,0,.22))}.garden-sprig.l{left:-32px; transform:rotate(-8deg)}.garden-sprig.r{right:-32px; transform:scaleX(-1) rotate(-8deg)}
+.garden-sprig:before,.garden-sprig:after{content:"";position:absolute;border-radius:100% 0 100% 0;background:linear-gradient(135deg,#243e3e,#607856)}.garden-sprig:before{width:165px;height:55px;left:20px;bottom:68px;transform:rotate(-34deg);box-shadow:55px 42px 0 -5px #355242,104px 0 0 -5px #2c4b43}.garden-sprig:after{width:15px;height:190px;left:92px;bottom:0;background:#466047;border-radius:40px;transform:rotate(-27deg)}
+
+/* ═══ MUSEUM + LEXICON ═══ */
+.museum{background:linear-gradient(180deg,#f7eff1,#fff8f3 48%,#f7f0fb)}
+.museum .masonry{column-count:2;max-width:920px}@media(max-width:650px){.museum .masonry{column-count:1}}
+.museum-guide{max-width:920px;margin:0 auto 34px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}.guide-chip{padding:10px 14px;border:1px solid #ead9e0;border-radius:30px;background:rgba(255,255,255,.7);font-size:12px;color:#8e6979}.guide-chip b{color:#b04f78;font-weight:600}
+.masonry{column-count:3}.mcard{position:relative;border:1px solid rgba(219,193,204,.65);box-shadow:0 22px 50px -36px rgba(109,74,90,.5)}.mcard:before{content:"";position:absolute;inset:8px;border:1px solid rgba(202,166,181,.45);border-radius:18px;pointer-events:none;z-index:3}.mcard .catalog{position:absolute;z-index:4;left:20px;bottom:12px;padding:5px 8px;border-radius:5px;background:rgba(42,27,38,.74);color:#fff;letter-spacing:1.2px;font-size:9px}.mcard .ph{background:linear-gradient(150deg,#e4d2d9,#d7c7e6)!important}.mcard .bd .ct{font-family:var(--sans);text-transform:uppercase;font-size:10px;letter-spacing:1.5px;color:#b36a8a}.mcard .weather{margin-top:13px;padding:10px 0 0;border-top:1px solid #f3e6ec;display:flex;justify-content:space-between;font-size:11px;color:#93808a}.mcard .weather strong{color:#5d4853;font-weight:500}
+.lexicon{background:#18132b;color:#f9f3ff;position:relative;overflow:hidden}.lexicon:before{content:"";position:absolute;width:620px;height:620px;border-radius:50%;background:radial-gradient(circle,rgba(188,137,219,.25),transparent 68%);top:-320px;right:-170px}.lexicon .sec-head{position:relative}.lexicon .sec-head h2{color:#fff}.lexicon .sec-head p{color:#d8cbeb}.lexicon .kicker{color:#ffb6d3}.lex-grid{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:1050px;margin:0 auto}.word-card{min-height:176px;padding:22px;border-radius:22px;background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.13);display:flex;flex-direction:column;justify-content:space-between;transition:transform .35s,background .35s}.word-card:hover{transform:translateY(-6px);background:rgba(255,255,255,.13)}.word-card .lang{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#d4b9e7}.word-card .word{font-family:var(--serif);font-size:clamp(28px,3vw,38px);margin:14px 0 4px;line-height:1;color:#fff}.word-card .sound{font-size:12px;color:#f4bad2}.word-card .meaning{font-size:12px;color:#d9cfe7;line-height:1.55}.word-card .from{font-size:11px;color:#aa9ab9;margin-top:13px}.word-card .from b{color:#ffc1db;font-weight:500}@media(max-width:760px){.lex-grid{grid-template-columns:repeat(2,1fr)}.garden-status{display:none}}@media(max-width:450px){.lex-grid{grid-template-columns:1fr}.word-card{min-height:145px}}
+
 /* ═══ BLOOM ═══ */
 .bloom{background:linear-gradient(180deg,#FCEFF5,#FFF6F8 45%,#FFF1F5)}
 .mapcard{position:relative; max-width:1060px; margin:0 auto; aspect-ratio:1000/500; border-radius:30px; overflow:hidden;
@@ -77,6 +93,7 @@
 .flower .fsvg{display:block; filter:drop-shadow(0 3px 5px rgba(189,95,125,.32)); transition:transform .3s cubic-bezier(.2,1.5,.4,1)}
 .flower.story:hover{z-index:60}
 .flower.story:hover .fsvg{transform:scale(1.55)}
+.flower.story.is-awake .fsvg{filter:drop-shadow(0 0 10px rgba(255,226,119,.9)) drop-shadow(0 0 24px rgba(255,153,198,.65))}.flower.story.is-asleep{opacity:.56}.flower.story.is-asleep .fsvg{filter:saturate(.58) brightness(.82)}
 .flower.deco{pointer-events:none}
 .flower.deco .fsvg{opacity:.92}
 @keyframes sway{0%,100%{rotate:-5deg}50%{rotate:5deg}}
@@ -160,6 +177,7 @@
 .mcard{break-inside:avoid; margin-bottom:20px; border-radius:24px; overflow:hidden; background:#fff; cursor:pointer; box-shadow:0 22px 50px -36px rgba(180,110,150,.6); transition:transform .45s cubic-bezier(.2,1,.3,1),box-shadow .45s}
 .mcard:hover{transform:translateY(-8px); box-shadow:0 36px 64px -34px rgba(180,110,150,.75)}
 .mcard .ph{position:relative; display:flex; align-items:center; justify-content:center}
+.mcard .ph .mimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;filter:saturate(.88) contrast(.96)}.mcard .ph:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 52%,rgba(38,23,38,.15));pointer-events:none}
 .mcard .ph .em{filter:drop-shadow(0 6px 10px rgba(0,0,0,.08))}
 .mcard .ph .flag{position:absolute; top:12px; left:12px; font-size:13px; background:rgba(255,255,255,.78); padding:4px 10px; border-radius:30px; backdrop-filter:blur(6px); color:var(--ink)}
 .mcard .ph .age{position:absolute; top:12px; right:12px; font-size:11.5px; background:rgba(255,255,255,.78); padding:4px 10px; border-radius:30px; color:var(--ink-soft)}
@@ -384,19 +402,21 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
 
 <div class="gp-cur"></div><div class="gp-ring"></div>
 <nav class="gp-nav"><span class="brand">🌸 Girlie</span><div class="links">
-  <a href="#bloom">Bloom</a><a href="#globe">Globe</a><a href="#archive">Stories</a>
+  <a href="#bloom">Garden</a><a href="#globe">Globe</a><a href="#archive">Museum</a><a href="#lexicon">Words</a>
   <a class="roomlink" onclick="RM.open()">🏠 My Room</a>
 </div></nav>
 
 <!-- HERO -->
 <section class="hero">
   <canvas id="hero-particles"></canvas>
+  <div class="garden-sprig l"></div><div class="garden-sprig r"></div><div class="garden-arch"></div>
   <div class="hero-inner">
-    <div class="kicker rv">A Digital Museum of Female Friendship</div>
+    <div class="kicker rv">After-hours museum · global friendship garden</div>
     <h1 class="rv" style="transition-delay:.08s">Girlie Project</h1>
-    <p class="sub rv" style="transition-delay:.16s">Connecting girls, cultures and stories around the world — one friendship at a time.</p>
-    <div class="ctas rv" style="transition-delay:.24s"><a href="#bloom" class="btn btn-primary">Explore Stories</a><a onclick="RM.open()" class="btn btn-ghost" style="cursor:pointer">Enter Your Room</a></div>
+    <p class="sub rv" style="transition-delay:.16s">Push open the garden gate. Across time zones, every friendship becomes a living exhibit — glowing, resting, and remembered.</p>
+    <div class="ctas rv" style="transition-delay:.24s"><a href="#archive" class="btn btn-primary">Enter the Museum</a><a href="#lexicon" class="btn btn-ghost">Open the Word Book</a></div>
   </div>
+  <div class="garden-status"><b id="garden-clock">The garden is listening</b><span id="garden-copy">Some flowers are awake somewhere.</span></div>
   <div class="scrollcue">Scroll</div>
 </section>
 
@@ -441,11 +461,19 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
   </div>
 </section>
 
-<!-- ARCHIVE -->
-<section class="sec archive" id="archive">
-  <div class="wrap"><div class="sec-head rv"><div class="kicker">Story Archive</div><h2>Every story, kept like a keepsake.</h2>
-    <p>A growing archive of voices — their dreams, their friendships, the small lessons they carry.</p></div>
+<!-- MUSEUM -->
+<section class="sec museum archive" id="archive">
+  <div class="wrap"><div class="sec-head rv"><div class="kicker">Gallery I · Emotional Museum</div><h2>Eleven lives, eleven irreplaceable exhibits.</h2>
+    <p>Walk the collection slowly. Every portrait has a catalogue number, a city climate, and the precise local hour in which she is living.</p></div>
+    <div class="museum-guide rv"><span class="guide-chip"><b>CAT.</b> a unique friendship record</span><span class="guide-chip"><b>LOCAL HOUR</b> updates with her city</span><span class="guide-chip"><b>CLIMATE</b> the weather she calls home</span></div>
     <div class="masonry" id="masonry"></div></div>
+</section>
+
+<!-- LEXICON -->
+<section class="sec lexicon" id="lexicon">
+  <div class="wrap"><div class="sec-head rv"><div class="kicker">The Girlie Lexicon · 第 01 册</div><h2>How the world says “best friend.”</h2>
+    <p>Not a translation exercise — a small collection of words that hold someone close.</p></div>
+    <div class="lex-grid" id="lexgrid"></div></div>
 </section>
 
 <!-- ROOM TEASER -->
@@ -643,6 +671,20 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
   ];
   var STATS={China:7,France:3,Ukraine:2,Japan:2,Malaysia:3,USA:4,India:2,Brazil:2,UK:2,Australia:2,Korea:2};
   var FEAT=['France','Ukraine','China','Japan','Malaysia','India'];
+  var MUSEUM={
+    Emma:{city:'Shanghai',zone:'Asia/Shanghai',climate:'Humid subtropical · 24°C',word:'闺蜜',sound:'guī mì',lang:'Mandarin Chinese'},
+    Anna:{city:'Kyiv',zone:'Europe/Kyiv',climate:'Continental · 18°C',word:'подруга',sound:'podruha',lang:'Ukrainian'},
+    'Élise':{city:'Paris',zone:'Europe/Paris',climate:'Oceanic · 19°C',word:'meilleure amie',sound:'meh-yur ah-mee',lang:'French'},
+    Mei:{city:'Kuala Lumpur',zone:'Asia/Kuala_Lumpur',climate:'Tropical rain · 29°C',word:'sahabat',sound:'sa-ha-bat',lang:'Malay'},
+    Yuki:{city:'Tokyo',zone:'Asia/Tokyo',climate:'Humid subtropical · 26°C',word:'親友',sound:'shinyū',lang:'Japanese'},
+    Grace:{city:'New York',zone:'America/New_York',climate:'Humid continental · 23°C',word:'bestie',sound:'bes-tee',lang:'American English'},
+    Sofia:{city:'São Paulo',zone:'America/Sao_Paulo',climate:'Subtropical highland · 21°C',word:'melhor amiga',sound:'mel-yor ah-mee-gah',lang:'Brazilian Portuguese'},
+    Diya:{city:'Delhi',zone:'Asia/Kolkata',climate:'Semi-arid · 33°C',word:'सहेली',sound:'sa-hey-lee',lang:'Hindi'},
+    Lily:{city:'London',zone:'Europe/London',climate:'Temperate oceanic · 17°C',word:'best friend',sound:'best frend',lang:'British English'},
+    Mia:{city:'Sydney',zone:'Australia/Sydney',climate:'Humid subtropical · 16°C',word:'best mate',sound:'best mayt',lang:'Australian English'},
+    Soo:{city:'Seoul',zone:'Asia/Seoul',climate:'Humid continental · 25°C',word:'절친',sound:'jeol-chin',lang:'Korean'}
+  };
+  function localInfo(x){var p=MUSEUM[x.n],d=new Date(),parts=new Intl.DateTimeFormat('en-GB',{timeZone:p.zone,hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d),h=+parts.filter(function(q){return q.type==='hour'})[0].value;return {p:p,time:parts.map(function(q){return q.type==='hour'||q.type==='minute'?q.value:(q.type==='literal'?q.value:'')}).join('').trim(),awake:h>=7&&h<22};}
   girls.forEach(function(x){x.xs=(x.lon+180)/360*1000;x.ys=(90-x.lat)/180*500;});
 
   if(!window.matchMedia('(hover:none)').matches){
@@ -705,7 +747,8 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
     if(AV[x.n])inner+='<div class="favatar" style="width:26px;height:26px">'+AV[x.n]+'</div>';
     else if(x.av)inner+='<div class="favatar" style="width:22px;height:22px;font-size:15px;background:linear-gradient(150deg,'+GR[x.col][0]+','+GR[x.col][1]+')">'+x.av+'</div>';
     var below=fy<32; /* 顶部的花朵，卡片朝下弹，避免被裁切 */
-    fl.innerHTML=inner+'<div class="ftip'+(below?' below':'')+'"><div class="nm">'+x.n+'</div><div class="ct">'+x.f+' '+x.c+' · '+x.age+'</div><div class="dr"><b>Dream</b>'+x.dream+'</div></div>';
+    var li=localInfo(x);fl.classList.add(li.awake?'is-awake':'is-asleep');
+    fl.innerHTML=inner+'<div class="ftip'+(below?' below':'')+'"><div class="nm">'+x.n+'</div><div class="ct">'+x.f+' '+li.p.city+' · '+li.time+'</div><div class="dr"><b>'+(li.awake?'In bloom':'Resting')+'</b>'+li.p.climate+'</div></div>';
     fl.addEventListener('click',function(){openStory(x)});flayer.appendChild(fl);
   });
 
@@ -724,8 +767,12 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
     c.addEventListener('click',function(){openStory(x)});rr.appendChild(c);});
   var ms=document.getElementById('masonry');
   girls.forEach(function(x){var h=190+((x.n.length*7+x.age)%80);var c=document.createElement('div');c.className='mcard';
-    c.innerHTML='<div class="ph" style="height:'+h+'px;background:linear-gradient(150deg,'+GR[x.col][0]+','+GR[x.col][1]+')"><span class="flag">'+x.f+' '+x.c+'</span><span class="age">'+x.age+'</span><span class="em">'+blossom(x.col,Math.min(104,h*0.5))+'</span></div><div class="bd"><div class="q">“'+x.q+'”</div><div class="ct">'+x.n+'</div><div class="row"><b>Dream</b>'+x.dream+'</div><div class="row"><b>Friendship taught her</b>'+x.lesson+'</div></div>';
+    var mi=localInfo(x),cat='GP-'+String(girls.indexOf(x)+1).padStart(3,'0');
+    c.innerHTML='<div class="ph" style="height:'+h+'px;background:linear-gradient(150deg,'+GR[x.col][0]+','+GR[x.col][1]+')"><span class="flag">'+x.f+' '+mi.p.city+'</span><span class="age">'+x.age+'</span>'+(x.img?'<img class="mimg" src="'+x.img+'" alt="Portrait of '+x.n+'" onerror="this.remove()">':'<span class="em">'+blossom(x.col,Math.min(104,h*0.5))+'</span>')+'<span class="catalog">CAT. '+cat+'</span></div><div class="bd"><div class="q">“'+x.q+'”</div><div class="ct">Exhibit '+cat+' · '+x.n+'</div><div class="row"><b>Dream</b>'+x.dream+'</div><div class="row"><b>Friendship taught her</b>'+x.lesson+'</div><div class="weather"><span>◷ <strong>'+mi.time+'</strong> local</span><span>'+mi.p.climate+'</span></div></div>';
     c.addEventListener('click',function(){openStory(x)});ms.appendChild(c);});
+  var lex=document.getElementById('lexgrid');
+  girls.forEach(function(x){var p=MUSEUM[x.n],c=document.createElement('article');c.className='word-card rv';c.innerHTML='<div><div class="lang">'+p.lang+'</div><div class="word">'+p.word+'</div><div class="sound">/'+p.sound+'/</div></div><div><div class="meaning">a friend who knows the quiet version of your heart.</div><div class="from">Shared by <b>'+x.n+'</b> · '+p.city+'</div></div>';lex.appendChild(c);io.observe(c);});
+  function gardenStatus(){var awake=girls.filter(function(x){return localInfo(x).awake}).length;document.getElementById('garden-clock').textContent=awake+' of '+girls.length+' flowers are in bloom';document.getElementById('garden-copy').textContent=awake?'Daylight is moving through the garden.':'The whole garden is dreaming.';}gardenStatus();setInterval(gardenStatus,60000);
   function closeM(){document.getElementById('modal').classList.remove('open')}
   document.getElementById('m-x').addEventListener('click',closeM);
   document.getElementById('modalbk').addEventListener('click',closeM);
