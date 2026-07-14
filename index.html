@@ -905,7 +905,7 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
   girls.forEach(function(x){var p=MUSEUM[x.n],c=document.createElement('article');c.className='word-card rv';c.innerHTML='<div><div class="lang">'+p.lang+'</div><div class="word">'+p.word+'</div><div class="sound">/'+p.sound+'/</div></div><div><div class="meaning">a friend who knows the quiet version of your heart.</div><div class="from">Shared by <b>'+x.n+'</b> · '+p.city+'</div></div>';lex.appendChild(c);io.observe(c);});
 
   /* ═══ 💌 Plant a flower — Supabase 后端就绪；未填 key 时自动降级为本地存储 ═══ */
-  var SUPA={url:'',anon:''}; /* ← 在 supabase.com 创建项目后，把 Project URL 和 anon public key 填入这里即全球共享 */
+  var SUPA={url:'https://xvdsrmagrultbhmqihuq.supabase.co',anon:'sb_publishable_6DFGWf1w1xh9guD2365bjw_Fuwa7VTJ'}; /* Supabase 项目：访客种的花全球共享 */
   function supaH(){return {apikey:SUPA.anon,Authorization:'Bearer '+SUPA.anon,'Content-Type':'application/json'}}
   var planted=[],pfSel=document.getElementById('pf-country');
   girls.forEach(function(x){var o=document.createElement('option');o.value=x.c;o.textContent=x.f+' '+x.c;pfSel.appendChild(o)});
@@ -918,7 +918,7 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
       flayer.appendChild(d);});
     var el=document.getElementById('pf-count');if(el)el.textContent=planted.length;}
   function loadPlanted(){
-    if(SUPA.url&&SUPA.anon){fetch(SUPA.url+'/rest/v1/planted_flowers?select=country,message&order=id.asc&limit=500',{headers:supaH()})
+    if(SUPA.url&&SUPA.anon){fetch(SUPA.url+'/rest/v1/planted_flowers?select=country,message&message=neq.__connection_test__&order=id.asc&limit=500',{headers:supaH()})
       .then(function(r){return r.json()}).then(function(d){if(Array.isArray(d)){planted=d;renderPlanted()}}).catch(function(){});}
     else{try{planted=JSON.parse(localStorage.getItem('gp_planted')||'[]')}catch(e){planted=[]}renderPlanted();}}
   document.getElementById('pf-go').addEventListener('click',function(){
