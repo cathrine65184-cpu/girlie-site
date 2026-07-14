@@ -373,6 +373,9 @@
 .lbox img,.lbox video{max-width:100%; max-height:78vh; border-radius:16px; box-shadow:0 24px 60px -18px rgba(0,0,0,.6); background:#000}
 .lbox .lbcap{color:#fff; font-size:14px; text-align:center; max-width:440px; line-height:1.5; text-shadow:0 1px 3px rgba(0,0,0,.4)}
 .lbox .lbx{position:absolute; top:18px; right:20px; width:42px; height:42px; border-radius:50%; border:none; background:rgba(255,255,255,.92); color:#a24d78; font-size:20px; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.updrop{display:flex; align-items:center; justify-content:center; gap:8px; width:100%; min-height:64px; padding:14px; border:2px dashed #f0b8d2; border-radius:14px; background:linear-gradient(120deg,#fff5fa,#f6efff); color:#a24d78; font-size:13px; font-weight:600; cursor:pointer; text-align:center; transition:.2s; margin-bottom:4px}
+.updrop:hover{border-color:#e59fc2; background:#fff0f8}
+.updrop.has{border-style:solid; border-color:#7ec98a; background:#f1fbf3; color:#3f8a55}
 .prog{background:#fff; border-radius:22px; padding:17px 20px; box-shadow:0 16px 32px -22px rgba(180,110,150,.5); margin-bottom:20px; max-width:680px}
 .prog .row{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:9px}
 .prog .row b{font-size:14px; color:#6b4459}
@@ -658,7 +661,7 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
         <h2>Enter her code 💌</h2>
         <p class="gs">6 digits — the room opens the moment they match.</p>
         <div class="codein" id="codein"></div>
-        <div class="hinttxt">Demo mode: any 6 digits will open the room</div>
+        <div class="hinttxt">Your code opens your own private room · try <b>180901</b> to peek at Catherine &amp; Саша’s</div>
         <div class="hinttxt" style="cursor:pointer; margin-top:14px" onclick="RM.go('rm-wel')">← Back</div>
       </div>
     </div>
@@ -730,6 +733,18 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
+/* ═════════ SHARED BACKEND CONFIG (Supabase) ═════════ */
+var SUPA={url:'https://xvdsrmagrultbhmqihuq.supabase.co',anon:'sb_publishable_6DFGWf1w1xh9guD2365bjw_Fuwa7VTJ'};
+function supaOn(){return !!(SUPA.url&&SUPA.anon)}
+function supaH(){return {apikey:SUPA.anon,Authorization:'Bearer '+SUPA.anon,'Content-Type':'application/json'}}
+/* upload a real file to the public "room-uploads" storage bucket, return its public URL */
+function supaUpload(file,code,cb,err){
+  var safe=(file.name||'file').replace(/[^\w.\-]/g,'_'),path=(code||'shared')+'/'+Date.now()+'_'+safe;
+  fetch(SUPA.url+'/storage/v1/object/room-uploads/'+encodeURIComponent(path),{method:'POST',
+    headers:{apikey:SUPA.anon,Authorization:'Bearer '+SUPA.anon,'Content-Type':file.type||'application/octet-stream','x-upsert':'true'},body:file})
+    .then(function(r){if(!r.ok)throw new Error('upload '+r.status);cb(SUPA.url+'/storage/v1/object/public/room-uploads/'+encodeURIComponent(path))})
+    .catch(function(e){(err||function(){})(e)});
+}
 /* ═════════ MUSEUM (public site) ═════════ */
 (function(){
   var gp=document.getElementById('gp');
@@ -905,8 +920,7 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
   girls.forEach(function(x){var p=MUSEUM[x.n],c=document.createElement('article');c.className='word-card rv';c.innerHTML='<div><div class="lang">'+p.lang+'</div><div class="word">'+p.word+'</div><div class="sound">/'+p.sound+'/</div></div><div><div class="meaning">a friend who knows the quiet version of your heart.</div><div class="from">Shared by <b>'+x.n+'</b> · '+p.city+'</div></div>';lex.appendChild(c);io.observe(c);});
 
   /* ═══ 💌 Plant a flower — Supabase 后端就绪；未填 key 时自动降级为本地存储 ═══ */
-  var SUPA={url:'https://xvdsrmagrultbhmqihuq.supabase.co',anon:'sb_publishable_6DFGWf1w1xh9guD2365bjw_Fuwa7VTJ'}; /* Supabase 项目：访客种的花全球共享 */
-  function supaH(){return {apikey:SUPA.anon,Authorization:'Bearer '+SUPA.anon,'Content-Type':'application/json'}}
+  /* SUPA / supaH 现在是全局共享（见文件顶部） */
   var planted=[],pfSel=document.getElementById('pf-country');
   girls.forEach(function(x){var o=document.createElement('option');o.value=x.c;o.textContent=x.f+' '+x.c;pfSel.appendChild(o)});
   function renderPlanted(){
@@ -1144,6 +1158,32 @@ var RM=(function(){
   var CKCAT={life:{em:'🌏',name:'Life'},grow:{em:'📚',name:'Growth'},heal:{em:'🫧',name:'Healing'}};
   var TAGCLS={mile:'mile',trip:'trip',word:'word',day:'day'};
 
+  /* ═══ BACKEND: room data + real file uploads (Supabase) ═══ */
+  var SEED_CODE='180901'; /* Catherine × Саша 的房间号（相识日 2018-09-01）：显示预置故事 */
+  var roomCode=SEED_CODE;
+  function ckClone(c){return {cat:c.cat,tx:c.tx,done:c.done,by:c.by}}
+  var SEED={timeline:st.timeline.slice(),photos:st.photos.slice(),checks:st.checks.map(ckClone)};
+  function isSeed(){return roomCode===SEED_CODE}
+  function resetRoom(){st.timeline=isSeed()?SEED.timeline.slice():[];st.photos=isSeed()?SEED.photos.slice():[];st.checks=isSeed()?SEED.checks.map(ckClone):[];}
+  function roomPush(kind,payload,done){
+    if(!supaOn()){done&&done();return;}
+    var h=supaH();h.Prefer='return=representation';
+    fetch(SUPA.url+'/rest/v1/room_entries',{method:'POST',headers:h,body:JSON.stringify({room_code:roomCode,kind:kind,payload:payload})})
+      .then(function(r){return r.ok?r.json():null}).then(function(d){done&&done(d&&d[0])}).catch(function(){done&&done()});
+  }
+  function roomPatch(id,payload){if(!supaOn()||!id)return;
+    fetch(SUPA.url+'/rest/v1/room_entries?id=eq.'+id,{method:'PATCH',headers:supaH(),body:JSON.stringify({payload:payload})}).catch(function(){});}
+  function loadRoom(){resetRoom();renderAll();
+    if(!supaOn())return;
+    fetch(SUPA.url+'/rest/v1/room_entries?select=id,kind,payload&room_code=eq.'+encodeURIComponent(roomCode)+'&order=id.asc&limit=800',{headers:supaH()})
+      .then(function(r){return r.ok?r.json():[]}).then(function(rows){if(!Array.isArray(rows))return;
+        rows.forEach(function(row){var p=row.payload||{};p._id=row.id;
+          if(row.kind==='timeline')st.timeline.push(p);
+          else if(row.kind==='album')st.photos.unshift(p);
+          else if(row.kind==='check')st.checks.push(p);});
+        renderAll();}).catch(function(){});
+  }
+
   function open(){$('#roomov').classList.add('on');document.body.style.overflow='hidden';
     if(st.entered){go('rm-main');}else{go('rm-wel');}}
   function close(){$('#roomov').classList.remove('on');document.body.style.overflow='';closeModal();}
@@ -1166,7 +1206,13 @@ var RM=(function(){
         if(full)setTimeout(enter,250);});
       inp.addEventListener('keydown',function(e){if(e.key==='Backspace'&&!inp.value&&i>0)box.children[i-1].focus()});
       box.appendChild(inp);})(i);}}
-  function enter(){st.entered=true;go('rm-main');renderAll();toast('Welcome back to your room 🌷');}
+  function enter(){
+    var box=$('#codein'),typed='';
+    if(box&&box.children.length)typed=Array.prototype.map.call(box.children,function(c){return c.value||''}).join('');
+    if(typed.length===6)st.code=typed;               /* join flow: use the code they typed */
+    roomCode=(st.code&&st.code.length===6)?st.code:SEED_CODE; /* create flow: st.code is the freshly generated code */
+    st.entered=true;go('rm-main');loadRoom();
+    toast(isSeed()?'Welcome back to your room 🌷':'Room '+roomCode+' is open 🌷');}
 
   function calcDays(){var meet=new Date(MEET),now=new Date();
     var days=Math.floor((now-meet)/864e5);
@@ -1220,7 +1266,7 @@ var RM=(function(){
       items.forEach(function(c){
         var el=document.createElement('div');el.className='ck'+(c.done?' done':'');
         el.innerHTML='<span class="box">'+(c.done?'✓':'')+'</span><span class="tx">'+c.tx+'</span>'+(c.by?'<span class="by">'+c.by+'</span>':'');
-        el.onclick=function(){c.done=!c.done;c.by=c.done?ME+' ✓':'';renderCK();if(c.done)toast('Checked! Synced to '+HER+' 💗');};
+        el.onclick=function(){c.done=!c.done;c.by=c.done?ME+' ✓':'';renderCK();roomPatch(c._id,{cat:c.cat,tx:c.tx,done:c.done,by:c.by});if(c.done)toast('Checked! Synced to '+HER+' 💗');};
         g.appendChild(el);});
       wrap.appendChild(g);});
     var total=st.checks.length,dn=st.checks.filter(function(c){return c.done}).length;
@@ -1250,13 +1296,16 @@ var RM=(function(){
       buildOpts('m-tags',['Daily','Trip','Little Words','Milestone'],'tag');
       buildStk(['🌸','☕','✈️','💌','🎂','🐱','❄️','🌈']);}
     if(kind==='al'){
-      s.innerHTML='<h4>Add a photo 📸 <small>(prototype uses stickers instead of real uploads)</small></h4>'+
+      s.innerHTML='<h4>Add a photo or video 📸</h4>'+
         '<div class="fl">Album</div><div class="optrow" id="m-tags"></div>'+
-        '<div class="fl">Pick a sticker</div><div class="strow" id="m-stk"></div>'+
+        '<div class="fl">Choose a photo or video from your device</div>'+
+        '<label class="updrop" id="m-drop"><input type="file" id="m-file" accept="image/*,video/*" hidden><span id="m-drop-t">📁 Tap to choose a file… (up to 25 MB)</span></label>'+
+        '<div class="fl">— or just pick a sticker instead —</div><div class="strow" id="m-stk"></div>'+
         '<div class="fl">Caption</div><input class="fi" id="m-tx" placeholder="这张照片的小故事…">'+
         '<button class="msave" onclick="RM.saveAL()">Put it in the album ✨</button><button class="mcancel" onclick="RM.closeModal()">Cancel</button>';
-      buildOpts('m-tags',['Trips','Cafés','Daily','Growing Up'],'alcat');
-      buildStk(['🌷','🍰','🏝️','🎡','📮','🧸','🌅','🍜']);}
+      buildOpts('m-tags',['Us','Gifts','Ukraine','Everyday'],'alcat');
+      buildStk(['🌷','🍰','🏝️','🎡','📮','🧸','🌅','🍜']);
+      var fi=$('#m-file');if(fi)fi.onchange=function(){var f=fi.files[0];$('#m-drop-t').textContent=f?('✓ '+f.name):'📁 Tap to choose a file… (up to 25 MB)';$('#m-drop').classList.toggle('has',!!f);};}
     if(kind==='ck'){
       s.innerHTML='<h4>Make a new promise ✅</h4>'+
         '<div class="fl">Category</div><div class="optrow" id="m-tags"></div>'+
@@ -1275,16 +1324,31 @@ var RM=(function(){
   function closeModal(){$('#mmask').classList.remove('on')}
   function saveTL(){var tx=$('#m-tx').value.trim();if(!tx){toast('写一点点也好呀 ✍️');return;}
     var map={'Daily':'day','Trip':'trip','Little Words':'word','Milestone':'mile'};
-    st.timeline.push({d:$('#m-date').value,type:map[mState.tag]||'day',tag:mState.tag,who:ME,tx:tx,st:mState.st});
-    closeModal();renderTL();toast('Pinned — she can see it too 💗');}
+    var o={d:$('#m-date').value,type:map[mState.tag]||'day',tag:mState.tag,who:ME,tx:tx,st:mState.st};
+    st.timeline.push(o);closeModal();renderTL();
+    roomPush('timeline',o,function(row){if(row)o._id=row.id;});
+    toast(supaOn()?'Pinned & saved to your room 💗':'Pinned 💗');}
   function saveAL(){var tx=$('#m-tx').value.trim()||'Our little moment';
     var gs=[['#ffe0ec','#ffb9d4'],['#e6dcfa','#c8b4ee'],['#dcecff','#aecdf0'],['#fff0dd','#ffd9ae']];
-    st.photos.unshift({cat:mState.alcat,em:mState.st,g:gs[(Math.random()*4)|0],c1:tx,c2:'just now · by '+ME});
-    closeModal();renderAL();toast('Added to the album ✨');}
+    var g=gs[(Math.random()*4)|0],fi=$('#m-file'),f=fi&&fi.files&&fi.files[0];
+    var finish=function(mediaKey,url){var o={cat:mState.alcat,g:g,c1:tx,c2:'by '+ME};
+      if(mediaKey)o[mediaKey]=url;else o.em=mState.st||'🌸';
+      st.photos.unshift(o);closeModal();renderAL();
+      roomPush('album',o,function(row){if(row)o._id=row.id;});
+      toast(mediaKey?'Uploaded to your album ✨':'Added to the album ✨');};
+    if(f){
+      if(!supaOn()){toast('Backend not connected — cannot upload files yet');return;}
+      if(f.size>25*1024*1024){toast('Please choose a file under 25 MB');return;}
+      var btn=document.querySelector('#msheet .msave');if(btn){btn.disabled=true;btn.textContent='Uploading… ⏳';}
+      var key=f.type.indexOf('video')===0?'vid':'src';
+      supaUpload(f,roomCode,function(url){finish(key,url);},function(){if(btn){btn.disabled=false;btn.textContent='Put it in the album ✨';}toast('Upload failed — try again');});
+    }else{finish(null,null);}}
   function saveCK(){var tx=$('#m-tx').value.trim();if(!tx){toast('The goal can\u2019t be empty');return;}
     var map={'🌏 Life':'life','📚 Growth':'grow','🫧 Healing':'heal'};
-    st.checks.push({cat:map[mState.ckname]||'life',tx:tx,done:false,by:''});
-    closeModal();renderCK();toast('New promise synced ✅');}
+    var o={cat:map[mState.ckname]||'life',tx:tx,done:false,by:''};
+    st.checks.push(o);closeModal();renderCK();
+    roomPush('check',o,function(row){if(row)o._id=row.id;});
+    toast(supaOn()?'New promise saved to your room ✅':'New promise added ✅');}
   function exportPreview(){var s=$('#msheet');
     var items=st.timeline.slice().sort(function(a,b){return a.d<b.d?-1:1});
     var html='<h4>Memoir preview 📜</h4><div class="expwrap"><div class="eh"><div class="et">Catherine ✕ Oleksandra</div><div class="s">FRIENDSHIP MEMOIR · SINCE 2018</div></div>';
