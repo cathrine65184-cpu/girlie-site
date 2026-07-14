@@ -140,6 +140,55 @@
 .gcard .bd .d{font-size:12.5px; color:var(--ink); margin-top:9px; line-height:1.5}
 .gcard .bd .d b{display:block; font-size:9.5px; letter-spacing:1.5px; text-transform:uppercase; color:var(--accent); margin-bottom:2px}
 
+/* ═══ NEW FEATURES ═══ */
+.fnote{position:absolute; left:62%; top:6%; font-size:11px; color:#e07fae; opacity:0; animation:noteup 7s linear infinite; pointer-events:none}
+@keyframes noteup{0%{transform:translateY(4px);opacity:0}8%{opacity:.9}40%{transform:translateY(-26px);opacity:0}100%{transform:translateY(-26px);opacity:0}}
+.ftip .tierline{margin-top:4px; color:#b06f92; font-size:10.5px}
+.voicebtn{display:flex; align-items:center; gap:9px; margin-top:14px; width:100%; border:1.5px dashed #f0b8d2; background:linear-gradient(120deg,#fff5fa,#f6efff); color:#a24d78; font-size:13px; font-weight:600; padding:11px 14px; border-radius:14px; cursor:pointer; transition:.25s; font-family:inherit}
+.voicebtn:hover{border-style:solid; transform:translateY(-1px); box-shadow:0 8px 18px -10px rgba(190,90,140,.5)}
+.voicebtn .vb-ic{font-size:17px}
+.voicebtn.playing .vb-ic{animation:vpulse 1s ease infinite}
+@keyframes vpulse{50%{transform:scale(1.25)}}
+.plant{margin-top:56px; background:#fff; border-radius:24px; padding:26px 28px; box-shadow:0 20px 44px -26px rgba(180,110,150,.5)}
+.plant h3{font-size:22px; color:#4a3a44; margin-bottom:5px}
+.plant .sm{color:var(--ink-soft); font-size:13px; font-weight:300; margin-bottom:16px}
+.plantform{display:flex; gap:10px; flex-wrap:wrap}
+.plantform select,.plantform input{border:1.5px solid #f3d7e5; border-radius:12px; padding:11px 13px; font-size:13.5px; font-family:inherit; color:#5c4450; background:#fffafd; outline:none}
+.plantform select:focus,.plantform input:focus{border-color:#e59fc2}
+.plantform input{flex:1; min-width:200px}
+.plantnote{margin-top:12px; font-size:12px; color:#b78ba1}
+.plantnote b{color:#c05c8b}
+.flower.visitor .vtip{position:absolute; bottom:125%; left:50%; transform:translateX(-50%) scale(.94); width:max-content; max-width:210px; background:#fff; padding:7px 11px; border-radius:11px; font-size:11px; line-height:1.45; color:#7a5468; box-shadow:0 10px 24px -10px rgba(150,80,120,.45); opacity:0; pointer-events:none; transition:.22s; z-index:30}
+.flower.visitor:hover .vtip{opacity:1; transform:translateX(-50%) scale(1)}
+.flower.visitor{cursor:default}
+.tarotbox{background:linear-gradient(140deg,#2b1e3c,#4a2b52 60%,#6b3a63); border-radius:26px; padding:30px; box-shadow:0 26px 60px -30px rgba(80,40,90,.8)}
+.tarotbox .trow{display:flex; gap:11px; flex-wrap:wrap; align-items:center; justify-content:center}
+.tarotbox input{border:1.5px solid rgba(255,255,255,.28); background:rgba(255,255,255,.08); color:#fff; border-radius:13px; padding:12px 15px; font-size:14px; font-family:inherit; outline:none; width:180px; text-align:center}
+.tarotbox input::placeholder{color:rgba(255,255,255,.45)}
+.tarotbox input:focus{border-color:#f2b8dd}
+.tarotbox .amp{color:#f2b8dd; font-size:18px}
+.tcard{margin:26px auto 0; max-width:420px; background:linear-gradient(160deg,#fff8fd,#f3e8ff); border-radius:22px; padding:26px 26px 22px; text-align:center; box-shadow:0 24px 50px -20px rgba(40,20,60,.55); animation:rmup .5s ease both}
+.tcard .tt{font-family:'Playfair Display',serif; font-size:21px; color:#5b3a63; margin-bottom:2px}
+.tcard .tn{font-size:12.5px; letter-spacing:2px; color:#b088c2; text-transform:uppercase; margin-bottom:12px}
+.tcard svg{width:100%; height:150px; display:block; margin:4px 0 12px}
+.tcard .tsc{font-size:40px; font-family:'Playfair Display',serif; color:#c05c8b}
+.tcard .tsl{font-size:11px; letter-spacing:2px; color:#b78ba1; text-transform:uppercase; margin-bottom:12px}
+.tcard .trd{font-size:13px; color:#6b4d67; line-height:1.65; margin-bottom:6px}
+.tcard .trd b{color:#8a4d78}
+.tcard .tshare{margin-top:12px; font-size:11px; color:#c3a4ba}
+.radiogrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:16px}
+.rcard{background:#fff; border-radius:20px; padding:17px 18px; display:flex; align-items:center; gap:13px; cursor:pointer; box-shadow:0 16px 34px -24px rgba(180,110,150,.55); transition:.28s}
+.rcard:hover{transform:translateY(-4px); box-shadow:0 22px 40px -22px rgba(180,110,150,.65)}
+.rcard .rfl{font-size:26px}
+.rcard .rbd{flex:1; min-width:0}
+.rcard .rsong{font-size:13.5px; font-weight:700; color:#4a3a44; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.rcard .rart{font-size:11.5px; color:#b78ba1; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.rcard .rby{font-size:10.5px; color:#c9b4be; margin-top:3px}
+.eq{display:flex; gap:2.5px; align-items:flex-end; height:22px}
+.eq i{width:3.5px; border-radius:2px; background:linear-gradient(180deg,#f48fc0,#bb9fea); animation:eqb 1s ease-in-out infinite; animation-play-state:paused; height:30%}
+.rcard:hover .eq i{animation-play-state:running}
+.eq i:nth-child(2){animation-delay:.15s; height:70%}.eq i:nth-child(3){animation-delay:.3s; height:45%}.eq i:nth-child(4){animation-delay:.45s; height:85%}.eq i:nth-child(5){animation-delay:.6s; height:55%}
+@keyframes eqb{50%{transform:scaleY(.35)}}
 /* ═══ GLOBE ═══ */
 .globe-sec{background:linear-gradient(180deg,#0c0a1e,#140e2c 45%,#1a0f33); color:#fff; padding:92px 0 100px; overflow:hidden}
 @media(max-width:640px){.globe-sec{padding:64px 0 72px}}
@@ -450,6 +499,16 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
       <div class="stat"><div class="v">∞</div><div class="l">Connections</div></div>
     </div>
     <div class="recent rv"><h3>Recent Blooms</h3><p class="sm">The newest friendships added to the museum.</p><div class="rrow" id="recentrow"></div></div>
+    <div class="plant rv" id="plant">
+      <h3>💌 Plant a flower for her country</h3>
+      <p class="sm">Leave one kind sentence for the girls of a country — anonymous, fifteen seconds, no sign-up. Your flower blooms on the map.</p>
+      <div class="plantform">
+        <select id="pf-country" aria-label="Choose a country"></select>
+        <input id="pf-msg" maxlength="120" placeholder="One warm sentence for them… (max 120 chars)">
+        <button class="btn btn-primary" id="pf-go">Plant it 🌱</button>
+      </div>
+      <div class="plantnote" id="pf-note">🌷 <b id="pf-count">0</b> flowers planted by visitors so far — hover them on the map to read the messages.</div>
+    </div>
   </div>
 </section>
 
@@ -485,6 +544,30 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
   <div class="wrap"><div class="sec-head rv"><div class="kicker">The Girlie Lexicon · 第 01 册</div><h2>How the world says “best friend.”</h2>
     <p>Not a translation exercise — a small collection of words that hold someone close.</p></div>
     <div class="lex-grid" id="lexgrid"></div></div>
+</section>
+
+<!-- TAROT -->
+<section class="sec tarot" id="tarot">
+  <div class="wrap"><div class="sec-head rv"><div class="kicker">Gallery III · Destiny Parlour 🎴</div><h2>The Friendship Star Chart.</h2>
+    <p>Type two names — yours and hers. The parlour will read the constellation the two of you make together.</p></div>
+    <div class="tarotbox rv">
+      <div class="trow">
+        <input id="tt-a" maxlength="20" placeholder="Your name">
+        <span class="amp">✕</span>
+        <input id="tt-b" maxlength="20" placeholder="Her name">
+        <button class="btn btn-primary" id="tt-go">Read our stars ✨</button>
+      </div>
+      <div class="tcard" id="tt-card" hidden></div>
+    </div>
+  </div>
+</section>
+
+<!-- RADIO -->
+<section class="sec radio" id="radio">
+  <div class="wrap"><div class="sec-head rv"><div class="kicker">Gallery IV · Global Bestie Radio 📻</div><h2>Every friendship has a soundtrack.</h2>
+    <p>Each girl chose the one song that sounds like her and her best friend. Hover to hear the waves — press to play.</p></div>
+    <div class="radiogrid rv" id="radiogrid"></div>
+  </div>
 </section>
 
 <!-- ROOM TEASER -->
@@ -534,6 +617,7 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
     <button class="x" id="m-x">✕</button>
     <div class="bd"><h3 id="m-name"></h3><div class="c" id="m-country"></div><div class="q" id="m-quote"></div>
       <div class="grid2"><div class="it"><b>Dream</b><span id="m-dream"></span></div><div class="it"><b>Friendship taught her</b><span id="m-lesson"></span></div></div>
+      <button class="voicebtn" id="m-voice"><span class="vb-ic">🔊</span><span id="m-voice-t"></span></button>
     </div></div>
 </div>
 
@@ -747,21 +831,48 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
     em.innerHTML='<span class="avportrait" style="width:150px;height:150px;position:relative">'+fb+(x.img?'<img src="'+x.img+'" alt="'+x.n+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top" onerror="this.remove()">':'')+'</span>';
     document.getElementById('m-name').textContent=x.n;
     document.getElementById('m-country').textContent=x.c+' · '+x.age;document.getElementById('m-quote').textContent='“'+x.q+'”';
-    document.getElementById('m-dream').textContent=x.dream;document.getElementById('m-lesson').textContent=x.lesson;document.getElementById('modal').classList.add('open');}
+    document.getElementById('m-dream').textContent=x.dream;document.getElementById('m-lesson').textContent=x.lesson;
+    /* 🔊 用她的语言说一遍：voices/<name>.mp3 就绪后自动可播，缺文件时提示 coming soon */
+    var vp=MUSEUM[x.n],vb=document.getElementById('m-voice'),vt=document.getElementById('m-voice-t');
+    var vlabel='Hear “'+vp.word+'” in her voice';vt.textContent=vlabel;vb.classList.remove('playing');
+    vb.onclick=function(){
+      var f='voices/'+x.n.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase()+'.mp3';
+      var a=new Audio(f);
+      var soon=function(){vt.textContent='Her voice is on its way ✨';vb.classList.remove('playing');setTimeout(function(){vt.textContent=vlabel},2200)};
+      a.onerror=soon;
+      a.onended=function(){vb.classList.remove('playing');vt.textContent=vlabel};
+      a.play().then(function(){vb.classList.add('playing');vt.textContent='“'+vp.word+'” · '+vp.lang}).catch(soon);
+    };
+    document.getElementById('modal').classList.add('open');}
   var decoCols=['pink','lav','cream','blue','peach'];
+  /* 🌍 实时天气：Open-Meteo 免费接口，无需 key；按国家缓存，悬停时才请求 */
+  var WXC={};
+  function wxEmoji(c){return c===0?'☀️':c<3?'🌤️':c===3?'☁️':c<49?'🌫️':c<68?'🌦️':c<78?'❄️':c<85?'🌧️':'⛈️'}
+  function fetchWX(x,el){if(!el)return;if(WXC[x.c]){el.textContent=WXC[x.c];return}
+    el.textContent='◌ checking her sky…';
+    fetch('https://api.open-meteo.com/v1/forecast?latitude='+x.lat+'&longitude='+x.lon+'&current=temperature_2m,weather_code')
+      .then(function(r){return r.json()})
+      .then(function(d){var t=wxEmoji(d.current.weather_code)+' '+Math.round(d.current.temperature_2m)+'°C right now';WXC[x.c]=t;el.textContent=t})
+      .catch(function(){el.textContent=(MUSEUM[x.n]||{}).climate||''});}
+  /* 🌸 生长感：1 个故事=花苞，3+ =盛开，7+ =一整片花田 */
   girls.forEach(function(x,i){
-    var fx=x.xs/10,fy=x.ys/5,fld=4+((STATS[x.c]||2));
-    for(var k=0;k<fld;k++){var ang=Math.random()*6.28,r=2+Math.random()*4.5;var d=document.createElement('div');d.className='flower deco';
+    var n=STATS[x.c]||1,tier=n>=7?3:(n>=3?2:1);
+    var fx=x.xs/10,fy=x.ys/5,fld=tier===3?12:(tier===2?6:2);
+    for(var k=0;k<fld;k++){var ang=Math.random()*6.28,r=2+Math.random()*(tier===3?7:4.5);var d=document.createElement('div');d.className='flower deco';
       d.style.left=(fx+Math.cos(ang)*r)+'%';d.style.top=(fy+Math.sin(ang)*r*1.5)+'%';d.style.animationDelay=(Math.random()*4)+'s';d.style.zIndex=2;
-      d.innerHTML=blossom(decoCols[k%5],14+Math.random()*12);flayer.appendChild(d);}
+      d.innerHTML=blossom(decoCols[k%5],12+Math.random()*(tier===3?16:12));flayer.appendChild(d);}
     var fl=document.createElement('div');fl.className='flower story';fl.style.left=fx+'%';fl.style.top=fy+'%';fl.style.animationDelay=(i*.3)+'s';
-    var inner=blossom(x.col,46);
-    if(x.img)inner+='<div class="favatar" style="width:28px;height:28px;font-size:15px;background:linear-gradient(150deg,'+GR[x.col][0]+','+GR[x.col][1]+')"><img src="'+x.img+'" alt="'+x.n+'" onerror="this.remove()"></div>';
+    var bsz=tier===3?54:(tier===2?46:36),asz=tier===1?24:28;
+    var inner=blossom(x.col,bsz);
+    if(x.img)inner+='<div class="favatar" style="width:'+asz+'px;height:'+asz+'px;font-size:15px;background:linear-gradient(150deg,'+GR[x.col][0]+','+GR[x.col][1]+')"><img src="'+x.img+'" alt="'+x.n+'" onerror="this.remove()"></div>';
     else if(AV[x.n])inner+='<div class="favatar" style="width:26px;height:26px">'+AV[x.n]+'</div>';
     else if(x.av)inner+='<div class="favatar" style="width:22px;height:22px;font-size:15px;background:linear-gradient(150deg,'+GR[x.col][0]+','+GR[x.col][1]+')">'+x.av+'</div>';
+    inner+='<span class="fnote" style="animation-delay:'+(Math.random()*7).toFixed(1)+'s">♪</span>';
     var below=fy<32; /* 顶部的花朵，卡片朝下弹，避免被裁切 */
     var li=localInfo(x);fl.classList.add(li.awake?'is-awake':'is-asleep');
-    fl.innerHTML=inner+'<div class="ftip'+(below?' below':'')+'"><div class="nm">'+x.n+'</div><div class="ct">'+x.f+' '+li.p.city+' · '+li.time+'</div><div class="dr"><b>'+(li.awake?'In bloom':'Resting')+'</b>'+li.p.climate+'</div></div>';
+    var tl=tier===3?'🌾 A whole field here · '+n+' stories':(tier===2?'🌸 In full bloom · '+n+' stories':'🌱 First bud · '+n+' '+(n>1?'stories':'story'));
+    fl.innerHTML=inner+'<div class="ftip'+(below?' below':'')+'"><div class="nm">'+x.n+'</div><div class="ct">'+x.f+' '+li.p.city+' · <span class="ltime">'+li.time+'</span> her time</div><div class="dr"><b>'+(li.awake?'In bloom':'Resting')+'</b><span class="wx">'+li.p.climate+'</span></div><div class="tierline">'+tl+'</div></div>';
+    fl.addEventListener('mouseenter',function(){fetchWX(x,fl.querySelector('.wx'));var lt=fl.querySelector('.ltime');if(lt)lt.textContent=localInfo(x).time;});
     fl.addEventListener('click',function(){openStory(x)});flayer.appendChild(fl);
   });
   /* The private friendship room is also a living exhibit: two paired flowers mark Catherine and Саша. */
@@ -792,6 +903,69 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
     c.addEventListener('click',function(){openStory(x)});ms.appendChild(c);});
   var lex=document.getElementById('lexgrid');
   girls.forEach(function(x){var p=MUSEUM[x.n],c=document.createElement('article');c.className='word-card rv';c.innerHTML='<div><div class="lang">'+p.lang+'</div><div class="word">'+p.word+'</div><div class="sound">/'+p.sound+'/</div></div><div><div class="meaning">a friend who knows the quiet version of your heart.</div><div class="from">Shared by <b>'+x.n+'</b> · '+p.city+'</div></div>';lex.appendChild(c);io.observe(c);});
+
+  /* ═══ 💌 Plant a flower — Supabase 后端就绪；未填 key 时自动降级为本地存储 ═══ */
+  var SUPA={url:'',anon:''}; /* ← 在 supabase.com 创建项目后，把 Project URL 和 anon public key 填入这里即全球共享 */
+  function supaH(){return {apikey:SUPA.anon,Authorization:'Bearer '+SUPA.anon,'Content-Type':'application/json'}}
+  var planted=[],pfSel=document.getElementById('pf-country');
+  girls.forEach(function(x){var o=document.createElement('option');o.value=x.c;o.textContent=x.f+' '+x.c;pfSel.appendChild(o)});
+  function renderPlanted(){
+    Array.prototype.slice.call(document.querySelectorAll('.flower.visitor')).forEach(function(e){e.remove()});
+    planted.slice(-100).forEach(function(p,i){var g=null;girls.forEach(function(q){if(q.c===p.country)g=g||q});if(!g)return;
+      var d=document.createElement('div');d.className='flower deco visitor';var ang=i*2.399,r=2.6+((i*37)%42)/10;
+      d.style.left=(g.xs/10+Math.cos(ang)*r)+'%';d.style.top=(g.ys/5+Math.sin(ang)*r*1.5)+'%';d.style.zIndex=3;
+      d.innerHTML=blossom(decoCols[i%5],11+((i*7)%9))+'<div class="vtip">“'+String(p.message||'').replace(/</g,'&lt;')+'”</div>';
+      flayer.appendChild(d);});
+    var el=document.getElementById('pf-count');if(el)el.textContent=planted.length;}
+  function loadPlanted(){
+    if(SUPA.url&&SUPA.anon){fetch(SUPA.url+'/rest/v1/planted_flowers?select=country,message&order=id.asc&limit=500',{headers:supaH()})
+      .then(function(r){return r.json()}).then(function(d){if(Array.isArray(d)){planted=d;renderPlanted()}}).catch(function(){});}
+    else{try{planted=JSON.parse(localStorage.getItem('gp_planted')||'[]')}catch(e){planted=[]}renderPlanted();}}
+  document.getElementById('pf-go').addEventListener('click',function(){
+    var btn=this,c=pfSel.value,mEl=document.getElementById('pf-msg'),m=mEl.value.trim();
+    if(m.length<2){mEl.focus();return}
+    btn.disabled=true;
+    var done=function(){planted.push({country:c,message:m});renderPlanted();mEl.value='';btn.disabled=false;
+      document.getElementById('pf-note').innerHTML='🌸 Your flower is blooming in '+c+' — thank you. <b id="pf-count">'+planted.length+'</b> flowers planted so far.';};
+    if(SUPA.url&&SUPA.anon){fetch(SUPA.url+'/rest/v1/planted_flowers',{method:'POST',headers:supaH(),body:JSON.stringify({country:c,message:m})})
+      .then(function(r){if(!r.ok)throw 0;done()}).catch(function(){btn.disabled=false;document.getElementById('pf-note').textContent='🥀 The garden is busy — try again in a moment.'});}
+    else{done();try{localStorage.setItem('gp_planted',JSON.stringify(planted))}catch(e){}}
+  });
+  loadPlanted();
+
+  /* ═══ 🎴 Friendship Star Chart ═══ */
+  function thash(s){var h=9;for(var i=0;i<s.length;i++){h=(h*131+s.charCodeAt(i))>>>0}return h}
+  function tesc(s){return String(s).replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+  var T_TITLE=['Twin Flames of the Autumn Moon','Two Rivers, One Sea','The Parallel Comets','Sisters of the Same Star','The Mirror Constellation','Keepers of the Peach Garden','The Red Thread Astronomers','Moonlight Co-Conspirators'];
+  var T_PAST=['royal seamstresses who embroidered the same robe','two lighthouse keepers writing letters across a strait','travelling musicians who shared one violin','sister astronomers who named a comet after each other','tea-house poets who finished each other’s verses','gardeners of one imperial peach orchard','pen pals on two different silk-road caravans','twin pastry chefs in a snowy mountain village'];
+  var T_ELEM=['Moonlight','Rose Gold','Sea Glass','First Snow','Peach Blossom','Northern Star','Morning Fog','Candlelight'];
+  var T_LUCK=['a red bead necklace','a pressed four-leaf clover','matching hair ribbons','a shared playlist','one very old inside joke','a half-and-half bracelet','postcards with terrible handwriting','the same book in two languages'];
+  document.getElementById('tt-go').addEventListener('click',function(){
+    var a=document.getElementById('tt-a').value.trim(),b=document.getElementById('tt-b').value.trim();
+    if(!a||!b){(!a?document.getElementById('tt-a'):document.getElementById('tt-b')).focus();return}
+    var h=thash([a.toLowerCase(),b.toLowerCase()].sort().join('✦'));
+    var seed=h;function rnd(){seed=(seed*1103515245+12345)>>>0;return seed/4294967296}
+    var N=7+h%3,pts=[];for(var i=0;i<N;i++)pts.push([(20+rnd()*320).toFixed(1),(16+rnd()*112).toFixed(1)]);
+    var svg='<svg viewBox="0 0 360 144"><polyline points="'+pts.map(function(p){return p[0]+','+p[1]}).join(' ')+'" fill="none" stroke="#c9a6dd" stroke-width="1" stroke-dasharray="3 4" opacity=".8"/>';
+    pts.forEach(function(p,i){svg+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+(i%3===0?3.4:2.2)+'" fill="'+(i%2?'#c05c8b':'#8a5fb0')+'"/><circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+(i%3===0?7:5)+'" fill="none" stroke="#e0c3ef" stroke-width=".7" opacity=".7"/>'});
+    svg+='<text x="'+pts[0][0]+'" y="'+(pts[0][1]-10)+'" font-size="10" fill="#a06a90" text-anchor="middle">'+tesc(a)+'</text>';
+    svg+='<text x="'+pts[N-1][0]+'" y="'+(pts[N-1][1]-10)+'" font-size="10" fill="#a06a90" text-anchor="middle">'+tesc(b)+'</text></svg>';
+    var card=document.getElementById('tt-card');card.hidden=false;
+    card.innerHTML='<div class="tn">Friendship Star Chart · No.'+(100+h%900)+'</div><div class="tt">'+T_TITLE[h%8]+'</div>'+svg+
+      '<div class="tsc">'+(82+h%18)+'%</div><div class="tsl">written in the stars</div>'+
+      '<div class="trd"><b>'+tesc(a)+' ✕ '+tesc(b)+'</b> — in a past life you were '+T_PAST[(h>>>3)%8]+'.</div>'+
+      '<div class="trd">Your shared element is <b>'+T_ELEM[(h>>>6)%8]+'</b> · your lucky keepsake is <b>'+T_LUCK[(h>>>9)%8]+'</b>.</div>'+
+      '<div class="tshare">📸 Screenshot this card and send it to her.</div>';
+    card.scrollIntoView({behavior:'smooth',block:'nearest'});
+  });
+
+  /* ═══ 📻 Global Bestie Radio ═══ */
+  var SONGS={Emma:['小幸运','Hebe Tian 田馥甄'],Anna:['Обійми','Okean Elzy'],'Élise':['La Vie en rose','Édith Piaf'],Mei:['Count on Me','Bruno Mars'],Yuki:['打上花火','DAOKO × Kenshi Yonezu'],Grace:['You’ve Got a Friend','Carole King'],Sofia:['Trem-Bala','Ana Vilela'],Diya:['Yeh Dosti','Sholay (1975)'],Lily:['Fix You','Coldplay'],Mia:['Riptide','Vance Joy'],Soo:['Dear My Friend','Agust D ft. Kim Jong Wan']};
+  var rg=document.getElementById('radiogrid');
+  girls.forEach(function(x){var s=SONGS[x.n];if(!s)return;var c=document.createElement('div');c.className='rcard rv';
+    c.innerHTML='<span class="rfl">'+x.f+'</span><div class="rbd"><div class="rsong">'+s[0]+'</div><div class="rart">'+s[1]+'</div><div class="rby">chosen by '+x.n+' · '+x.c+'</div></div><div class="eq"><i></i><i></i><i></i><i></i><i></i></div>';
+    c.addEventListener('click',function(){window.open('https://www.youtube.com/results?search_query='+encodeURIComponent(s[0]+' '+s[1]),'_blank','noopener')});
+    rg.appendChild(c);io.observe(c);});
   function gardenStatus(){var awake=girls.filter(function(x){return localInfo(x).awake}).length;document.getElementById('garden-clock').textContent=awake+' of '+girls.length+' flowers are in bloom';document.getElementById('garden-copy').textContent=awake?'Daylight is moving through the garden.':'The whole garden is dreaming.';}gardenStatus();setInterval(gardenStatus,60000);
   function closeM(){document.getElementById('modal').classList.remove('open')}
   document.getElementById('m-x').addEventListener('click',closeM);
