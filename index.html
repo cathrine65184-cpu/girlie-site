@@ -290,6 +290,9 @@
 .rm-gate .hinttxt{font-size:11px; color:#cdb6bf; letter-spacing:1.5px; margin-top:24px; text-transform:uppercase}
 .rm-gate .gbtns .hinttxt{flex-basis:100%; width:100%; margin-top:10px}
 .rm-gate .gbtns .hinttxt a{color:var(--accent-deep)}
+.authform{flex:0 0 100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:6px}
+.authform input{width:min(320px,90vw); border:1.5px solid #f3d7e5; border-radius:13px; padding:12px 15px; font-size:14px; font-family:inherit; color:#5c4450; background:#fffafd; outline:none; text-align:center; transition:.2s}
+.authform input:focus{border-color:#e59fc2; box-shadow:0 0 0 3px rgba(229,159,194,.15)}
 .codebox,.codein{display:flex; gap:9px; justify-content:center; margin:26px 0 20px; flex-wrap:wrap}
 .codebox .d{width:46px; height:58px; border-radius:15px; background:#fff; box-shadow:0 14px 28px -14px rgba(180,110,150,.5);
   display:flex; align-items:center; justify-content:center; font-size:25px; font-weight:700; color:var(--accent-deep); animation:popd .5s cubic-bezier(.2,1.4,.4,1) both}
@@ -1211,10 +1214,21 @@ var RM=(function(){
         toast('✨ Your friend just added something');
       }).subscribe();}
 
-  /* auth + room lifecycle */
-  function signIn(){if(!sbc){toast('Sign-in needs the backend connected');return;}
-    try{localStorage.setItem('gp_open_room','1')}catch(e){}
-    sbc.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname}});}
+  /* auth + room lifecycle — 邮箱+密码注册登录，零外部配置 */
+  function signIn(){go('rm-wel');refreshWel();var e=$('#au-email');if(e)e.focus();toast('先登录或注册一下 💗');}
+  function authVals(){return {e:($('#au-email')?$('#au-email').value.trim():''),p:($('#au-pass')?$('#au-pass').value:''),n:($('#au-name')?$('#au-name').value.trim():'')}}
+  function signInEmail(){if(!sbc){toast('Backend not connected');return;}
+    var v=authVals();if(!v.e||!v.p){toast('邮箱和密码都填一下 ✍️');return;}
+    sbc.auth.signInWithPassword({email:v.e,password:v.p}).then(function(r){
+      if(r.error){toast(/invalid/i.test(r.error.message)?'邮箱或密码不对 💔':r.error.message);return;}
+      setUser(r.data.user);myRoomOrHub();toast('Welcome back 🌷');});}
+  function signUpEmail(){if(!sbc){toast('Backend not connected');return;}
+    var v=authVals();if(!v.e||!v.p){toast('邮箱和密码都填一下 ✍️');return;}
+    if(v.p.length<6){toast('密码至少 6 位哦');return;}
+    sbc.auth.signUp({email:v.e,password:v.p,options:{data:{name:v.n||v.e.split('@')[0]}}}).then(function(r){
+      if(r.error){toast(/already/i.test(r.error.message)?'这个邮箱已注册过，直接登录吧':r.error.message);return;}
+      if(r.data&&r.data.session){setUser(r.data.user);go('rm-hub');toast('账号建好啦，欢迎 🎀');}
+      else{toast('注册成功！去邮箱点一下确认链接再回来登录 📮');}});}
   function signOut(){if(sbc)sbc.auth.signOut();meState=null;mode='seed';roomId=null;roomCode='';
     if(roomChan){sbc.removeChannel(roomChan);roomChan=null;}refreshWel();syncChrome();go('rm-wel');toast('Signed out 🌙');}
   function setUser(u){meState=u||null;refreshWel();syncChrome();}
@@ -1238,9 +1252,16 @@ var RM=(function(){
     if(meState){box.innerHTML='<button class="btn btn-primary" onclick="RM.myRoomOrHub()">Continue to your room →</button>'+
       '<button class="btn btn-ghost" onclick="RM.enterSeed()">🌸 See Catherine &amp; Саша’s story</button>'+
       '<div class="hinttxt">Signed in as '+myName()+' · <a href="#" onclick="RM.signOut();return false">sign out</a></div>';}
-    else{box.innerHTML='<button class="btn btn-primary" onclick="RM.signIn()">🔐 Sign in with Google</button>'+
+    else{box.innerHTML='<div class="authform">'+
+      '<input id="au-email" type="email" autocomplete="email" placeholder="Email 邮箱">'+
+      '<input id="au-pass" type="password" autocomplete="current-password" placeholder="Password 密码（6 位以上）">'+
+      '<input id="au-name" type="text" autocomplete="nickname" placeholder="Your name 昵称（注册时用，可不填）">'+
+      '</div>'+
+      '<button class="btn btn-primary" onclick="RM.signInEmail()">🔐 Sign in 登录</button>'+
+      '<button class="btn btn-ghost" onclick="RM.signUpEmail()">🎀 Create account 注册</button>'+
       '<button class="btn btn-ghost" onclick="RM.enterSeed()">🌸 See Catherine &amp; Саша’s story</button>'+
-      '<div class="hinttxt">Sign in to create your own private room together</div>';}}
+      '<div class="hinttxt">No app, no Google — just an email for you two</div>';
+      var pw=$('#au-pass');if(pw)pw.addEventListener('keydown',function(ev){if(ev.key==='Enter')signInEmail();});}}
   function syncChrome(){var live=(mode==='live');
     $$('#roomov .addbtn').forEach(function(b){b.style.display=live?'':'none'});
     var note=$('#rm-modenote');if(note)note.textContent=live?('🔒 Private room · share code '+roomCode+' with your bestie'):'🌸 Public showcase — sign in to make your own';
@@ -1432,7 +1453,7 @@ var RM=(function(){
   document.getElementById('mmask').addEventListener('click',function(e){if(e.target.id==='mmask')closeModal()});
 
   return {open:open,close:close,go:go,copyCode:copyCode,tab:tab,
-    signIn:signIn,signOut:signOut,enterSeed:enterSeed,enterLive:enterLive,
+    signIn:signIn,signInEmail:signInEmail,signUpEmail:signUpEmail,signOut:signOut,enterSeed:enterSeed,enterLive:enterLive,
     createRoom:createRoom,joinRoom:joinRoom,joinFromInputs:joinFromInputs,myRoomOrHub:myRoomOrHub,refreshWel:refreshWel,
     openModal:openModal,closeModal:closeModal,saveTL:saveTL,saveAL:saveAL,saveCK:saveCK,
     exportPreview:exportPreview,fakeExport:fakeExport,importIG:importIG};

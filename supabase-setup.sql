@@ -1,13 +1,11 @@
 -- ═══════════════════════════════════════════════════════════════
--- Girlie Room — accounts + shared private rooms (Google sign-in)
+-- Girlie Room — accounts + shared private rooms (email sign-in)
 -- Run once in Supabase → SQL Editor → New query → Run. Safe to re-run.
 --
--- BEFORE running, also do (Supabase dashboard):
---   1. Authentication → Providers → Google → enable + paste your
---      Google OAuth Client ID / Secret (from Google Cloud Console).
---   2. Authentication → URL Configuration → Site URL =
---      https://cathrine65184-cpu.github.io/girlie-site/
---      and add it under "Redirect URLs" too.
+-- BEFORE running, one dashboard toggle (no Google/OAuth needed!):
+--   Authentication → Sign In / Providers → Email →
+--   turn OFF "Confirm email" → Save.
+--   (Otherwise sign-ups must click a confirmation email first.)
 -- ═══════════════════════════════════════════════════════════════
 create extension if not exists pgcrypto;
 
