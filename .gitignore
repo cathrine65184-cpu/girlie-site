@@ -1,2 +1,17 @@
 .DS_Store
 .claude/
+
+# Personal media dropped in the project folder — never publish these.
+# (The curated showcase photos live in room-media/ and ARE published on purpose.)
+*.mov
+/*.mp4
+/*.png
+/*.jpg
+/*.jpeg
+/*.heic
+微信图片_*
+微信视频_*
+微信视频*
+截屏*
+录屏*
+Gemini_Generated_*

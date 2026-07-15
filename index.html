@@ -288,6 +288,8 @@
 .rm-gate .gs{color:var(--ink-soft); font-size:14.5px; font-weight:300; line-height:1.8; margin:12px 0 30px; max-width:400px}
 .rm-gate .gbtns{display:flex; gap:12px; flex-wrap:wrap; justify-content:center}
 .rm-gate .hinttxt{font-size:11px; color:#cdb6bf; letter-spacing:1.5px; margin-top:24px; text-transform:uppercase}
+.rm-gate .gbtns .hinttxt{flex-basis:100%; width:100%; margin-top:10px}
+.rm-gate .gbtns .hinttxt a{color:var(--accent-deep)}
 .codebox,.codein{display:flex; gap:9px; justify-content:center; margin:26px 0 20px; flex-wrap:wrap}
 .codebox .d{width:46px; height:58px; border-radius:15px; background:#fff; box-shadow:0 14px 28px -14px rgba(180,110,150,.5);
   display:flex; align-items:center; justify-content:center; font-size:25px; font-weight:700; color:var(--accent-deep); animation:popd .5s cubic-bezier(.2,1.4,.4,1) both}
@@ -633,26 +635,35 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
       <div class="rm-gate">
         <div class="lg">🌷</div>
         <h2>Welcome to <em>Girlie Room</em></h2>
-        <p class="gs">你们的私密小屋 — a space inside the museum that no visitor can see. Pair with your best friend and start keeping your own history.</p>
+        <p class="gs">你们的私密小屋 — a space no visitor can see. Sign in with your bestie and keep your own history: photos, videos, milestones — all private to just the two of you.</p>
+        <div class="gbtns" id="wel-auth"></div>
+      </div>
+    </div>
+
+    <div class="rm-scr" id="rm-hub">
+      <div class="rm-gate">
+        <div class="lg">🏠</div>
+        <h2>Your room</h2>
+        <p class="gs">Create a brand-new room and invite her with a code — or enter the code she already sent you.</p>
         <div class="gbtns">
-          <button class="btn btn-primary" onclick="RM.go('rm-create')">🏠 Create Our Room</button>
+          <button class="btn btn-primary" onclick="RM.createRoom()">🏠 Create Our Room</button>
           <button class="btn btn-ghost" onclick="RM.go('rm-join')">💌 I Have a Code</button>
         </div>
-        <div class="hinttxt">Private · Invite only · No app required</div>
+        <div class="hinttxt" id="rm-userbadge"></div>
       </div>
     </div>
 
     <div class="rm-scr" id="rm-create">
       <div class="rm-gate">
         <h2>Your pairing code ✨</h2>
-        <p class="gs">把这串数字发给你的她 — once she enters it, your room officially opens.</p>
+        <p class="gs">把这串数字发给你的她 — once she signs in and enters it, you’ll share this room together.</p>
         <div class="codebox" id="codebox"></div>
         <div class="copytip" id="copytip">Copied 💗</div>
         <div class="gbtns">
           <button class="btn btn-ghost" onclick="RM.copyCode()">Copy Code</button>
-          <button class="btn btn-primary" onclick="RM.enter()">Decorate the room first →</button>
+          <button class="btn btn-primary" onclick="RM.enterLive()">Enter our room →</button>
         </div>
-        <div class="hinttxt" style="cursor:pointer" onclick="RM.go('rm-wel')">← Back</div>
+        <div class="hinttxt" style="cursor:pointer" onclick="RM.go('rm-hub')">← Back</div>
       </div>
     </div>
 
@@ -661,8 +672,8 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
         <h2>Enter her code 💌</h2>
         <p class="gs">6 digits — the room opens the moment they match.</p>
         <div class="codein" id="codein"></div>
-        <div class="hinttxt">Your code opens your own private room · try <b>180901</b> to peek at Catherine &amp; Саша’s</div>
-        <div class="hinttxt" style="cursor:pointer; margin-top:14px" onclick="RM.go('rm-wel')">← Back</div>
+        <div class="hinttxt">The code your bestie created and sent you</div>
+        <div class="hinttxt" style="cursor:pointer; margin-top:14px" onclick="RM.go('rm-hub')">← Back</div>
       </div>
     </div>
 
@@ -685,7 +696,8 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
         <button class="rm-tab" data-pg="ck" onclick="RM.tab(this)">✅ Bucket List</button>
         <button class="rm-tab" data-pg="mo" onclick="RM.tab(this)">🎀 More</button>
       </div>
-      <div class="rm-note">🔒 Only the two of you can see this room</div>
+      <div class="rm-note" id="rm-modenote">🔒 Only the two of you can see this room</div>
+      <div class="rm-note" id="rm-userbadge" style="margin-top:6px"></div>
       </aside>
 
       <div class="rm-content">
@@ -732,19 +744,14 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
 <div class="toast" id="toast"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* ═════════ SHARED BACKEND CONFIG (Supabase) ═════════ */
 var SUPA={url:'https://xvdsrmagrultbhmqihuq.supabase.co',anon:'sb_publishable_6DFGWf1w1xh9guD2365bjw_Fuwa7VTJ'};
 function supaOn(){return !!(SUPA.url&&SUPA.anon)}
 function supaH(){return {apikey:SUPA.anon,Authorization:'Bearer '+SUPA.anon,'Content-Type':'application/json'}}
-/* upload a real file to the public "room-uploads" storage bucket, return its public URL */
-function supaUpload(file,code,cb,err){
-  var safe=(file.name||'file').replace(/[^\w.\-]/g,'_'),path=(code||'shared')+'/'+Date.now()+'_'+safe;
-  fetch(SUPA.url+'/storage/v1/object/room-uploads/'+encodeURIComponent(path),{method:'POST',
-    headers:{apikey:SUPA.anon,Authorization:'Bearer '+SUPA.anon,'Content-Type':file.type||'application/octet-stream','x-upsert':'true'},body:file})
-    .then(function(r){if(!r.ok)throw new Error('upload '+r.status);cb(SUPA.url+'/storage/v1/object/public/room-uploads/'+encodeURIComponent(path))})
-    .catch(function(e){(err||function(){})(e)});
-}
+/* auth-aware client (Google sign-in, RLS, private storage) */
+var sbc=(window.supabase&&supaOn())?window.supabase.createClient(SUPA.url,SUPA.anon,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}):null;
 /* ═════════ MUSEUM (public site) ═════════ */
 (function(){
   var gp=document.getElementById('gp');
@@ -1158,61 +1165,111 @@ var RM=(function(){
   var CKCAT={life:{em:'🌏',name:'Life'},grow:{em:'📚',name:'Growth'},heal:{em:'🫧',name:'Healing'}};
   var TAGCLS={mile:'mile',trip:'trip',word:'word',day:'day'};
 
-  /* ═══ BACKEND: room data + real file uploads (Supabase) ═══ */
-  var SEED_CODE='180901'; /* Catherine × Саша 的房间号（相识日 2018-09-01）：显示预置故事 */
-  var roomCode=SEED_CODE;
+  /* ═══ BACKEND: Google auth + shared private rooms + real uploads ═══ */
+  var SEED_CODE='180901';
+  var mode='seed';        /* 'seed' = public showcase (read-only) · 'live' = your private room */
+  var roomId=null, roomCode='', meState=null, roomChan=null;
   function ckClone(c){return {cat:c.cat,tx:c.tx,done:c.done,by:c.by}}
   var SEED={timeline:st.timeline.slice(),photos:st.photos.slice(),checks:st.checks.map(ckClone)};
-  function isSeed(){return roomCode===SEED_CODE}
+  function isSeed(){return mode==='seed'}
+  function myName(){return meState&&((meState.user_metadata&&meState.user_metadata.name)||meState.email)||ME}
   function resetRoom(){st.timeline=isSeed()?SEED.timeline.slice():[];st.photos=isSeed()?SEED.photos.slice():[];st.checks=isSeed()?SEED.checks.map(ckClone):[];}
+
+  function signedUrl(path,cb){if(!sbc||!path){cb('');return;}
+    sbc.storage.from('room-uploads').createSignedUrl(path,604800).then(function(r){cb((r.data&&r.data.signedUrl)||'')}).catch(function(){cb('')});}
+  function roomUpload(file,cb,err){
+    if(!sbc||!roomId){(err||function(){})();return;}
+    var safe=(file.name||'file').replace(/[^\w.\-]/g,'_'),path=roomId+'/'+Date.now()+'_'+safe;
+    sbc.storage.from('room-uploads').upload(path,file,{upsert:true,contentType:file.type||undefined})
+      .then(function(r){if(r.error)throw r.error;cb(path)}).catch(function(e){(err||function(){})(e)});}
   function roomPush(kind,payload,done){
-    if(!supaOn()){done&&done();return;}
-    var h=supaH();h.Prefer='return=representation';
-    fetch(SUPA.url+'/rest/v1/room_entries',{method:'POST',headers:h,body:JSON.stringify({room_code:roomCode,kind:kind,payload:payload})})
-      .then(function(r){return r.ok?r.json():null}).then(function(d){done&&done(d&&d[0])}).catch(function(){done&&done()});
-  }
-  function roomPatch(id,payload){if(!supaOn()||!id)return;
-    fetch(SUPA.url+'/rest/v1/room_entries?id=eq.'+id,{method:'PATCH',headers:supaH(),body:JSON.stringify({payload:payload})}).catch(function(){});}
+    if(mode!=='live'||!sbc||!roomId){done&&done();return;}
+    sbc.from('room_entries').insert({room_id:roomId,kind:kind,payload:payload,author:meState&&meState.id}).select().single()
+      .then(function(r){done&&done(r&&r.data)}).catch(function(){done&&done()});}
+  function roomPatch(id,payload){if(mode!=='live'||!sbc||!id)return;
+    sbc.from('room_entries').update({payload:payload}).eq('id',id).then(function(){},function(){});}
   function loadRoom(){resetRoom();renderAll();
-    if(!supaOn())return;
-    fetch(SUPA.url+'/rest/v1/room_entries?select=id,kind,payload&room_code=eq.'+encodeURIComponent(roomCode)+'&order=id.asc&limit=800',{headers:supaH()})
-      .then(function(r){return r.ok?r.json():[]}).then(function(rows){if(!Array.isArray(rows))return;
+    if(mode!=='live'||!sbc||!roomId)return;
+    sbc.from('room_entries').select('id,kind,payload').eq('room_id',roomId).order('id',{ascending:true}).limit(800)
+      .then(function(res){var rows=res&&res.data;if(!rows)return;var pend=0;
         rows.forEach(function(row){var p=row.payload||{};p._id=row.id;
           if(row.kind==='timeline')st.timeline.push(p);
-          else if(row.kind==='album')st.photos.unshift(p);
-          else if(row.kind==='check')st.checks.push(p);});
-        renderAll();}).catch(function(){});
-  }
+          else if(row.kind==='check')st.checks.push(p);
+          else if(row.kind==='album'){st.photos.unshift(p);
+            if(p.path){pend++;signedUrl(p.path,function(u){if(p.mtype==='video')p.vid=u;else p.src=u;if(--pend===0)renderAL();});}}
+        });renderAll();});}
+  function subscribeRoom(){
+    if(roomChan){sbc.removeChannel(roomChan);roomChan=null;}
+    if(mode!=='live'||!sbc||!roomId)return;
+    roomChan=sbc.channel('room-'+roomId).on('postgres_changes',
+      {event:'INSERT',schema:'public',table:'room_entries',filter:'room_id=eq.'+roomId},function(pl){
+        var row=pl.new;if(!row||(meState&&row.author===meState.id))return; /* skip our own echoes */
+        var p=row.payload||{};p._id=row.id;
+        if(row.kind==='timeline'){st.timeline.push(p);renderTL();}
+        else if(row.kind==='check'){st.checks.push(p);renderCK();}
+        else if(row.kind==='album'){st.photos.unshift(p);if(p.path)signedUrl(p.path,function(u){if(p.mtype==='video')p.vid=u;else p.src=u;renderAL();});else renderAL();}
+        toast('✨ Your friend just added something');
+      }).subscribe();}
+
+  /* auth + room lifecycle */
+  function signIn(){if(!sbc){toast('Sign-in needs the backend connected');return;}
+    try{localStorage.setItem('gp_open_room','1')}catch(e){}
+    sbc.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname}});}
+  function signOut(){if(sbc)sbc.auth.signOut();meState=null;mode='seed';roomId=null;roomCode='';
+    if(roomChan){sbc.removeChannel(roomChan);roomChan=null;}refreshWel();syncChrome();go('rm-wel');toast('Signed out 🌙');}
+  function setUser(u){meState=u||null;refreshWel();syncChrome();}
+  function enterSeed(){mode='seed';roomId=null;roomCode=SEED_CODE;st.entered=true;go('rm-main');loadRoom();syncChrome();}
+  function enterLive(){if(!roomId){go('rm-wel');return;}mode='live';st.entered=true;go('rm-main');loadRoom();subscribeRoom();syncChrome();}
+  function createRoom(){if(!meState){signIn();return;}
+    sbc.rpc('create_room',{}).then(function(r){var d=r&&r.data&&r.data[0];
+      if(r.error||!d){toast('Could not create the room');return;}
+      roomId=d.room_id;roomCode=d.room_code;mode='live';st.entered=true;showCode(roomCode);go('rm-create');});}
+  function joinRoom(code){if(!meState){signIn();return;}
+    sbc.rpc('join_room',{p_code:code}).then(function(r){
+      if(r.error||!r.data){toast('That code did not match a room 💔');return;}
+      roomId=r.data;roomCode=code;mode='live';st.entered=true;go('rm-main');loadRoom();subscribeRoom();syncChrome();
+      toast('You’re in — this room is now yours together 💗');});}
+  function joinFromInputs(){var box=$('#codein');var code=Array.prototype.map.call(box.children,function(c){return c.value||''}).join('');
+    if(code.length!==6)return;if(!meState){signIn();return;}joinRoom(code);}
+  function myRoomOrHub(){if(!sbc||!meState){go('rm-wel');return;}
+    sbc.rpc('my_room',{}).then(function(r){var d=r&&r.data&&r.data[0];
+      if(d){roomId=d.room_id;roomCode=d.room_code;enterLive();}else{go('rm-hub');}}).catch(function(){go('rm-hub');});}
+  function refreshWel(){var box=$('#wel-auth');if(!box)return;
+    if(meState){box.innerHTML='<button class="btn btn-primary" onclick="RM.myRoomOrHub()">Continue to your room →</button>'+
+      '<button class="btn btn-ghost" onclick="RM.enterSeed()">🌸 See Catherine &amp; Саша’s story</button>'+
+      '<div class="hinttxt">Signed in as '+myName()+' · <a href="#" onclick="RM.signOut();return false">sign out</a></div>';}
+    else{box.innerHTML='<button class="btn btn-primary" onclick="RM.signIn()">🔐 Sign in with Google</button>'+
+      '<button class="btn btn-ghost" onclick="RM.enterSeed()">🌸 See Catherine &amp; Саша’s story</button>'+
+      '<div class="hinttxt">Sign in to create your own private room together</div>';}}
+  function syncChrome(){var live=(mode==='live');
+    $$('#roomov .addbtn').forEach(function(b){b.style.display=live?'':'none'});
+    var note=$('#rm-modenote');if(note)note.textContent=live?('🔒 Private room · share code '+roomCode+' with your bestie'):'🌸 Public showcase — sign in to make your own';
+    var badge=$('#rm-userbadge');if(badge)badge.innerHTML=meState?('👤 '+myName()+' · <a href="#" onclick="RM.signOut();return false">sign out</a>'):'';}
+  function showCode(code){var box=$('#codebox');if(!box)return;box.innerHTML='';
+    String(code).split('').forEach(function(d,i){var el=document.createElement('div');el.className='d';el.textContent=d;el.style.animationDelay=(i*.07)+'s';box.appendChild(el);});st.code=code;}
 
   function open(){$('#roomov').classList.add('on');document.body.style.overflow='hidden';
-    if(st.entered){go('rm-main');}else{go('rm-wel');}}
+    if(st.entered&&mode==='live'){go('rm-main');}else{refreshWel();go('rm-wel');}}
   function close(){$('#roomov').classList.remove('on');document.body.style.overflow='';closeModal();}
-  function go(id){$$('#roomov .rm-scr').forEach(function(s){s.classList.remove('on')});$('#'+id).classList.add('on');
-    $('#roomov').scrollTop=0;if(id==='rm-create')genCode();}
+  function go(id){$$('#roomov .rm-scr').forEach(function(s){s.classList.remove('on')});$('#'+id).classList.add('on');$('#roomov').scrollTop=0;}
   function toast(t){var el=$('#toast');el.textContent=t;el.classList.add('on');setTimeout(function(){el.classList.remove('on')},2200);}
   function tab(btn){$$('#roomov .rm-tab').forEach(function(t){t.classList.remove('on')});btn.classList.add('on');
     $$('#roomov .rm-pg').forEach(function(p){p.classList.remove('on')});$('#rm-pg-'+btn.dataset.pg).classList.add('on');}
-
-  function genCode(){st.code='';var box=$('#codebox');box.innerHTML='';
-    for(var i=0;i<6;i++){var d=(Math.random()*10|0);st.code+=d;
-      var el=document.createElement('div');el.className='d';el.textContent=d;el.style.animationDelay=(i*.07)+'s';box.appendChild(el);}}
-  function copyCode(){try{navigator.clipboard.writeText(st.code)}catch(e){}
+  function copyCode(){try{navigator.clipboard.writeText(roomCode||st.code)}catch(e){}
     $('#copytip').classList.add('show');setTimeout(function(){$('#copytip').classList.remove('show')},1800);}
   function buildJoin(){var box=$('#codein');box.innerHTML='';
     for(var i=0;i<6;i++){(function(i){
       var inp=document.createElement('input');inp.maxLength=1;inp.inputMode='numeric';
       inp.addEventListener('input',function(){if(inp.value&&i<5)box.children[i+1].focus();
         var full=Array.prototype.every.call(box.children,function(c){return c.value});
-        if(full)setTimeout(enter,250);});
+        if(full)setTimeout(joinFromInputs,250);});
       inp.addEventListener('keydown',function(e){if(e.key==='Backspace'&&!inp.value&&i>0)box.children[i-1].focus()});
       box.appendChild(inp);})(i);}}
-  function enter(){
-    var box=$('#codein'),typed='';
-    if(box&&box.children.length)typed=Array.prototype.map.call(box.children,function(c){return c.value||''}).join('');
-    if(typed.length===6)st.code=typed;               /* join flow: use the code they typed */
-    roomCode=(st.code&&st.code.length===6)?st.code:SEED_CODE; /* create flow: st.code is the freshly generated code */
-    st.entered=true;go('rm-main');loadRoom();
-    toast(isSeed()?'Welcome back to your room 🌷':'Room '+roomCode+' is open 🌷');}
+  function initAuth(){if(!sbc)return;
+    sbc.auth.getSession().then(function(r){setUser(r.data&&r.data.session&&r.data.session.user);});
+    sbc.auth.onAuthStateChange(function(ev,session){setUser(session&&session.user);
+      if(ev==='SIGNED_IN'){var pend=false;try{pend=localStorage.getItem('gp_open_room')==='1';localStorage.removeItem('gp_open_room')}catch(e){}
+        if(pend){open();myRoomOrHub();}}});}
 
   function calcDays(){var meet=new Date(MEET),now=new Date();
     var days=Math.floor((now-meet)/864e5);
@@ -1331,18 +1388,18 @@ var RM=(function(){
   function saveAL(){var tx=$('#m-tx').value.trim()||'Our little moment';
     var gs=[['#ffe0ec','#ffb9d4'],['#e6dcfa','#c8b4ee'],['#dcecff','#aecdf0'],['#fff0dd','#ffd9ae']];
     var g=gs[(Math.random()*4)|0],fi=$('#m-file'),f=fi&&fi.files&&fi.files[0];
-    var finish=function(mediaKey,url){var o={cat:mState.alcat,g:g,c1:tx,c2:'by '+ME};
-      if(mediaKey)o[mediaKey]=url;else o.em=mState.st||'🌸';
-      st.photos.unshift(o);closeModal();renderAL();
+    var finish=function(o){st.photos.unshift(o);closeModal();renderAL();
       roomPush('album',o,function(row){if(row)o._id=row.id;});
-      toast(mediaKey?'Uploaded to your album ✨':'Added to the album ✨');};
+      toast(o.path?'Uploaded to your album ✨':'Added to the album ✨');};
     if(f){
-      if(!supaOn()){toast('Backend not connected — cannot upload files yet');return;}
+      if(mode!=='live'||!sbc||!roomId){toast('Sign in and open your room to upload real files');return;}
       if(f.size>25*1024*1024){toast('Please choose a file under 25 MB');return;}
       var btn=document.querySelector('#msheet .msave');if(btn){btn.disabled=true;btn.textContent='Uploading… ⏳';}
-      var key=f.type.indexOf('video')===0?'vid':'src';
-      supaUpload(f,roomCode,function(url){finish(key,url);},function(){if(btn){btn.disabled=false;btn.textContent='Put it in the album ✨';}toast('Upload failed — try again');});
-    }else{finish(null,null);}}
+      var isVid=f.type.indexOf('video')===0;
+      roomUpload(f,function(path){var o={cat:mState.alcat,g:g,c1:tx,c2:'by '+myName(),path:path,mtype:isVid?'video':'image'};
+        signedUrl(path,function(u){if(isVid)o.vid=u;else o.src=u;finish(o);});},
+        function(){if(btn){btn.disabled=false;btn.textContent='Put it in the album ✨';}toast('Upload failed — try again');});
+    }else{finish({cat:mState.alcat,g:g,c1:tx,c2:'by '+myName(),em:mState.st||'🌸'});}}
   function saveCK(){var tx=$('#m-tx').value.trim();if(!tx){toast('The goal can\u2019t be empty');return;}
     var map={'🌏 Life':'life','📚 Growth':'grow','🫧 Healing':'heal'};
     var o={cat:map[mState.ckname]||'life',tx:tx,done:false,by:''};
@@ -1371,10 +1428,12 @@ var RM=(function(){
   }
 
   function renderAll(){calcDays();renderTL();renderAL();renderCK();renderMO();}
-  buildJoin();calcDays();
+  buildJoin();calcDays();refreshWel();initAuth();
   document.getElementById('mmask').addEventListener('click',function(e){if(e.target.id==='mmask')closeModal()});
 
-  return {open:open,close:close,go:go,copyCode:copyCode,enter:enter,tab:tab,
+  return {open:open,close:close,go:go,copyCode:copyCode,tab:tab,
+    signIn:signIn,signOut:signOut,enterSeed:enterSeed,enterLive:enterLive,
+    createRoom:createRoom,joinRoom:joinRoom,joinFromInputs:joinFromInputs,myRoomOrHub:myRoomOrHub,refreshWel:refreshWel,
     openModal:openModal,closeModal:closeModal,saveTL:saveTL,saveAL:saveAL,saveCK:saveCK,
     exportPreview:exportPreview,fakeExport:fakeExport,importIG:importIG};
 })();
