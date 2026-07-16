@@ -293,6 +293,17 @@
 .authform{flex:0 0 100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:6px}
 .authform input{width:min(320px,90vw); border:1.5px solid #f3d7e5; border-radius:13px; padding:12px 15px; font-size:14px; font-family:inherit; color:#5c4450; background:#fffafd; outline:none; text-align:center; transition:.2s}
 .authform input:focus{border-color:#e59fc2; box-shadow:0 0 0 3px rgba(229,159,194,.15)}
+.roomlist{width:min(360px,92vw); margin:0 auto 16px; display:flex; flex-direction:column; gap:9px}
+.rl-title{font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:#c19bb0; text-align:left; margin-bottom:1px}
+.roomcard{display:flex; align-items:center; gap:10px; width:100%; text-align:left; border:1.5px solid #f0d7e6; background:#fffafd; border-radius:15px; padding:13px 15px; cursor:pointer; font-family:inherit; transition:.2s}
+.roomcard:hover{border-color:#e59fc2; transform:translateY(-2px); box-shadow:0 10px 22px -14px rgba(190,90,140,.5)}
+.roomcard.cur{border-color:#e59fc2; background:linear-gradient(120deg,#fff2f9,#f7eeff)}
+.roomcard .rc-bd{flex:1; min-width:0; display:flex; flex-direction:column}
+.roomcard .rc-bd b{font-size:14.5px; color:#4a3a44}
+.roomcard .rc-bd span{font-size:12px; color:#b0839c; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.roomcard .rc-go{color:#d99ac0; font-size:18px}
+.switchbtn{margin-top:12px; width:100%; border:1.5px solid #e7cfe0; background:#fff; color:#a24d78; font-family:inherit; font-size:12.5px; font-weight:600; padding:9px; border-radius:12px; cursor:pointer; transition:.2s}
+.switchbtn:hover{border-color:#e59fc2; background:#fff5fa}
 .codebox,.codein{display:flex; gap:9px; justify-content:center; margin:26px 0 20px; flex-wrap:wrap}
 .codebox .d{width:46px; height:58px; border-radius:15px; background:#fff; box-shadow:0 14px 28px -14px rgba(180,110,150,.5);
   display:flex; align-items:center; justify-content:center; font-size:25px; font-weight:700; color:var(--accent-deep); animation:popd .5s cubic-bezier(.2,1.4,.4,1) both}
@@ -646,11 +657,12 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
     <div class="rm-scr" id="rm-hub">
       <div class="rm-gate">
         <div class="lg">🏠</div>
-        <h2>Your room</h2>
-        <p class="gs">Create a brand-new room and invite her with a code — or enter the code she already sent you.</p>
+        <h2>Your bestie spaces</h2>
+        <p class="gs">Switch between your rooms — one for each friend. Or start a new one and invite her with a code.</p>
+        <div class="roomlist" id="rm-roomlist"></div>
         <div class="gbtns">
-          <button class="btn btn-primary" onclick="RM.createRoom()">🏠 Create Our Room</button>
-          <button class="btn btn-ghost" onclick="RM.go('rm-join')">💌 I Have a Code</button>
+          <button class="btn btn-primary" onclick="RM.createRoom()">🏠 New room</button>
+          <button class="btn btn-ghost" onclick="RM.go('rm-join')">💌 Enter a code</button>
         </div>
         <div class="hinttxt" id="rm-userbadge"></div>
       </div>
@@ -700,6 +712,7 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
         <button class="rm-tab" data-pg="mo" onclick="RM.tab(this)">🎀 More</button>
       </div>
       <div class="rm-note" id="rm-modenote">🔒 Only the two of you can see this room</div>
+      <button class="switchbtn" id="rm-switch" onclick="RM.loadHub()">⇄ Switch space</button>
       <div class="rm-note" id="rm-userbadge" style="margin-top:6px"></div>
       </aside>
 
@@ -1248,11 +1261,22 @@ var RM=(function(){
     },function(e){toast('加入失败（网络）：'+e);});}
   function joinFromInputs(){var box=$('#codein');var code=Array.prototype.map.call(box.children,function(c){return c.value||''}).join('');
     if(code.length!==6)return;if(!meState){signIn();return;}joinRoom(code);}
-  function myRoomOrHub(){if(!sbc||!meState){go('rm-wel');return;}
-    sbc.rpc('my_room',{}).then(function(r){var d=r&&r.data&&r.data[0];
-      if(d){roomId=d.room_id;roomCode=d.room_code;enterLive();}else{go('rm-hub');}}).catch(function(){go('rm-hub');});}
+  function enterRoom(id,code){roomId=id;roomCode=code;mode='live';st.entered=true;go('rm-main');loadRoom();subscribeRoom();syncChrome();}
+  function loadHub(){if(!sbc||!meState){go('rm-wel');refreshWel();return;}
+    go('rm-hub');syncChrome();
+    var list=$('#rm-roomlist');if(list)list.innerHTML='<div class="hinttxt" style="margin:0 0 6px">Loading your spaces…</div>';
+    sbc.rpc('my_rooms',{}).then(function(r){var rows=(r&&r.data)||[];if(!list)return;
+      if(r.error){list.innerHTML='<div class="hinttxt" style="margin:0 0 6px">'+(backendMissing(r.error)?'后端还没建好：跑一下 supabase-setup.sql':'读取房间失败')+'</div>';return;}
+      if(!rows.length){list.innerHTML='<div class="hinttxt" style="margin:0 0 4px">还没有闺蜜空间——建一个，或输入她给你的码 ↓</div>';return;}
+      list.innerHTML='<div class="rl-title">你的闺蜜空间 · '+rows.length+'</div>';
+      rows.forEach(function(rm){var who=rm.members?('🌸 with '+rm.members):('⏳ 等她加入 · 把码 '+rm.room_code+' 发给她');
+        var b=document.createElement('button');b.className='roomcard'+(rm.room_id===roomId?' cur':'');
+        b.innerHTML='<span class="rc-bd"><b>'+(rm.name?String(rm.name).replace(/</g,'&lt;'):('Room '+rm.room_code))+'</b><span>'+who+'</span></span><span class="rc-go">→</span>';
+        b.onclick=function(){enterRoom(rm.room_id,rm.room_code);};list.appendChild(b);});
+    },function(){if(list)list.innerHTML='<div class="hinttxt" style="margin:0 0 6px">读取房间失败（网络）</div>';});}
+  function myRoomOrHub(){loadHub();}
   function refreshWel(){var box=$('#wel-auth');if(!box)return;
-    if(meState){box.innerHTML='<button class="btn btn-primary" onclick="RM.myRoomOrHub()">Continue to your room →</button>'+
+    if(meState){box.innerHTML='<button class="btn btn-primary" onclick="RM.loadHub()">My bestie spaces →</button>'+
       '<button class="btn btn-ghost" onclick="RM.enterSeed()">🌸 See Catherine &amp; Саша’s story</button>'+
       '<div class="hinttxt">Signed in as '+myName()+' · <a href="#" onclick="RM.signOut();return false">sign out</a></div>';}
     else{box.innerHTML='<div class="authform">'+
@@ -1268,6 +1292,7 @@ var RM=(function(){
   function syncChrome(){var live=(mode==='live');
     $$('#roomov .addbtn').forEach(function(b){b.style.display=live?'':'none'});
     var note=$('#rm-modenote');if(note)note.textContent=live?('🔒 Private room · share code '+roomCode+' with your bestie'):'🌸 Public showcase — sign in to make your own';
+    var sw=$('#rm-switch');if(sw)sw.style.display=(live&&meState)?'':'none';
     var badge=$('#rm-userbadge');if(badge)badge.innerHTML=meState?('👤 '+myName()+' · <a href="#" onclick="RM.signOut();return false">sign out</a>'):'';}
   function showCode(code){var box=$('#codebox');if(!box)return;box.innerHTML='';
     String(code).split('').forEach(function(d,i){var el=document.createElement('div');el.className='d';el.textContent=d;el.style.animationDelay=(i*.07)+'s';box.appendChild(el);});st.code=code;}
@@ -1457,7 +1482,7 @@ var RM=(function(){
 
   return {open:open,close:close,go:go,copyCode:copyCode,tab:tab,
     signIn:signIn,signInEmail:signInEmail,signUpEmail:signUpEmail,signOut:signOut,enterSeed:enterSeed,enterLive:enterLive,
-    createRoom:createRoom,joinRoom:joinRoom,joinFromInputs:joinFromInputs,myRoomOrHub:myRoomOrHub,refreshWel:refreshWel,
+    createRoom:createRoom,joinRoom:joinRoom,joinFromInputs:joinFromInputs,myRoomOrHub:myRoomOrHub,loadHub:loadHub,enterRoom:enterRoom,refreshWel:refreshWel,
     openModal:openModal,closeModal:closeModal,saveTL:saveTL,saveAL:saveAL,saveCK:saveCK,
     exportPreview:exportPreview,fakeExport:fakeExport,importIG:importIG};
 })();

@@ -105,9 +105,24 @@ language sql security definer stable as $$
   order by m.joined_at desc limit 1;
 $$;
 
+-- ALL rooms the caller belongs to, with the other member's name + last activity
+create or replace function my_rooms()
+returns table(room_id uuid, room_code text, name text, members text, last_active timestamptz)
+language sql security definer stable as $$
+  select r.id, r.code, r.name,
+    (select string_agg(m2.display_name, ', ')
+       from room_members m2 where m2.room_id = r.id and m2.user_id <> auth.uid()),
+    coalesce((select max(created_at) from room_entries e where e.room_id = r.id), r.created_at)
+  from rooms r
+  join room_members m on m.room_id = r.id
+  where m.user_id = auth.uid()
+  order by 5 desc;
+$$;
+
 grant execute on function create_room(text,date) to authenticated;
 grant execute on function join_room(text)         to authenticated;
 grant execute on function my_room()               to authenticated;
+grant execute on function my_rooms()              to authenticated;
 
 -- ── visitor "plant a flower" wall (public) ─────────────────────
 create table if not exists planted_flowers (
