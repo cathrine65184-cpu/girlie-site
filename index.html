@@ -161,12 +161,30 @@
 .flower.visitor .vtip{position:absolute; bottom:125%; left:50%; transform:translateX(-50%) scale(.94); width:max-content; max-width:210px; background:#fff; padding:7px 11px; border-radius:11px; font-size:11px; line-height:1.45; color:#7a5468; box-shadow:0 10px 24px -10px rgba(150,80,120,.45); opacity:0; pointer-events:none; transition:.22s; z-index:30}
 .flower.visitor:hover .vtip{opacity:1; transform:translateX(-50%) scale(1)}
 .flower.visitor{cursor:default}
-.tarotbox{background:linear-gradient(140deg,#2b1e3c,#4a2b52 60%,#6b3a63); border-radius:26px; padding:30px; box-shadow:0 26px 60px -30px rgba(80,40,90,.8)}
-.tarotbox .trow{display:flex; gap:11px; flex-wrap:wrap; align-items:center; justify-content:center}
-.tarotbox input{border:1.5px solid rgba(255,255,255,.28); background:rgba(255,255,255,.08); color:#fff; border-radius:13px; padding:12px 15px; font-size:14px; font-family:inherit; outline:none; width:180px; text-align:center}
-.tarotbox input::placeholder{color:rgba(255,255,255,.45)}
-.tarotbox input:focus{border-color:#f2b8dd}
-.tarotbox .amp{color:#f2b8dd; font-size:18px}
+.tarotbox{position:relative; overflow:hidden; text-align:center; background:linear-gradient(150deg,#fff0f8 0%,#f3e6ff 48%,#e9edff 100%); border:1.5px solid #fff; border-radius:30px; padding:44px 30px 40px; box-shadow:0 30px 70px -34px rgba(180,120,200,.55), inset 0 0 60px rgba(255,255,255,.55)}
+.tarotbox::before{content:""; position:absolute; inset:-40%; background:radial-gradient(circle at 20% 30%,rgba(255,182,222,.38),transparent 45%),radial-gradient(circle at 80% 20%,rgba(187,159,234,.32),transparent 45%),radial-gradient(circle at 60% 85%,rgba(169,205,242,.32),transparent 45%); animation:tbdrift 14s ease-in-out infinite alternate; pointer-events:none}
+@keyframes tbdrift{to{transform:translate(4%,6%) rotate(4deg)}}
+.tb-star{position:absolute; color:#dcaee8; opacity:0; animation:twk 4.5s ease-in-out infinite; pointer-events:none; text-shadow:0 0 8px rgba(220,170,235,.8)}
+@keyframes twk{0%,100%{opacity:0; transform:scale(.4) rotate(0deg)}50%{opacity:.95; transform:scale(1) rotate(35deg)}}
+.tb-lead{position:relative; font-family:'Playfair Display',serif; font-style:italic; color:#8a5fa8; font-size:16.5px; margin-bottom:22px}
+.tarotbox .trow{position:relative; display:flex; gap:14px; flex-wrap:wrap; align-items:center; justify-content:center}
+.tpill{display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.78); backdrop-filter:blur(6px); border:1.5px solid #f2d4ea; border-radius:999px; padding:4px 8px 4px 15px; transition:.3s cubic-bezier(.2,1.2,.4,1); box-shadow:0 8px 22px -14px rgba(190,120,180,.45)}
+.tpill:hover{transform:translateY(-2px); border-color:#e8b7dd; box-shadow:0 14px 28px -14px rgba(190,120,180,.6)}
+.tpill:focus-within{border-color:#d9a1e8; box-shadow:0 0 0 4px rgba(217,161,232,.18), 0 14px 28px -14px rgba(190,120,180,.6); transform:translateY(-2px)}
+.tpill .tp-ic{font-size:15px}
+.tpill input{border:none; background:transparent; outline:none; width:150px; padding:10px 6px; font-size:14px; font-family:inherit; color:#6b4470; text-align:center}
+.tpill input::placeholder{color:#c9a3cf; font-weight:300}
+.tpill.err{border-color:#f5a8b8; box-shadow:0 0 0 4px rgba(245,168,184,.16); animation:tshake .4s ease}
+@keyframes tshake{20%{transform:translateX(-6px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+.tarotbox .amp{position:relative; color:#c887d8; font-size:20px; animation:ampspin 6s linear infinite; display:inline-block}
+@keyframes ampspin{50%{transform:rotate(180deg) scale(1.3); color:#f0a5c8}}
+.starbtn{position:relative; overflow:hidden; margin-top:22px; border:none; cursor:pointer; font-family:inherit; font-weight:700; font-size:14.5px; letter-spacing:.4px; color:#fff; padding:14px 36px; border-radius:999px; background:linear-gradient(110deg,#f48fc0,#bb84e8 55%,#8fa8f0); background-size:200% 100%; box-shadow:0 14px 30px -12px rgba(190,110,200,.65); transition:.35s cubic-bezier(.2,1.2,.4,1)}
+.starbtn:hover{background-position:100% 0; transform:translateY(-2px) scale(1.03); box-shadow:0 20px 38px -12px rgba(190,110,200,.8)}
+.starbtn:active{transform:scale(.96)}
+.starbtn .sb-shine{position:absolute; top:0; left:-70%; width:45%; height:100%; background:linear-gradient(105deg,transparent,rgba(255,255,255,.7),transparent); transform:skewX(-20deg); animation:shine 3.2s ease-in-out infinite; pointer-events:none}
+@keyframes shine{0%,55%{left:-70%}85%,100%{left:130%}}
+.tb-hint{position:relative; margin-top:16px; font-size:11.5px; letter-spacing:1px; color:#b592c4}
+.tb-hint b{color:#9a6ab8}
 .tcard{margin:26px auto 0; max-width:420px; background:linear-gradient(160deg,#fff8fd,#f3e8ff); border-radius:22px; padding:26px 26px 22px; text-align:center; box-shadow:0 24px 50px -20px rgba(40,20,60,.55); animation:rmup .5s ease both}
 .tcard .tt{font-family:'Playfair Display',serif; font-size:21px; color:#5b3a63; margin-bottom:2px}
 .tcard .tn{font-size:12.5px; letter-spacing:2px; color:#b088c2; text-transform:uppercase; margin-bottom:12px}
@@ -568,14 +586,16 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
 <!-- TAROT -->
 <section class="sec tarot" id="tarot">
   <div class="wrap"><div class="sec-head rv"><div class="kicker">Gallery III · Destiny Parlour 🎴</div><h2>The Friendship Star Chart.</h2>
-    <p>Type two names — yours and hers. The parlour will read the constellation the two of you make together.</p></div>
+    <p>Every pair of best friends leaves a small pattern in the sky. Give the parlour your two names, and it will trace the constellation you make together.</p></div>
     <div class="tarotbox rv">
+      <p class="tb-lead">Whisper two names to the night sky…</p>
       <div class="trow">
-        <input id="tt-a" maxlength="20" placeholder="Your name">
-        <span class="amp">✕</span>
-        <input id="tt-b" maxlength="20" placeholder="Her name">
-        <button class="btn btn-primary" id="tt-go">Read our stars ✨</button>
+        <div class="tpill"><span class="tp-ic">🌸</span><input id="tt-a" maxlength="20" placeholder="Your name" autocomplete="off"></div>
+        <span class="amp">✦</span>
+        <div class="tpill"><span class="tp-ic">🌙</span><input id="tt-b" maxlength="20" placeholder="Her name" autocomplete="off"></div>
       </div>
+      <button class="starbtn" id="tt-go"><span class="sb-shine"></span>Read our stars ✨</button>
+      <div class="tb-hint" id="tt-hint">The parlour keeps no secrets — only constellations.</div>
       <div class="tcard" id="tt-card" hidden></div>
     </div>
   </div>
@@ -977,24 +997,51 @@ var sbc=(window.supabase&&supaOn())?window.supabase.createClient(SUPA.url,SUPA.a
   var T_PAST=['royal seamstresses who embroidered the same robe','two lighthouse keepers writing letters across a strait','travelling musicians who shared one violin','sister astronomers who named a comet after each other','tea-house poets who finished each other’s verses','gardeners of one imperial peach orchard','pen pals on two different silk-road caravans','twin pastry chefs in a snowy mountain village'];
   var T_ELEM=['Moonlight','Rose Gold','Sea Glass','First Snow','Peach Blossom','Northern Star','Morning Fog','Candlelight'];
   var T_LUCK=['a red bead necklace','a pressed four-leaf clover','matching hair ribbons','a shared playlist','one very old inside joke','a half-and-half bracelet','postcards with terrible handwriting','the same book in two languages'];
-  document.getElementById('tt-go').addEventListener('click',function(){
-    var a=document.getElementById('tt-a').value.trim(),b=document.getElementById('tt-b').value.trim();
-    if(!a||!b){(!a?document.getElementById('tt-a'):document.getElementById('tt-b')).focus();return}
-    var h=thash([a.toLowerCase(),b.toLowerCase()].sort().join('✦'));
-    var seed=h;function rnd(){seed=(seed*1103515245+12345)>>>0;return seed/4294967296}
-    var N=7+h%3,pts=[];for(var i=0;i<N;i++)pts.push([(20+rnd()*320).toFixed(1),(16+rnd()*112).toFixed(1)]);
-    var svg='<svg viewBox="0 0 360 144"><polyline points="'+pts.map(function(p){return p[0]+','+p[1]}).join(' ')+'" fill="none" stroke="#c9a6dd" stroke-width="1" stroke-dasharray="3 4" opacity=".8"/>';
-    pts.forEach(function(p,i){svg+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+(i%3===0?3.4:2.2)+'" fill="'+(i%2?'#c05c8b':'#8a5fb0')+'"/><circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+(i%3===0?7:5)+'" fill="none" stroke="#e0c3ef" stroke-width=".7" opacity=".7"/>'});
-    svg+='<text x="'+pts[0][0]+'" y="'+(pts[0][1]-10)+'" font-size="10" fill="#a06a90" text-anchor="middle">'+tesc(a)+'</text>';
-    svg+='<text x="'+pts[N-1][0]+'" y="'+(pts[N-1][1]-10)+'" font-size="10" fill="#a06a90" text-anchor="middle">'+tesc(b)+'</text></svg>';
-    var card=document.getElementById('tt-card');card.hidden=false;
-    card.innerHTML='<div class="tn">Friendship Star Chart · No.'+(100+h%900)+'</div><div class="tt">'+T_TITLE[h%8]+'</div>'+svg+
-      '<div class="tsc">'+(82+h%18)+'%</div><div class="tsl">written in the stars</div>'+
-      '<div class="trd"><b>'+tesc(a)+' ✕ '+tesc(b)+'</b> — in a past life you were '+T_PAST[(h>>>3)%8]+'.</div>'+
-      '<div class="trd">Your shared element is <b>'+T_ELEM[(h>>>6)%8]+'</b> · your lucky keepsake is <b>'+T_LUCK[(h>>>9)%8]+'</b>.</div>'+
-      '<div class="tshare">📸 Screenshot this card and send it to her.</div>';
-    card.scrollIntoView({behavior:'smooth',block:'nearest'});
-  });
+  (function(){
+    var ta=document.getElementById('tt-a'),tb=document.getElementById('tt-b'),go=document.getElementById('tt-go'),hint=document.getElementById('tt-hint');
+    var box=document.querySelector('.tarotbox'),hint0=hint.textContent;
+    /* 星尘：随机撒 10 颗一闪一闪的小星 */
+    for(var i=0;i<10;i++){var sp=document.createElement('span');sp.className='tb-star';sp.textContent=i%2?'✦':'✧';
+      sp.style.left=(3+Math.random()*93)+'%';sp.style.top=(4+Math.random()*88)+'%';sp.style.fontSize=(8+Math.random()*11)+'px';
+      sp.style.animationDelay=(Math.random()*4.5).toFixed(1)+'s';box.appendChild(sp);}
+    function pill(el){var p=el.parentElement;while(p&&p.className.indexOf('tpill')<0)p=p.parentElement;return p}
+    [ta,tb].forEach(function(el){
+      el.addEventListener('input',function(){pill(el).classList.remove('err');hint.textContent=hint0;});
+      el.addEventListener('keydown',function(e){if(e.key==='Enter')go.click()});});
+    /* 真实 API：占卜总数（Supabase star_charts 表） */
+    function chartCount(){if(!supaOn())return;
+      var hh=supaH();hh.Prefer='count=exact';hh.Range='0-0';
+      fetch(SUPA.url+'/rest/v1/star_charts?select=id',{headers:hh}).then(function(r){
+        var cr=r.headers.get('content-range'),n=cr&&cr.split('/')[1];
+        if(n&&n!=='*'&&+n>0)hint.innerHTML='✦ <b>'+Number(n).toLocaleString()+'</b> constellations have been traced in this parlour';
+      }).catch(function(){});}
+    chartCount();
+    go.addEventListener('click',function(){
+      var a=ta.value.trim(),b=tb.value.trim();
+      if(!a||!b){var miss=!a?ta:tb;pill(miss).classList.add('err');miss.focus();
+        hint.textContent='✧ The sky needs both names to draw your constellation…';return;}
+      var h=thash([a.toLowerCase(),b.toLowerCase()].sort().join('✦'));
+      var seed=h;function rnd(){seed=(seed*1103515245+12345)>>>0;return seed/4294967296}
+      var N=7+h%3,pts=[];for(var i=0;i<N;i++)pts.push([(20+rnd()*320).toFixed(1),(16+rnd()*112).toFixed(1)]);
+      var svg='<svg viewBox="0 0 360 144"><polyline points="'+pts.map(function(p){return p[0]+','+p[1]}).join(' ')+'" fill="none" stroke="#c9a6dd" stroke-width="1" stroke-dasharray="3 4" opacity=".8"/>';
+      pts.forEach(function(p,i){svg+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+(i%3===0?3.4:2.2)+'" fill="'+(i%2?'#c05c8b':'#8a5fb0')+'"/><circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+(i%3===0?7:5)+'" fill="none" stroke="#e0c3ef" stroke-width=".7" opacity=".7"/>'});
+      svg+='<text x="'+pts[0][0]+'" y="'+(pts[0][1]-10)+'" font-size="10" fill="#a06a90" text-anchor="middle">'+tesc(a)+'</text>';
+      svg+='<text x="'+pts[N-1][0]+'" y="'+(pts[N-1][1]-10)+'" font-size="10" fill="#a06a90" text-anchor="middle">'+tesc(b)+'</text></svg>';
+      var card=document.getElementById('tt-card');card.hidden=false;
+      card.innerHTML='<div class="tn">Friendship Star Chart · <span id="tt-no">No.'+(100+h%900)+'</span></div><div class="tt">'+T_TITLE[h%8]+'</div>'+svg+
+        '<div class="tsc">'+(82+h%18)+'%</div><div class="tsl">written in the stars</div>'+
+        '<div class="trd"><b>'+tesc(a)+' ✦ '+tesc(b)+'</b> — in a past life you were '+T_PAST[(h>>>3)%8]+'.</div>'+
+        '<div class="trd">Your shared element is <b>'+T_ELEM[(h>>>6)%8]+'</b> · your lucky keepsake is <b>'+T_LUCK[(h>>>9)%8]+'</b>.</div>'+
+        '<div class="tshare">📸 Screenshot this card and send it to her.</div>';
+      card.scrollIntoView({behavior:'smooth',block:'nearest'});
+      /* 真实 API：把这次占卜写入 Supabase，用返回的真实自增 id 作为卡片编号 */
+      if(supaOn()){var hh=supaH();hh.Prefer='return=representation';
+        fetch(SUPA.url+'/rest/v1/star_charts',{method:'POST',headers:hh,body:JSON.stringify({pair_hash:String(h),title:T_TITLE[h%8],score:82+h%18})})
+          .then(function(r){return r.ok?r.json():null}).then(function(d){
+            var no=document.getElementById('tt-no');
+            if(d&&d[0]&&no)no.textContent='No.'+d[0].id;chartCount();}).catch(function(){});}
+    });
+  })();
 
   /* ═══ 📻 Global Bestie Radio ═══ */
   var SONGS={Emma:['小幸运','Hebe Tian 田馥甄'],Anna:['Обійми','Okean Elzy'],'Élise':['La Vie en rose','Édith Piaf'],Mei:['Count on Me','Bruno Mars'],Yuki:['打上花火','DAOKO × Kenshi Yonezu'],Grace:['You’ve Got a Friend','Carole King'],Sofia:['Trem-Bala','Ana Vilela'],Diya:['Yeh Dosti','Sholay (1975)'],Lily:['Fix You','Coldplay'],Mia:['Riptide','Vance Joy'],Soo:['Dear My Friend','Agust D ft. Kim Jong Wan']};

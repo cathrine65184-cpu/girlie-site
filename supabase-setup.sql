@@ -137,5 +137,19 @@ drop policy if exists "anyone can plant" on planted_flowers;
 create policy "anyone can read"  on planted_flowers for select using (true);
 create policy "anyone can plant" on planted_flowers for insert with check (true);
 
+-- ── Destiny Parlour: every star-chart reading gets a real global number
+create table if not exists star_charts (
+  id bigint generated always as identity primary key,
+  pair_hash text not null,
+  title text,
+  score int,
+  created_at timestamptz default now()
+);
+alter table star_charts enable row level security;
+drop policy if exists "charts read" on star_charts;
+drop policy if exists "charts add"  on star_charts;
+create policy "charts read" on star_charts for select using (true);
+create policy "charts add"  on star_charts for insert with check (true);
+
 -- ✅ Done. Now do dashboard toggle A (email confirm off) and the
 --    Storage setup (bucket "room-uploads" + 2 policies) from chat.
