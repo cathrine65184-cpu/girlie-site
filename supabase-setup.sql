@@ -1,15 +1,17 @@
 -- ═══════════════════════════════════════════════════════════════
 -- Girlie Room — accounts + shared private rooms (email sign-in)
--- Run once in Supabase → SQL Editor → New query → Run. Safe to re-run.
+-- Run this whole file once in Supabase → SQL Editor → New query → Run.
+-- Safe to re-run. If you see ANY red error, copy it to me.
 --
--- BEFORE running, one dashboard toggle (no Google/OAuth needed!):
---   Authentication → Sign In / Providers → Email →
---   turn OFF "Confirm email" → Save.
---   (Otherwise sign-ups must click a confirmation email first.)
+-- Two dashboard toggles are NOT in this file (do them by hand):
+--   A. Authentication → Sign In / Providers → Email → turn OFF
+--      "Confirm email" → Save.   (so sign-up works instantly)
+--   B. Storage → create a bucket + 2 policies — see instructions I gave
+--      you in chat (the storage part is easier through the UI).
 -- ═══════════════════════════════════════════════════════════════
 create extension if not exists pgcrypto;
 
--- rooms + who belongs to them + their content
+-- ── rooms + who belongs to them + their content ────────────────
 create table if not exists rooms (
   id uuid primary key default gen_random_uuid(),
   code text unique not null,
@@ -47,6 +49,7 @@ alter table room_entries  enable row level security;
 
 drop policy if exists "rooms read"    on rooms;
 drop policy if exists "members read"  on room_members;
+drop policy if exists "members join"  on room_members;
 drop policy if exists "entries read"  on room_entries;
 drop policy if exists "entries write" on room_entries;
 drop policy if exists "entries edit"  on room_entries;
@@ -58,7 +61,7 @@ create policy "entries write" on room_entries for insert with check (is_member(r
 create policy "entries edit"  on room_entries for update using (is_member(room_id));
 create policy "entries del"   on room_entries for delete using (is_member(room_id));
 
--- create a room + become its first member
+-- create a room + become its first member  (returns code + id)
 create or replace function create_room(p_name text default null, p_meet date default null)
 returns table(room_id uuid, room_code text)
 language plpgsql security definer as $$
@@ -102,19 +105,11 @@ language sql security definer stable as $$
   order by m.joined_at desc limit 1;
 $$;
 
-grant execute on function create_room(text,date), join_room(text), my_room() to authenticated;
+grant execute on function create_room(text,date) to authenticated;
+grant execute on function join_room(text)         to authenticated;
+grant execute on function my_room()               to authenticated;
 
--- PRIVATE storage bucket for uploaded photos/videos; files live under <room_id>/…
-insert into storage.buckets (id, name, public) values ('room-uploads','room-uploads', false)
-  on conflict (id) do update set public = false;
-drop policy if exists "room files read"  on storage.objects;
-drop policy if exists "room files write" on storage.objects;
-create policy "room files read"  on storage.objects for select
-  using (bucket_id = 'room-uploads' and is_member(((storage.foldername(name))[1])::uuid));
-create policy "room files write" on storage.objects for insert
-  with check (bucket_id = 'room-uploads' and is_member(((storage.foldername(name))[1])::uuid));
-
--- ── The visitor "plant a flower" wall still uses the earlier table:
+-- ── visitor "plant a flower" wall (public) ─────────────────────
 create table if not exists planted_flowers (
   id bigint generated always as identity primary key,
   country text not null,
@@ -126,3 +121,6 @@ drop policy if exists "anyone can read"  on planted_flowers;
 drop policy if exists "anyone can plant" on planted_flowers;
 create policy "anyone can read"  on planted_flowers for select using (true);
 create policy "anyone can plant" on planted_flowers for insert with check (true);
+
+-- ✅ Done. Now do dashboard toggle A (email confirm off) and the
+--    Storage setup (bucket "room-uploads" + 2 policies) from chat.

@@ -1234,15 +1234,18 @@ var RM=(function(){
   function setUser(u){meState=u||null;refreshWel();syncChrome();}
   function enterSeed(){mode='seed';roomId=null;roomCode=SEED_CODE;st.entered=true;go('rm-main');loadRoom();syncChrome();}
   function enterLive(){if(!roomId){go('rm-wel');return;}mode='live';st.entered=true;go('rm-main');loadRoom();subscribeRoom();syncChrome();}
+  function backendMissing(err){return err&&(err.code==='PGRST202'||err.code==='PGRST205'||/schema cache|does not exist/i.test(err.message||''));}
   function createRoom(){if(!meState){signIn();return;}
     sbc.rpc('create_room',{}).then(function(r){var d=r&&r.data&&r.data[0];
-      if(r.error||!d){toast('Could not create the room');return;}
-      roomId=d.room_id;roomCode=d.room_code;mode='live';st.entered=true;showCode(roomCode);go('rm-create');});}
+      if(r.error||!d){toast(backendMissing(r.error)?'后端还没建好：请在 Supabase 跑 supabase-setup.sql':('创建失败：'+((r.error&&r.error.message)||'unknown')));return;}
+      roomId=d.room_id;roomCode=d.room_code;mode='live';st.entered=true;showCode(roomCode);go('rm-create');
+    },function(e){toast('创建失败（网络）：'+e);});}
   function joinRoom(code){if(!meState){signIn();return;}
     sbc.rpc('join_room',{p_code:code}).then(function(r){
-      if(r.error||!r.data){toast('That code did not match a room 💔');return;}
+      if(r.error||!r.data){toast(backendMissing(r.error)?'后端还没建好：请先跑 supabase-setup.sql':'没找到这个房间号 💔');return;}
       roomId=r.data;roomCode=code;mode='live';st.entered=true;go('rm-main');loadRoom();subscribeRoom();syncChrome();
-      toast('You’re in — this room is now yours together 💗');});}
+      toast('You’re in — this room is now yours together 💗');
+    },function(e){toast('加入失败（网络）：'+e);});}
   function joinFromInputs(){var box=$('#codein');var code=Array.prototype.map.call(box.children,function(c){return c.value||''}).join('');
     if(code.length!==6)return;if(!meState){signIn();return;}joinRoom(code);}
   function myRoomOrHub(){if(!sbc||!meState){go('rm-wel');return;}
