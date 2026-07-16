@@ -77,7 +77,8 @@
 /* 展馆：桌面固定 4 列，向下自适应 3/2/1；四列下收紧内边距与间距，样式其余不变 */
 .museum .masonry{column-count:4;column-gap:16px;max-width:1240px}
 .museum .mcard{margin-bottom:16px}
-.museum .mcard .bd{padding:15px 16px}
+.museum .mcard .bd{padding:15px 16px; text-align:center}
+.museum .mcard .weather{justify-content:center; gap:12px; flex-wrap:wrap}
 .museum .mcard .catalog{left:16px}
 @media(max-width:1180px){.museum .masonry{column-count:3}}
 @media(max-width:860px){.museum .masonry{column-count:2}.museum .mcard .bd{padding:18px}}
