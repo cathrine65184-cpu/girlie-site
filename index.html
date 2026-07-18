@@ -71,6 +71,14 @@
 .garden-status{position:absolute; bottom:30px; right:clamp(18px,5vw,70px); z-index:4; color:#f3eaff; text-align:right; font-size:11px; letter-spacing:1.6px; text-transform:uppercase; line-height:1.7; opacity:.86}.garden-status b{display:block; color:#ffb5d1; font-size:12px}
 .garden-sprig{position:absolute; z-index:2; bottom:-4px; width:220px; height:190px; pointer-events:none; opacity:.88; filter:drop-shadow(0 12px 12px rgba(0,0,0,.22))}.garden-sprig.l{left:-32px; transform:rotate(-8deg)}.garden-sprig.r{right:-32px; transform:scaleX(-1) rotate(-8deg)}
 .garden-sprig:before,.garden-sprig:after{content:"";position:absolute;border-radius:100% 0 100% 0;background:linear-gradient(135deg,#243e3e,#607856)}.garden-sprig:before{width:165px;height:55px;left:20px;bottom:68px;transform:rotate(-34deg);box-shadow:55px 42px 0 -5px #355242,104px 0 0 -5px #2c4b43}.garden-sprig:after{width:15px;height:190px;left:92px;bottom:0;background:#466047;border-radius:40px;transform:rotate(-27deg)}
+/* ☀️ 白昼花园：按访客本地时间 7:00–19:00 点亮（body.daytime 由 JS 打上），夜晚保持原样 */
+body.daytime .hero{background:radial-gradient(60% 58% at 50% 8%,rgba(255,205,231,.85),transparent 62%),radial-gradient(58% 45% at 83% 77%,rgba(255,170,208,.5),transparent 64%),linear-gradient(180deg,#FFF4FA 0%,#FFE4F2 54%,#F3D7EE 100%)}
+body.daytime .hero h1{background:linear-gradient(110deg,#e75d95,#b76fd0 47%,#8a79e0);-webkit-background-clip:text;background-clip:text}
+body.daytime .hero .sub,body.daytime .hero .scrollcue{color:#96707f}
+body.daytime .hero .kicker{color:#d1568e}
+body.daytime .garden-status{color:#a97b93}body.daytime .garden-status b{color:#d1568e}
+body.daytime .garden-arch{opacity:.45;filter:brightness(2.6) saturate(.75)}
+body.daytime .garden-sprig{opacity:.8;filter:brightness(1.9) saturate(.85) drop-shadow(0 12px 12px rgba(150,90,120,.18))}
 
 /* ═══ MUSEUM + LEXICON ═══ */
 .museum{background:linear-gradient(180deg,#f7eff1,#fff8f3 48%,#f7f0fb)}
@@ -483,9 +491,10 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
 /* ═══ JOIN + FOOT ═══ */
 .join{padding:110px 24px; text-align:center; position:relative; overflow:hidden; background:radial-gradient(70% 80% at 50% 20%,rgba(248,200,220,.6),transparent 60%),linear-gradient(180deg,#FCEFF7,#FBEFF8)}
 @media(max-width:640px){.join{padding:78px 24px}}
-.join h2{font-size:clamp(30px,5.4vw,60px); line-height:1.1; color:#4a3a44; max-width:720px; margin:0 auto}
+.join .rv{text-align:center}
+.join h2{font-size:clamp(30px,5.4vw,60px); line-height:1.1; color:#4a3a44; max-width:720px; margin:0 auto; text-align:center}
 .join h2 em{font-style:italic; background:linear-gradient(110deg,var(--accent-deep),#9a6fb0); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent}
-.join p{margin:20px auto 34px; color:var(--ink-soft); font-size:16.5px; font-weight:300; max-width:500px; line-height:1.7}
+.join p{margin:20px auto 34px; color:var(--ink-soft); font-size:16.5px; font-weight:300; max-width:500px; line-height:1.7; text-align:center}
 .foot{padding:44px 24px; text-align:center; color:var(--ink-soft); font-size:12.5px; background:#FBEFF8}
 .foot .brand{font-family:var(--serif); font-size:19px; color:var(--accent-deep); margin-bottom:7px}
 .smodal{position:fixed; inset:0; z-index:400; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity .35s}
@@ -799,6 +808,11 @@ var sbc=(window.supabase&&supaOn())?window.supabase.createClient(SUPA.url,SUPA.a
 /* ═════════ MUSEUM (public site) ═════════ */
 (function(){
   var gp=document.getElementById('gp');
+  /* ☀️/🌙 封面随访客本地时间变化：7:00–19:00 亮粉白昼，其余为夜晚花园 */
+  (function(){var hr=new Date().getHours(),day=hr>=7&&hr<19;
+    document.body.classList.toggle('daytime',day);
+    var kk=document.querySelector('.hero .kicker');
+    if(kk)kk.textContent=(day?'Daylight museum':'After-hours museum')+' · global friendship garden';})();
   var CONT=[
     ['NA',[[33,69],[167,56],[278,78],[347,111],[292,139],[283,169],[255,182],[278,225],[220,190],[186,172],[161,144],[153,114],[60,92]]],
     ['SA',[[300,220],[403,272],[392,298],[368,318],[360,330],[311,397],[296,360],[283,290],[281,250]]],
@@ -1259,7 +1273,7 @@ var RM=(function(){
       .then(function(r){done&&done(r&&r.data)}).catch(function(){done&&done()});}
   function roomPatch(id,payload){if(mode!=='live'||!sbc||!id)return;
     sbc.from('room_entries').update({payload:payload}).eq('id',id).then(function(){},function(){});}
-  function loadRoom(){resetRoom();renderAll();
+  function loadRoom(){resetRoom();renderAll();updateRoomHeader();
     if(mode!=='live'||!sbc||!roomId)return;
     sbc.from('room_entries').select('id,kind,payload').eq('room_id',roomId).order('id',{ascending:true}).limit(800)
       .then(function(res){var rows=res&&res.data;if(!rows)return;var pend=0;
@@ -1375,13 +1389,39 @@ var RM=(function(){
       if(ev==='SIGNED_IN'){var pend=false;try{pend=localStorage.getItem('gp_open_room')==='1';localStorage.removeItem('gp_open_room')}catch(e){}
         if(pend){open();myRoomOrHub();}}});}
 
-  function calcDays(){var meet=new Date(MEET),now=new Date();
-    var days=Math.floor((now-meet)/864e5);
+  var roomMeet=null; /* live 房间的起始日（rooms.meet_date 或 created_at），seed 模式为 null */
+  function calcDays(){var now=new Date();
+    /* 首页 teaser 的天数永远用 Catherine × Саша 的种子日期 */
+    var seedDays=Math.floor((now-new Date(MEET))/864e5);
+    var mk=document.getElementById('mk-days');if(mk)mk.textContent=seedDays.toLocaleString();
+    /* 房间侧栏：live 模式用真实房间日期，seed 用种子日期 */
+    var meet=new Date((mode==='live'&&roomMeet)?roomMeet:MEET);
+    var days=Math.max(0,Math.floor((now-meet)/864e5));
     var rd=$('#rm-days');if(rd)rd.textContent=days.toLocaleString();
     var ry=$('#rm-years');if(ry)ry.textContent=Math.floor(days/365)+1;
-    var mk=document.getElementById('mk-days');if(mk)mk.textContent=days.toLocaleString();
-    var anni=new Date(now.getFullYear(),8,1);if(anni<=now)anni=new Date(now.getFullYear()+1,8,1);
+    var anni=new Date(now.getFullYear(),meet.getMonth(),meet.getDate());
+    if(anni<=now)anni=new Date(now.getFullYear()+1,meet.getMonth(),meet.getDate());
     var ra=$('#rm-anni');if(ra)ra.textContent=Math.ceil((anni-now)/864e5);}
+  /* 配对后小屋头部显示真实的两个人：名字、共同起始日、天数（修复写死 Catherine ✕ Oleksandra 的 bug） */
+  function updateRoomHeader(){
+    var nm=$('#rm-main .rm-hero .nm'),sub=$('#rm-main .rm-hero .sub2');
+    if(mode!=='live'||!sbc||!roomId){roomMeet=null;
+      if(nm)nm.textContent='Catherine ✕ Oleksandra';
+      if(sub)sub.textContent='🇨🇳 China — Ivano-Frankivsk 🇺🇦';
+      calcDays();return;}
+    Promise.all([
+      sbc.from('room_members').select('user_id,display_name').eq('room_id',roomId),
+      sbc.from('rooms').select('code,name,meet_date,created_at').eq('id',roomId).single()
+    ]).then(function(rs){
+      var mems=(rs[0]&&rs[0].data)||[],room=(rs[1]&&rs[1].data)||{};
+      var other=null,mineName=null;
+      mems.forEach(function(m){if(meState&&m.user_id===meState.id)mineName=m.display_name;else other=m;});
+      var my=mineName||myName();
+      roomMeet=String(room.meet_date||room.created_at||'').slice(0,10)||null;
+      if(nm)nm.textContent=other?(my+' ✕ '+(other.display_name||'her')):(my+' ✕ …');
+      if(sub)sub.textContent=other?('🌸 Together here since '+(roomMeet||'today')):('💌 Waiting for her — share code '+(room.code||roomCode));
+      calcDays();
+    }).catch(function(){calcDays();});}
 
   function renderTL(){var list=$('#tl-list');list.innerHTML='';
     st.timeline.slice().sort(function(a,b){return b.d<a.d?-1:1}).forEach(function(e,i){
