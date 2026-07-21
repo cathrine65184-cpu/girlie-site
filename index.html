@@ -338,6 +338,11 @@ body.daytime .garden-sprig{opacity:.8;filter:brightness(1.9) saturate(.85) drop-
 .roomcard .rc-go{color:#d99ac0; font-size:18px}
 .switchbtn{margin-top:12px; width:100%; border:1.5px solid #e7cfe0; background:#fff; color:#a24d78; font-family:inherit; font-size:12.5px; font-weight:600; padding:9px; border-radius:12px; cursor:pointer; transition:.2s}
 .switchbtn:hover{border-color:#e59fc2; background:#fff5fa}
+.langbar{position:fixed; left:14px; bottom:14px; z-index:210; display:flex; gap:2px; background:rgba(255,255,255,.85); backdrop-filter:blur(10px); padding:4px; border-radius:30px; box-shadow:0 10px 26px -12px rgba(180,110,150,.55); border:1px solid rgba(255,255,255,.9)}
+.langbar button{border:none; background:transparent; font-family:inherit; font-size:11px; font-weight:700; color:#a26a86; padding:6px 9px; border-radius:20px; cursor:pointer; transition:.2s}
+.langbar button:hover{background:#ffeef7}
+.langbar button.on{background:linear-gradient(120deg,#f48fc0,#bb9fea); color:#fff}
+@media(max-width:640px){.langbar{left:10px; bottom:10px}}
 .codebox,.codein{display:flex; gap:9px; justify-content:center; margin:26px 0 20px; flex-wrap:wrap}
 .codebox .d{width:46px; height:58px; border-radius:15px; background:#fff; box-shadow:0 14px 28px -14px rgba(180,110,150,.5);
   display:flex; align-items:center; justify-content:center; font-size:25px; font-weight:700; color:var(--accent-deep); animation:popd .5s cubic-bezier(.2,1.4,.4,1) both}
@@ -805,6 +810,300 @@ function supaOn(){return !!(SUPA.url&&SUPA.anon)}
 function supaH(){return {apikey:SUPA.anon,Authorization:'Bearer '+SUPA.anon,'Content-Type':'application/json'}}
 /* auth-aware client (Google sign-in, RLS, private storage) */
 var sbc=(window.supabase&&supaOn())?window.supabase.createClient(SUPA.url,SUPA.anon,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}):null;
+
+/* ═════════ i18n：中 / EN / FR / УКР / BM ═════════
+   界面文案全量翻译；女孩们的引言与星盘卡片等「展品内容」保留英文原件 */
+var I18N={
+en:{nav_garden:'Garden',nav_globe:'Globe',nav_museum:'Museum',nav_words:'Words',nav_room:'My Room',
+hero_kicker_day:'Daylight museum · global friendship garden',hero_kicker_night:'After-hours museum · global friendship garden',
+hero_sub:'Push open the garden gate. Across time zones, every friendship becomes a living exhibit — glowing, resting, and remembered.',
+hero_cta1:'Enter the Museum',hero_cta2:'Open the Word Book',hero_scroll:'Scroll',
+bloom_kicker:'Friendship Bloom 🌸',bloom_h2:'A world map, painted in flowers.',
+bloom_p:'Every girl we interview blooms where she lives. The more stories a country holds, the wider its flower field grows.',
+stat1:'Countries',stat2:'Stories',stat3:'Flowers',stat4:'Connections',
+recent_h3:'Recent Blooms',recent_p:'The newest friendships added to the museum.',
+plant_h3:'💌 Plant a flower for her country',
+plant_p:'Leave one kind sentence for the girls of a country — anonymous, fifteen seconds, no sign-up. Your flower blooms on the map.',
+plant_ph:'One warm sentence for them… (max 120 chars)',plant_btn:'Plant it 🌱',
+plant_note_full:'🌷 <b id="pf-count">0</b> flowers planted by visitors so far — hover them on the map to read the messages.',
+plant_done:'🌸 Your flower is blooming in {c} — thank you.',plant_count:'<b id="pf-count">{n}</b> flowers planted so far.',
+plant_busy:'🥀 The garden is busy — try again in a moment.',
+globe_kicker:'Friendship Globe 🌍',globe_h2:'Stories, connected across the dark.',
+globe_p:'Each glowing point is a country where a girl shared her story. Drag to rotate, scroll to zoom, click a light to listen.',
+globe_hint:'Drag · Zoom · Click a glowing country · Double-click to reset',lbl_stories:'stories',
+museum_kicker:'Gallery I · Emotional Museum',museum_h2:'Eleven lives, eleven irreplaceable exhibits.',
+museum_p:'Walk the collection slowly. Every portrait has a catalogue number, a city climate, and the precise local hour in which she is living.',
+guide1:'<b>CAT.</b> a unique friendship record',guide2:'<b>LOCAL HOUR</b> updates with her city',guide3:'<b>CLIMATE</b> the weather she calls home',
+lbl_dream:'Dream',lbl_taught:'Friendship taught her',lbl_exhibit:'Exhibit',lbl_local:'local',
+lex_kicker:'The Girlie Lexicon · 第 01 册',lex_h2:'How the world says “best friend.”',
+lex_p:'Not a translation exercise — a small collection of words that hold someone close.',
+lex_meaning:'a friend who knows the quiet version of your heart.',lex_shared:'Shared by',
+tarot_kicker:'Gallery III · Destiny Parlour 🎴',tarot_h2:'The Friendship Star Chart.',
+tarot_p:'Every pair of best friends leaves a small pattern in the sky. Give the parlour your two names, and it will trace the constellation you make together.',
+tarot_lead:'Whisper two names to the night sky…',tarot_ph_a:'Your name',tarot_ph_b:'Her name',tarot_btn:'Read our stars ✨',
+tarot_hint:'The parlour keeps no secrets — only constellations.',
+tarot_hint_need:'✧ The sky needs both names to draw your constellation…',
+tarot_count:'✦ <b>{n}</b> constellations have been traced in this parlour',
+radio_kicker:'Gallery IV · Global Bestie Radio 📻',radio_h2:'Every friendship has a soundtrack.',
+radio_p:'Each girl chose the one song that sounds like her and her best friend. Hover to hear the waves — press to play.',radio_chosen:'chosen by',
+rt_kicker:'Girlie Room 🏠 · Private, invite only',rt_h2:'Some stories are <em>just for two.</em>',
+rt_p:'The stories above belong to the world — this room belongs to just you and her. Pair with a secret code and keep your own history together.',
+rt_f1:'<b>Secret pairing code</b> — only the two of you can ever enter.',
+rt_f2:'<b>Friendship timeline</b> — days counted since you met, milestones marked automatically.',
+rt_f3:'<b>Shared bucket list</b> — check things off together, across any distance.',
+rt_btn:'Enter Girlie Room',rt_lock:'🔒 Visible only to you two',
+join_h2:'Every friendship deserves to be <em>remembered.</em>',
+join_p:'Add your voice to a living museum of women who hold each other up across the world.',join_btn:'Share Your Story',
+foot:'<div class="brand">🌸 Girlie Project</div>A digital museum preserving female friendship across the world.',
+gs_bloom:'{a} of {b} flowers are in bloom',gs_day:'Daylight is moving through the garden.',gs_night:'The whole garden is dreaming.',
+rm_wel_h2:'Welcome to <em>Girlie Room</em>',
+rm_wel_p:'你们的私密小屋 — a space no visitor can see. Sign in with your bestie and keep your own history: photos, videos, milestones — all private to just the two of you.',
+auth_email:'Email',auth_pass:'Password (6+ characters)',auth_name:'Your name (for sign-up, optional)',
+auth_signin:'🔐 Sign in',auth_signup:'🎀 Create account',auth_seed:'🌸 See Catherine &amp; Саша’s story',
+auth_hint:'No app, no Google — just an email for you two',auth_signedin:'Signed in as',auth_signout:'sign out',auth_continue:'My bestie spaces →',
+hub_h2:'Your bestie spaces',hub_p:'Switch between your rooms — one for each friend. Or start a new one and invite her with a code.',
+hub_new:'🏠 New room',hub_code:'💌 Enter a code',
+joinscr_h2:'Enter her code 💌',joinscr_p:'6 digits — the room opens the moment they match.',
+tab_tl:'🧵 Timeline',tab_al:'📸 Album',tab_ck:'✅ Bucket List',tab_mo:'🎀 More',
+rmh_tl:'Friendship Timeline',rmh_al:'Shared Album',rmh_ck:'Shared Bucket List',
+add_tl:'＋ Add a memory',add_al:'＋ Add a photo',add_ck:'＋ New goal',
+rm_days_l:'days of friendship<br>year <b id="rm-years"></b> together',
+rm_anni_l:'🎂 <b id="rm-anni" style="margin:0 3px"></b> days to your anniversary',
+rm_note_live:'🔒 Private room · share code {code} with your bestie',rm_note_seed:'🌸 Public showcase — sign in to make your own',
+rm_since:'🌸 Together here since {d}',rm_waiting:'💌 Waiting for her — share code {code}'},
+zh:{nav_garden:'花园',nav_globe:'星球',nav_museum:'博物馆',nav_words:'词册',nav_room:'我的小屋',
+hero_kicker_day:'白昼博物馆 · 全球友谊花园',hero_kicker_night:'星夜博物馆 · 全球友谊花园',
+hero_sub:'推开花园的门。跨越时区，每段友谊都是一件活着的展品——发光、休憩、被铭记。',
+hero_cta1:'走进博物馆',hero_cta2:'翻开词册',hero_scroll:'下滑',
+bloom_kicker:'友谊花田 🌸',bloom_h2:'一张用花朵绘成的世界地图。',
+bloom_p:'每位受访的女孩都会在她生活的地方开出花来。一个国家的故事越多，花田就越辽阔。',
+stat1:'国家',stat2:'故事',stat3:'花朵',stat4:'联结',
+recent_h3:'新开的花',recent_p:'最新加入博物馆的友谊。',
+plant_h3:'💌 为她的国家种一朵花',
+plant_p:'给那个国家的女孩们留一句温柔的话——匿名、十五秒、无需注册。你的花会开在地图上。',
+plant_ph:'想对她们说的一句话…（最多 120 字）',plant_btn:'种下 🌱',
+plant_note_full:'🌷 访客已种下 <b id="pf-count">0</b> 朵花——在地图上悬停花朵即可读到留言。',
+plant_done:'🌸 你的花正在 {c} 盛开——谢谢你。',plant_count:'目前共 <b id="pf-count">{n}</b> 朵。',
+plant_busy:'🥀 花园有点忙——稍后再试。',
+globe_kicker:'友谊星球 🌍',globe_h2:'黑夜之中，故事彼此相连。',
+globe_p:'每个发光的点都是一个有女孩分享过故事的国家。拖动旋转、滚轮缩放、点击光点聆听。',
+globe_hint:'拖动 · 缩放 · 点击发光的国家 · 双击复位',lbl_stories:'个故事',
+museum_kicker:'第一展厅 · 情感博物馆',museum_h2:'十一段人生，十一件无可替代的展品。',
+museum_p:'请慢慢走过这座展馆。每幅肖像都有目录编号、城市气候，以及她此刻正在生活的当地时间。',
+guide1:'<b>编号</b> 独一无二的友谊档案',guide2:'<b>当地时间</b> 随她的城市实时更新',guide3:'<b>气候</b> 她称之为家的天气',
+lbl_dream:'梦想',lbl_taught:'友谊教会她',lbl_exhibit:'展品',lbl_local:'当地',
+lex_kicker:'闺蜜词册 · 第 01 册',lex_h2:'全世界如何说「闺蜜」。',
+lex_p:'这不是翻译练习——而是一小册把人抱紧的词。',
+lex_meaning:'一个认识你心底安静版本的朋友。',lex_shared:'来自',
+tarot_kicker:'第三展厅 · 缘分占卜屋 🎴',tarot_h2:'友谊星盘。',
+tarot_p:'每一对闺蜜都会在夜空留下一小片星图。告诉占卜屋你们的名字，它会描出属于你们的星座。',
+tarot_lead:'向夜空轻声说出两个名字……',tarot_ph_a:'你的名字',tarot_ph_b:'她的名字',tarot_btn:'占我们的星 ✨',
+tarot_hint:'占卜屋不留秘密——只留星座。',
+tarot_hint_need:'✧ 天空需要两个名字，才能画出你们的星座……',
+tarot_count:'✦ 这间占卜屋已描绘 <b>{n}</b> 个星座',
+radio_kicker:'第四展厅 · 全球闺蜜电台 📻',radio_h2:'每段友谊都有自己的原声带。',
+radio_p:'每位女孩选了一首最像她和闺蜜的歌。悬停听声浪，点击去播放。',radio_chosen:'选歌',
+rt_kicker:'闺蜜小屋 🏠 · 私密 · 仅限邀请',rt_h2:'有些故事，<em>只属于两个人。</em>',
+rt_p:'上面的故事属于世界——这间小屋只属于你和她。用一串暗号配对，一起收藏你们自己的历史。',
+rt_f1:'<b>秘密配对码</b>——永远只有你们两人能进入。',
+rt_f2:'<b>友谊时间线</b>——自相识起计天，里程碑自动标记。',
+rt_f3:'<b>共同愿望清单</b>——无论相隔多远，一起打勾完成。',
+rt_btn:'进入闺蜜小屋',rt_lock:'🔒 只有你们两人可见',
+join_h2:'每段友谊都值得<em>被铭记。</em>',
+join_p:'把你的声音加入这座活的博物馆——世界各地相互扶持的女性都在这里。',join_btn:'分享你的故事',
+foot:'<div class="brand">🌸 Girlie Project</div>一座保存全世界女性友谊的数字博物馆。',
+gs_bloom:'{a}/{b} 朵花正在盛开',gs_day:'日光正掠过花园。',gs_night:'整座花园都在做梦。',
+rm_wel_h2:'欢迎来到<em>闺蜜小屋</em>',
+rm_wel_p:'你们的私密小屋——访客看不见的空间。和你的闺蜜一起登录，收藏只属于你们两个人的照片、视频与里程碑。',
+auth_email:'邮箱',auth_pass:'密码（6 位以上）',auth_name:'昵称（注册时用，可不填）',
+auth_signin:'🔐 登录',auth_signup:'🎀 注册',auth_seed:'🌸 看 Catherine 和 Саша 的故事',
+auth_hint:'不用装 App、不用 Google——一个邮箱就够你们俩',auth_signedin:'已登录：',auth_signout:'退出',auth_continue:'我的闺蜜空间 →',
+hub_h2:'你的闺蜜空间',hub_p:'在你的房间之间切换——每位朋友一间。也可以新建一间，用配对码邀请她。',
+hub_new:'🏠 新建小屋',hub_code:'💌 输入配对码',
+joinscr_h2:'输入她的配对码 💌',joinscr_p:'6 位数字——对上的那一刻，房间就为你们打开。',
+tab_tl:'🧵 时间线',tab_al:'📸 相册',tab_ck:'✅ 愿望清单',tab_mo:'🎀 更多',
+rmh_tl:'友谊时间线',rmh_al:'共享相册',rmh_ck:'共同愿望清单',
+add_tl:'＋ 添一段回忆',add_al:'＋ 添照片',add_ck:'＋ 新目标',
+rm_days_l:'天的友谊<br>在一起的第 <b id="rm-years"></b> 年',
+rm_anni_l:'🎂 距你们的纪念日还有 <b id="rm-anni" style="margin:0 3px"></b> 天',
+rm_note_live:'🔒 私密房间 · 把配对码 {code} 发给你的闺蜜',rm_note_seed:'🌸 公开样板——登录即可拥有你们自己的',
+rm_since:'🌸 从 {d} 起在这里相伴',rm_waiting:'💌 等她加入——把码 {code} 发给她'},
+fr:{nav_garden:'Jardin',nav_globe:'Globe',nav_museum:'Musée',nav_words:'Mots',nav_room:'Ma Chambre',
+hero_kicker_day:'Musée de jour · jardin mondial de l’amitié',hero_kicker_night:'Musée après minuit · jardin mondial de l’amitié',
+hero_sub:'Poussez la porte du jardin. À travers les fuseaux horaires, chaque amitié devient une œuvre vivante — qui brille, se repose et reste en mémoire.',
+hero_cta1:'Entrer au musée',hero_cta2:'Ouvrir le livre des mots',hero_scroll:'Défiler',
+bloom_kicker:'Floraison d’amitié 🌸',bloom_h2:'Une carte du monde peinte en fleurs.',
+bloom_p:'Chaque fille interviewée fleurit là où elle vit. Plus un pays compte d’histoires, plus son champ de fleurs s’étend.',
+stat1:'Pays',stat2:'Histoires',stat3:'Fleurs',stat4:'Liens',
+recent_h3:'Floraisons récentes',recent_p:'Les amitiés les plus récentes du musée.',
+plant_h3:'💌 Plantez une fleur pour son pays',
+plant_p:'Laissez une phrase douce aux filles d’un pays — anonyme, quinze secondes, sans inscription. Votre fleur fleurira sur la carte.',
+plant_ph:'Une phrase chaleureuse… (120 car. max)',plant_btn:'Planter 🌱',
+plant_note_full:'🌷 <b id="pf-count">0</b> fleurs plantées par les visiteurs — survolez-les sur la carte pour lire les messages.',
+plant_done:'🌸 Votre fleur fleurit en {c} — merci.',plant_count:'<b id="pf-count">{n}</b> fleurs plantées.',
+plant_busy:'🥀 Le jardin est occupé — réessayez dans un instant.',
+globe_kicker:'Globe de l’amitié 🌍',globe_h2:'Des histoires reliées à travers la nuit.',
+globe_p:'Chaque point lumineux est un pays où une fille a partagé son histoire. Glissez pour tourner, molette pour zoomer, cliquez pour écouter.',
+globe_hint:'Glisser · Zoomer · Cliquer un pays lumineux · Double-clic pour réinitialiser',lbl_stories:'histoires',
+museum_kicker:'Galerie I · Musée des émotions',museum_h2:'Onze vies, onze œuvres irremplaçables.',
+museum_p:'Parcourez la collection lentement. Chaque portrait a un numéro de catalogue, un climat, et l’heure locale où elle vit.',
+guide1:'<b>CAT.</b> un dossier d’amitié unique',guide2:'<b>HEURE LOCALE</b> à l’heure de sa ville',guide3:'<b>CLIMAT</b> le temps qu’il fait chez elle',
+lbl_dream:'Rêve',lbl_taught:'L’amitié lui a appris',lbl_exhibit:'Œuvre',lbl_local:'heure locale',
+lex_kicker:'Le Lexique Girlie · Vol. 01',lex_h2:'Comment le monde dit « meilleure amie ».',
+lex_p:'Pas un exercice de traduction — une petite collection de mots qui serrent quelqu’un contre soi.',
+lex_meaning:'une amie qui connaît la version silencieuse de ton cœur.',lex_shared:'Partagé par',
+tarot_kicker:'Galerie III · Salon du destin 🎴',tarot_h2:'La carte des étoiles de l’amitié.',
+tarot_p:'Chaque paire de meilleures amies laisse un petit motif dans le ciel. Donnez vos deux prénoms, et le salon tracera votre constellation.',
+tarot_lead:'Murmurez deux prénoms au ciel nocturne…',tarot_ph_a:'Ton prénom',tarot_ph_b:'Son prénom',tarot_btn:'Lire nos étoiles ✨',
+tarot_hint:'Le salon ne garde aucun secret — seulement des constellations.',
+tarot_hint_need:'✧ Le ciel a besoin des deux prénoms pour tracer votre constellation…',
+tarot_count:'✦ <b>{n}</b> constellations tracées dans ce salon',
+radio_kicker:'Galerie IV · Radio Besties du monde 📻',radio_h2:'Chaque amitié a sa bande-son.',
+radio_p:'Chaque fille a choisi la chanson qui leur ressemble. Survolez pour les ondes, cliquez pour écouter.',radio_chosen:'choisie par',
+rt_kicker:'Chambre Girlie 🏠 · Privée, sur invitation',rt_h2:'Certaines histoires sont <em>juste pour deux.</em>',
+rt_p:'Les histoires ci-dessus appartiennent au monde — cette chambre n’appartient qu’à vous deux. Associez-vous avec un code secret et gardez votre histoire ensemble.',
+rt_f1:'<b>Code secret</b> — seules vous deux pouvez entrer.',
+rt_f2:'<b>Frise de l’amitié</b> — les jours comptés depuis votre rencontre, les étapes marquées.',
+rt_f3:'<b>Liste de rêves commune</b> — cochez ensemble, à n’importe quelle distance.',
+rt_btn:'Entrer dans la chambre',rt_lock:'🔒 Visible par vous deux seulement',
+join_h2:'Chaque amitié mérite d’être <em>retenue.</em>',
+join_p:'Ajoutez votre voix à un musée vivant de femmes qui se soutiennent à travers le monde.',join_btn:'Partager votre histoire',
+foot:'<div class="brand">🌸 Girlie Project</div>Un musée numérique qui préserve l’amitié féminine à travers le monde.',
+gs_bloom:'{a} fleurs sur {b} sont écloses',gs_day:'La lumière du jour traverse le jardin.',gs_night:'Tout le jardin rêve.',
+rm_wel_h2:'Bienvenue dans la <em>Chambre Girlie</em>',
+rm_wel_p:'Votre refuge privé — un espace invisible aux visiteurs. Connectez-vous avec votre meilleure amie et gardez votre histoire : photos, vidéos, étapes — rien que pour vous deux.',
+auth_email:'E-mail',auth_pass:'Mot de passe (6+)',auth_name:'Votre prénom (inscription, facultatif)',
+auth_signin:'🔐 Se connecter',auth_signup:'🎀 Créer un compte',auth_seed:'🌸 Voir l’histoire de Catherine &amp; Саша',
+auth_hint:'Pas d’appli, pas de Google — juste un e-mail pour vous deux',auth_signedin:'Connectée :',auth_signout:'déconnexion',auth_continue:'Mes espaces besties →',
+hub_h2:'Vos espaces besties',hub_p:'Passez d’une chambre à l’autre — une par amie. Ou créez-en une nouvelle et invitez-la avec un code.',
+hub_new:'🏠 Nouvelle chambre',hub_code:'💌 Entrer un code',
+joinscr_h2:'Entrez son code 💌',joinscr_p:'6 chiffres — la chambre s’ouvre dès qu’ils correspondent.',
+tab_tl:'🧵 Frise',tab_al:'📸 Album',tab_ck:'✅ Liste de rêves',tab_mo:'🎀 Plus',
+rmh_tl:'Frise de l’amitié',rmh_al:'Album partagé',rmh_ck:'Liste de rêves commune',
+add_tl:'＋ Ajouter un souvenir',add_al:'＋ Ajouter une photo',add_ck:'＋ Nouvel objectif',
+rm_days_l:'jours d’amitié<br>année <b id="rm-years"></b> ensemble',
+rm_anni_l:'🎂 <b id="rm-anni" style="margin:0 3px"></b> jours avant votre anniversaire',
+rm_note_live:'🔒 Chambre privée · partagez le code {code} avec votre bestie',rm_note_seed:'🌸 Vitrine publique — connectez-vous pour créer la vôtre',
+rm_since:'🌸 Ensemble ici depuis {d}',rm_waiting:'💌 En attendant — partagez le code {code}'},
+uk:{nav_garden:'Сад',nav_globe:'Глобус',nav_museum:'Музей',nav_words:'Слова',nav_room:'Моя кімната',
+hero_kicker_day:'Денний музей · світовий сад дружби',hero_kicker_night:'Нічний музей · світовий сад дружби',
+hero_sub:'Відчини хвіртку саду. Крізь часові пояси кожна дружба стає живим експонатом — вона сяє, відпочиває і залишається в пам’яті.',
+hero_cta1:'Увійти до музею',hero_cta2:'Відкрити книгу слів',hero_scroll:'Гортай',
+bloom_kicker:'Цвітіння дружби 🌸',bloom_h2:'Карта світу, намальована квітами.',
+bloom_p:'Кожна дівчина розквітає там, де живе. Що більше історій у країни, то ширше її квіткове поле.',
+stat1:'Країни',stat2:'Історії',stat3:'Квіти',stat4:'Зв’язки',
+recent_h3:'Нові квіти',recent_p:'Найновіші дружби музею.',
+plant_h3:'💌 Посади квітку для її країни',
+plant_p:'Залиш одне тепле речення дівчатам країни — анонімно, за п’ятнадцять секунд, без реєстрації. Твоя квітка розквітне на мапі.',
+plant_ph:'Одне тепле речення… (до 120 знаків)',plant_btn:'Посадити 🌱',
+plant_note_full:'🌷 Відвідувачі посадили <b id="pf-count">0</b> квіток — наведи на них на мапі, щоб прочитати послання.',
+plant_done:'🌸 Твоя квітка розквітає у {c} — дякуємо.',plant_count:'Усього <b id="pf-count">{n}</b>.',
+plant_busy:'🥀 Сад зайнятий — спробуй за мить.',
+globe_kicker:'Глобус дружби 🌍',globe_h2:'Історії, з’єднані крізь темряву.',
+globe_p:'Кожна світна точка — країна, де дівчина поділилася історією. Тягни, щоб обертати; гортай, щоб наблизити; клікни, щоб послухати.',
+globe_hint:'Тягни · Масштабуй · Клікни світну країну · Подвійний клік — скинути',lbl_stories:'історій',
+museum_kicker:'Зала I · Музей почуттів',museum_h2:'Одинадцять життів, одинадцять незамінних експонатів.',
+museum_p:'Проходь колекцією повільно. Кожен портрет має номер каталогу, клімат міста й точну місцеву годину її життя.',
+guide1:'<b>КАТ.</b> унікальний запис дружби',guide2:'<b>МІСЦЕВИЙ ЧАС</b> оновлюється з її містом',guide3:'<b>КЛІМАТ</b> погода її дому',
+lbl_dream:'Мрія',lbl_taught:'Дружба навчила її',lbl_exhibit:'Експонат',lbl_local:'місцевий',
+lex_kicker:'Дівочий словник · Том 01',lex_h2:'Як світ каже «найкраща подруга».',
+lex_p:'Це не вправа з перекладу — це збірка слів, що тримають когось поруч.',
+lex_meaning:'подруга, що знає тиху версію твого серця.',lex_shared:'Поділилася',
+tarot_kicker:'Зала III · Салон долі 🎴',tarot_h2:'Зоряна карта дружби.',
+tarot_p:'Кожна пара найкращих подруг лишає візерунок у небі. Назви два імені — і салон намалює ваше сузір’я.',
+tarot_lead:'Прошепочи небу два імені…',tarot_ph_a:'Твоє ім’я',tarot_ph_b:'Її ім’я',tarot_btn:'Прочитати наші зорі ✨',
+tarot_hint:'Салон не зберігає таємниць — лише сузір’я.',
+tarot_hint_need:'✧ Небу потрібні обидва імені, щоб намалювати сузір’я…',
+tarot_count:'✦ У салоні накреслено вже <b>{n}</b> сузір’їв',
+radio_kicker:'Зала IV · Всесвітнє радіо подруг 📻',radio_h2:'У кожної дружби є свій саундтрек.',
+radio_p:'Кожна дівчина обрала пісню про них двох. Наведи — і почуєш хвилі, клікни — і слухай.',radio_chosen:'обрала',
+rt_kicker:'Кімната Girlie 🏠 · Приватно, лише за запрошенням',rt_h2:'Деякі історії — <em>лише для двох.</em>',
+rt_p:'Історії вище належать світові — ця кімната лише твоя і її. З’єднайтеся таємним кодом і зберігайте власну історію разом.',
+rt_f1:'<b>Таємний код</b> — увійти можете лише ви двоє.',
+rt_f2:'<b>Стрічка дружби</b> — дні від знайомства, віхи позначаються самі.',
+rt_f3:'<b>Спільний список мрій</b> — відмічайте разом на будь-якій відстані.',
+rt_btn:'Увійти до кімнати',rt_lock:'🔒 Бачите лише ви двоє',
+join_h2:'Кожна дружба варта того, щоб її <em>пам’ятали.</em>',
+join_p:'Додай свій голос до живого музею жінок, які підтримують одна одну по всьому світу.',join_btn:'Поділитися історією',
+foot:'<div class="brand">🌸 Girlie Project</div>Цифровий музей, що зберігає жіночу дружбу в усьому світі.',
+gs_bloom:'Квітнуть {a} з {b} квіток',gs_day:'Денне світло пливе садом.',gs_night:'Увесь сад бачить сни.',
+rm_wel_h2:'Ласкаво просимо до <em>кімнати Girlie</em>',
+rm_wel_p:'Ваш приватний куточок — простір, якого не бачать відвідувачі. Увійдіть разом із подругою та зберігайте власну історію: фото, відео, віхи — лише для вас двох.',
+auth_email:'Ел. пошта',auth_pass:'Пароль (від 6 знаків)',auth_name:'Ім’я (для реєстрації, необов’язково)',
+auth_signin:'🔐 Увійти',auth_signup:'🎀 Створити акаунт',auth_seed:'🌸 Історія Catherine і Саші',
+auth_hint:'Без застосунку й Google — лише e-mail для вас двох',auth_signedin:'Ви увійшли як',auth_signout:'вийти',auth_continue:'Мої простори подруг →',
+hub_h2:'Твої простори подруг',hub_p:'Перемикайся між кімнатами — по одній на подругу. Або створи нову та запроси її кодом.',
+hub_new:'🏠 Нова кімната',hub_code:'💌 Ввести код',
+joinscr_h2:'Введи її код 💌',joinscr_p:'6 цифр — кімната відчиниться, щойно вони збіжаться.',
+tab_tl:'🧵 Стрічка',tab_al:'📸 Альбом',tab_ck:'✅ Список мрій',tab_mo:'🎀 Більше',
+rmh_tl:'Стрічка дружби',rmh_al:'Спільний альбом',rmh_ck:'Спільний список мрій',
+add_tl:'＋ Додати спогад',add_al:'＋ Додати фото',add_ck:'＋ Нова ціль',
+rm_days_l:'днів дружби<br>рік <b id="rm-years"></b> разом',
+rm_anni_l:'🎂 <b id="rm-anni" style="margin:0 3px"></b> днів до вашої річниці',
+rm_note_live:'🔒 Приватна кімната · надішли їй код {code}',rm_note_seed:'🌸 Публічний приклад — увійди, щоб створити свій',
+rm_since:'🌸 Разом тут із {d}',rm_waiting:'💌 Чекаємо на неї — надішли код {code}'},
+ms:{nav_garden:'Taman',nav_globe:'Glob',nav_museum:'Muzium',nav_words:'Kata',nav_room:'Bilik Saya',
+hero_kicker_day:'Muzium siang · taman persahabatan dunia',hero_kicker_night:'Muzium malam · taman persahabatan dunia',
+hero_sub:'Tolak pintu taman ini. Merentasi zon waktu, setiap persahabatan menjadi pameran yang hidup — bersinar, berehat dan dikenang.',
+hero_cta1:'Masuk ke Muzium',hero_cta2:'Buka Buku Kata',hero_scroll:'Skrol',
+bloom_kicker:'Bunga Persahabatan 🌸',bloom_h2:'Peta dunia, dilukis dengan bunga.',
+bloom_p:'Setiap gadis yang kami temui berbunga di tempat dia tinggal. Semakin banyak cerita sebuah negara, semakin luas ladang bunganya.',
+stat1:'Negara',stat2:'Cerita',stat3:'Bunga',stat4:'Ikatan',
+recent_h3:'Bunga Terbaru',recent_p:'Persahabatan terbaru dalam muzium.',
+plant_h3:'💌 Tanam sekuntum bunga untuk negaranya',
+plant_p:'Tinggalkan satu ayat baik untuk gadis-gadis sesebuah negara — tanpa nama, lima belas saat, tanpa daftar. Bunga anda akan mekar di peta.',
+plant_ph:'Satu ayat mesra… (maks 120 aksara)',plant_btn:'Tanam 🌱',
+plant_note_full:'🌷 <b id="pf-count">0</b> bunga ditanam oleh pengunjung — tuding pada peta untuk baca pesanannya.',
+plant_done:'🌸 Bunga anda mekar di {c} — terima kasih.',plant_count:'Kini <b id="pf-count">{n}</b> bunga.',
+plant_busy:'🥀 Taman sedang sibuk — cuba sebentar lagi.',
+globe_kicker:'Glob Persahabatan 🌍',globe_h2:'Cerita yang terhubung merentasi malam.',
+globe_p:'Setiap titik bercahaya ialah negara tempat seorang gadis berkongsi ceritanya. Seret untuk pusing, skrol untuk zum, klik untuk dengar.',
+globe_hint:'Seret · Zum · Klik negara bercahaya · Dwi-klik untuk set semula',lbl_stories:'cerita',
+museum_kicker:'Galeri I · Muzium Emosi',museum_h2:'Sebelas kehidupan, sebelas pameran yang tak tergantikan.',
+museum_p:'Susuri koleksi ini perlahan-lahan. Setiap potret ada nombor katalog, iklim bandar, dan waktu tempatan dia hidup.',
+guide1:'<b>KAT.</b> rekod persahabatan unik',guide2:'<b>WAKTU TEMPATAN</b> mengikut bandarnya',guide3:'<b>IKLIM</b> cuaca kampung halamannya',
+lbl_dream:'Impian',lbl_taught:'Persahabatan mengajarnya',lbl_exhibit:'Pameran',lbl_local:'tempatan',
+lex_kicker:'Leksikon Girlie · Jilid 01',lex_h2:'Bagaimana dunia menyebut “sahabat baik”.',
+lex_p:'Bukan latihan terjemahan — koleksi kecil kata yang mendakap seseorang.',
+lex_meaning:'sahabat yang mengenali sisi sunyi hatimu.',lex_shared:'Dikongsi oleh',
+tarot_kicker:'Galeri III · Bilik Takdir 🎴',tarot_h2:'Carta Bintang Persahabatan.',
+tarot_p:'Setiap pasangan sahabat meninggalkan corak kecil di langit. Berikan dua nama anda, dan bilik ini akan melakar buruj milik anda berdua.',
+tarot_lead:'Bisikkan dua nama kepada langit malam…',tarot_ph_a:'Nama anda',tarot_ph_b:'Nama dia',tarot_btn:'Baca bintang kami ✨',
+tarot_hint:'Bilik ini tidak menyimpan rahsia — hanya buruj.',
+tarot_hint_need:'✧ Langit perlukan kedua-dua nama untuk melakar buruj anda…',
+tarot_count:'✦ <b>{n}</b> buruj telah dilakar di bilik ini',
+radio_kicker:'Galeri IV · Radio Sahabat Sedunia 📻',radio_h2:'Setiap persahabatan ada runut bunyinya.',
+radio_p:'Setiap gadis memilih satu lagu tentang mereka berdua. Tuding untuk gelombang, klik untuk main.',radio_chosen:'pilihan',
+rt_kicker:'Bilik Girlie 🏠 · Peribadi, jemputan sahaja',rt_h2:'Ada cerita yang <em>untuk berdua sahaja.</em>',
+rt_p:'Cerita di atas milik dunia — bilik ini milik anda berdua sahaja. Berpasangan dengan kod rahsia dan simpan sejarah anda bersama.',
+rt_f1:'<b>Kod rahsia</b> — hanya anda berdua boleh masuk.',
+rt_f2:'<b>Garis masa persahabatan</b> — hari dikira sejak bertemu, detik penting ditanda.',
+rt_f3:'<b>Senarai impian bersama</b> — tanda bersama walau berjauhan.',
+rt_btn:'Masuk Bilik Girlie',rt_lock:'🔒 Hanya anda berdua nampak',
+join_h2:'Setiap persahabatan layak <em>dikenang.</em>',
+join_p:'Tambahkan suara anda ke muzium hidup wanita yang saling menyokong di seluruh dunia.',join_btn:'Kongsi Cerita Anda',
+foot:'<div class="brand">🌸 Girlie Project</div>Muzium digital yang memelihara persahabatan wanita di seluruh dunia.',
+gs_bloom:'{a} daripada {b} bunga sedang mekar',gs_day:'Cahaya siang melintasi taman.',gs_night:'Seluruh taman sedang bermimpi.',
+rm_wel_h2:'Selamat datang ke <em>Bilik Girlie</em>',
+rm_wel_p:'Ruang peribadi anda — tidak kelihatan kepada pengunjung. Log masuk bersama sahabat anda dan simpan sejarah anda: foto, video, detik penting — hanya untuk anda berdua.',
+auth_email:'E-mel',auth_pass:'Kata laluan (6+)',auth_name:'Nama anda (untuk daftar, pilihan)',
+auth_signin:'🔐 Log masuk',auth_signup:'🎀 Daftar akaun',auth_seed:'🌸 Lihat kisah Catherine &amp; Саша',
+auth_hint:'Tiada aplikasi, tiada Google — cukup satu e-mel untuk anda berdua',auth_signedin:'Log masuk sebagai',auth_signout:'log keluar',auth_continue:'Ruang sahabat saya →',
+hub_h2:'Ruang sahabat anda',hub_p:'Tukar antara bilik anda — satu untuk setiap sahabat. Atau buka yang baru dan jemput dia dengan kod.',
+hub_new:'🏠 Bilik baru',hub_code:'💌 Masukkan kod',
+joinscr_h2:'Masukkan kod dia 💌',joinscr_p:'6 digit — bilik terbuka sebaik sahaja sepadan.',
+tab_tl:'🧵 Garis masa',tab_al:'📸 Album',tab_ck:'✅ Senarai impian',tab_mo:'🎀 Lagi',
+rmh_tl:'Garis Masa Persahabatan',rmh_al:'Album Bersama',rmh_ck:'Senarai Impian Bersama',
+add_tl:'＋ Tambah kenangan',add_al:'＋ Tambah foto',add_ck:'＋ Matlamat baru',
+rm_days_l:'hari persahabatan<br>tahun ke-<b id="rm-years"></b> bersama',
+rm_anni_l:'🎂 <b id="rm-anni" style="margin:0 3px"></b> hari ke ulang tahun anda',
+rm_note_live:'🔒 Bilik peribadi · kongsi kod {code} dengan sahabat anda',rm_note_seed:'🌸 Pameran umum — log masuk untuk milik anda',
+rm_since:'🌸 Bersama di sini sejak {d}',rm_waiting:'💌 Menunggunya — kongsi kod {code}'}};
+var LANG=(function(){try{var s=localStorage.getItem('gp_lang');if(s&&I18N[s])return s}catch(e){}
+  var n=(navigator.language||'en').toLowerCase();
+  if(n.indexOf('zh')===0)return 'zh';if(n.indexOf('fr')===0)return 'fr';if(n.indexOf('uk')===0)return 'uk';if(n.indexOf('ms')===0)return 'ms';return 'en'})();
+function t(k){var d=I18N[LANG]||{};return d[k]!==undefined?d[k]:(I18N.en[k]!==undefined?I18N.en[k]:k)}
+function setLang(l){try{localStorage.setItem('gp_lang',l)}catch(e){}location.reload()}
 /* ═════════ MUSEUM (public site) ═════════ */
 (function(){
   var gp=document.getElementById('gp');
@@ -812,7 +1111,46 @@ var sbc=(window.supabase&&supaOn())?window.supabase.createClient(SUPA.url,SUPA.a
   (function(){var hr=new Date().getHours(),day=hr>=7&&hr<19;
     document.body.classList.toggle('daytime',day);
     var kk=document.querySelector('.hero .kicker');
-    if(kk)kk.textContent=(day?'Daylight museum':'After-hours museum')+' · global friendship garden';})();
+    if(kk)kk.textContent=t(day?'hero_kicker_day':'hero_kicker_night');})();
+  /* 🌐 i18n：静态文案按当前语言批量替换 + 左下角语言切换条 */
+  (function(){
+    var S=[['.gp-nav a[href="#bloom"]','nav_garden'],['.gp-nav a[href="#globe"]','nav_globe'],['.gp-nav a[href="#archive"]','nav_museum'],['.gp-nav a[href="#lexicon"]','nav_words'],
+      ['.hero .sub','hero_sub'],['.hero .ctas .btn-primary','hero_cta1'],['.hero .ctas .btn-ghost','hero_cta2'],['.hero .scrollcue','hero_scroll'],
+      ['#bloom .sec-head .kicker','bloom_kicker'],['#bloom .sec-head h2','bloom_h2'],['#bloom .sec-head p','bloom_p'],
+      ['.stats .stat:nth-child(1) .l','stat1'],['.stats .stat:nth-child(2) .l','stat2'],['.stats .stat:nth-child(3) .l','stat3'],['.stats .stat:nth-child(4) .l','stat4'],
+      ['.recent h3','recent_h3'],['.recent .sm','recent_p'],
+      ['#plant h3','plant_h3'],['#plant .sm','plant_p'],['#pf-msg','plant_ph','ph'],['#pf-go','plant_btn'],['#pf-note','plant_note_full'],
+      ['#globe .sec-head .kicker','globe_kicker'],['#globe .sec-head h2','globe_h2'],['#globe .sec-head p','globe_p'],['.globe-hint','globe_hint'],
+      ['#archive .sec-head .kicker','museum_kicker'],['#archive .sec-head h2','museum_h2'],['#archive .sec-head p','museum_p'],
+      ['.museum-guide .guide-chip:nth-child(1)','guide1'],['.museum-guide .guide-chip:nth-child(2)','guide2'],['.museum-guide .guide-chip:nth-child(3)','guide3'],
+      ['#lexicon .sec-head .kicker','lex_kicker'],['#lexicon .sec-head h2','lex_h2'],['#lexicon .sec-head p','lex_p'],
+      ['#tarot .sec-head .kicker','tarot_kicker'],['#tarot .sec-head h2','tarot_h2'],['#tarot .sec-head p','tarot_p'],
+      ['.tb-lead','tarot_lead'],['#tt-a','tarot_ph_a','ph'],['#tt-b','tarot_ph_b','ph'],['#tt-hint','tarot_hint'],
+      ['#radio .sec-head .kicker','radio_kicker'],['#radio .sec-head h2','radio_h2'],['#radio .sec-head p','radio_p'],
+      ['#room .kicker','rt_kicker'],['#room h2','rt_h2'],['#room .rt-copy>p','rt_p'],
+      ['.rt-feat:nth-child(1)>span:last-child','rt_f1'],['.rt-feat:nth-child(2)>span:last-child','rt_f2'],['.rt-feat:nth-child(3)>span:last-child','rt_f3'],
+      ['#room .rt-copy .btn-primary','rt_btn'],['.rt-lock','rt_lock'],
+      ['#join h2','join_h2'],['#join p','join_p'],['#joinbtn','join_btn'],['.foot','foot'],
+      ['#rm-wel h2','rm_wel_h2'],['#rm-wel .gs','rm_wel_p'],
+      ['#rm-hub h2','hub_h2'],['#rm-hub .gs','hub_p'],['#rm-hub .btn-primary','hub_new'],['#rm-hub .gbtns .btn-ghost','hub_code'],
+      ['#rm-join h2','joinscr_h2'],['#rm-join .gs','joinscr_p'],
+      ['.rm-tab[data-pg="tl"]','tab_tl'],['.rm-tab[data-pg="al"]','tab_al'],['.rm-tab[data-pg="ck"]','tab_ck'],['.rm-tab[data-pg="mo"]','tab_mo'],
+      ['#rm-pg-tl .rm-secthead h3','rmh_tl'],['#rm-pg-al .rm-secthead h3','rmh_al'],['#rm-pg-ck .rm-secthead h3','rmh_ck'],
+      ['#rm-pg-tl .addbtn','add_tl'],['#rm-pg-al .addbtn','add_al'],['#rm-pg-ck .addbtn','add_ck'],
+      ['.daysrow .l','rm_days_l'],['.anni','rm_anni_l'],
+      ['#modal .grid2 .it:nth-child(1) b','lbl_dream'],['#modal .grid2 .it:nth-child(2) b','lbl_taught']];
+    S.forEach(function(p){var el=document.querySelector(p[0]);if(!el)return;
+      if(p[2]==='ph')el.setAttribute('placeholder',t(p[1]));else el.innerHTML=t(p[1]);});
+    document.documentElement.lang=({zh:'zh-CN',en:'en',fr:'fr',uk:'uk',ms:'ms'})[LANG]||'en';
+    /* 找到导航里的 My Room 胶囊（按文本匹配，结构无关） */
+    Array.prototype.forEach.call(document.querySelectorAll('.gp-nav a,.gp-nav button'),function(a){
+      if(/My Room/i.test(a.textContent))a.innerHTML=a.innerHTML.replace(/My Room/i,t('nav_room'));});
+    var lb=document.createElement('div');lb.className='langbar';
+    [['zh','中'],['en','EN'],['fr','FR'],['uk','УКР'],['ms','BM']].forEach(function(L){
+      var b=document.createElement('button');b.textContent=L[1];if(L[0]===LANG)b.className='on';
+      b.onclick=function(){setLang(L[0])};lb.appendChild(b);});
+    document.body.appendChild(lb);
+  })();
   var CONT=[
     ['NA',[[33,69],[167,56],[278,78],[347,111],[292,139],[283,169],[255,182],[278,225],[220,190],[186,172],[161,144],[153,114],[60,92]]],
     ['SA',[[300,220],[403,272],[392,298],[368,318],[360,330],[311,397],[296,360],[283,290],[281,250]]],
@@ -974,15 +1312,15 @@ var sbc=(window.supabase&&supaOn())?window.supabase.createClient(SUPA.url,SUPA.a
 
   var rr=document.getElementById('recentrow');
   girls.slice().reverse().forEach(function(x){var c=document.createElement('div');c.className='gcard';
-    c.innerHTML='<div class="ph" style="background:linear-gradient(150deg,'+GR[x.col][0]+','+GR[x.col][1]+')"><span class="flag">'+x.f+'</span>'+blossom(x.col,84)+(x.img?'<img class="gph" src="'+x.img+'" alt="'+x.n+'" onerror="this.remove()">':'')+'</div><div class="bd"><div class="n">'+x.n+'</div><div class="c">'+x.c+' · '+x.age+'</div><div class="d"><b>Dream</b>'+x.dream+'</div></div>';
+    c.innerHTML='<div class="ph" style="background:linear-gradient(150deg,'+GR[x.col][0]+','+GR[x.col][1]+')"><span class="flag">'+x.f+'</span>'+blossom(x.col,84)+(x.img?'<img class="gph" src="'+x.img+'" alt="'+x.n+'" onerror="this.remove()">':'')+'</div><div class="bd"><div class="n">'+x.n+'</div><div class="c">'+x.c+' · '+x.age+'</div><div class="d"><b>'+t('lbl_dream')+'</b>'+x.dream+'</div></div>';
     c.addEventListener('click',function(){openStory(x)});rr.appendChild(c);});
   var ms=document.getElementById('masonry');
   girls.forEach(function(x){var h=190+((x.n.length*7+x.age)%80);var c=document.createElement('div');c.className='mcard';
     var mi=localInfo(x),cat='GP-'+String(girls.indexOf(x)+1).padStart(3,'0');
-    c.innerHTML='<div class="ph" style="height:'+h+'px;background:linear-gradient(150deg,'+GR[x.col][0]+','+GR[x.col][1]+')"><span class="flag">'+x.f+' '+mi.p.city+'</span><span class="age">'+x.age+'</span>'+(x.img?'<img class="mimg" src="'+x.img+'" alt="Portrait of '+x.n+'" onerror="this.remove()">':'<span class="em">'+blossom(x.col,Math.min(104,h*0.5))+'</span>')+'<span class="catalog">CAT. '+cat+'</span></div><div class="bd"><div class="q">“'+x.q+'”</div><div class="ct">Exhibit '+cat+' · '+x.n+'</div><div class="row"><b>Dream</b>'+x.dream+'</div><div class="row"><b>Friendship taught her</b>'+x.lesson+'</div><div class="weather"><span>◷ <strong>'+mi.time+'</strong> local</span><span>'+mi.p.climate+'</span></div></div>';
+    c.innerHTML='<div class="ph" style="height:'+h+'px;background:linear-gradient(150deg,'+GR[x.col][0]+','+GR[x.col][1]+')"><span class="flag">'+x.f+' '+mi.p.city+'</span><span class="age">'+x.age+'</span>'+(x.img?'<img class="mimg" src="'+x.img+'" alt="Portrait of '+x.n+'" onerror="this.remove()">':'<span class="em">'+blossom(x.col,Math.min(104,h*0.5))+'</span>')+'<span class="catalog">CAT. '+cat+'</span></div><div class="bd"><div class="q">“'+x.q+'”</div><div class="ct">'+t('lbl_exhibit')+' '+cat+' · '+x.n+'</div><div class="row"><b>'+t('lbl_dream')+'</b>'+x.dream+'</div><div class="row"><b>'+t('lbl_taught')+'</b>'+x.lesson+'</div><div class="weather"><span>◷ <strong>'+mi.time+'</strong> '+t('lbl_local')+'</span><span>'+mi.p.climate+'</span></div></div>';
     c.addEventListener('click',function(){openStory(x)});ms.appendChild(c);});
   var lex=document.getElementById('lexgrid');
-  girls.forEach(function(x){var p=MUSEUM[x.n],c=document.createElement('article');c.className='word-card rv';c.innerHTML='<div><div class="lang">'+p.lang+'</div><div class="word">'+p.word+'</div><div class="sound">/'+p.sound+'/</div></div><div><div class="meaning">a friend who knows the quiet version of your heart.</div><div class="from">Shared by <b>'+x.n+'</b> · '+p.city+'</div></div>';lex.appendChild(c);io.observe(c);});
+  girls.forEach(function(x){var p=MUSEUM[x.n],c=document.createElement('article');c.className='word-card rv';c.innerHTML='<div><div class="lang">'+p.lang+'</div><div class="word">'+p.word+'</div><div class="sound">/'+p.sound+'/</div></div><div><div class="meaning">'+t('lex_meaning')+'</div><div class="from">'+t('lex_shared')+' <b>'+x.n+'</b> · '+p.city+'</div></div>';lex.appendChild(c);io.observe(c);});
 
   /* ═══ 💌 Plant a flower — Supabase 后端就绪；未填 key 时自动降级为本地存储 ═══ */
   /* SUPA / supaH 现在是全局共享（见文件顶部） */
@@ -1005,9 +1343,9 @@ var sbc=(window.supabase&&supaOn())?window.supabase.createClient(SUPA.url,SUPA.a
     if(m.length<2){mEl.focus();return}
     btn.disabled=true;
     var done=function(){planted.push({country:c,message:m});renderPlanted();mEl.value='';btn.disabled=false;
-      document.getElementById('pf-note').innerHTML='🌸 Your flower is blooming in '+c+' — thank you. <b id="pf-count">'+planted.length+'</b> flowers planted so far.';};
+      document.getElementById('pf-note').innerHTML=t('plant_done').replace('{c}',c)+' '+t('plant_count').replace('{n}',planted.length);};
     if(SUPA.url&&SUPA.anon){fetch(SUPA.url+'/rest/v1/planted_flowers',{method:'POST',headers:supaH(),body:JSON.stringify({country:c,message:m})})
-      .then(function(r){if(!r.ok)throw 0;done()}).catch(function(){btn.disabled=false;document.getElementById('pf-note').textContent='🥀 The garden is busy — try again in a moment.'});}
+      .then(function(r){if(!r.ok)throw 0;done()}).catch(function(){btn.disabled=false;document.getElementById('pf-note').textContent=t('plant_busy')});}
     else{done();try{localStorage.setItem('gp_planted',JSON.stringify(planted))}catch(e){}}
   });
   loadPlanted();
@@ -1035,13 +1373,13 @@ var sbc=(window.supabase&&supaOn())?window.supabase.createClient(SUPA.url,SUPA.a
       var hh=supaH();hh.Prefer='count=exact';hh.Range='0-0';
       fetch(SUPA.url+'/rest/v1/star_charts?select=id',{headers:hh}).then(function(r){
         var cr=r.headers.get('content-range'),n=cr&&cr.split('/')[1];
-        if(n&&n!=='*'&&+n>0)hint.innerHTML='✦ <b>'+Number(n).toLocaleString()+'</b> constellations have been traced in this parlour';
+        if(n&&n!=='*'&&+n>0)hint.innerHTML=t('tarot_count').replace('{n}',Number(n).toLocaleString());
       }).catch(function(){});}
     chartCount();
     go.addEventListener('click',function(){
       var a=ta.value.trim(),b=tb.value.trim();
       if(!a||!b){var miss=!a?ta:tb;pill(miss).classList.add('err');miss.focus();
-        hint.textContent='✧ The sky needs both names to draw your constellation…';return;}
+        hint.textContent=t('tarot_hint_need');return;}
       var h=thash([a.toLowerCase(),b.toLowerCase()].sort().join('✦'));
       var seed=h;function rnd(){seed=(seed*1103515245+12345)>>>0;return seed/4294967296}
       var N=7+h%3,pts=[];for(var i=0;i<N;i++)pts.push([(20+rnd()*320).toFixed(1),(16+rnd()*112).toFixed(1)]);
@@ -1069,10 +1407,10 @@ var sbc=(window.supabase&&supaOn())?window.supabase.createClient(SUPA.url,SUPA.a
   var SONGS={Emma:['小幸运','Hebe Tian 田馥甄'],Anna:['Обійми','Okean Elzy'],'Élise':['La Vie en rose','Édith Piaf'],Mei:['Count on Me','Bruno Mars'],Yuki:['打上花火','DAOKO × Kenshi Yonezu'],Grace:['You’ve Got a Friend','Carole King'],Sofia:['Trem-Bala','Ana Vilela'],Diya:['Yeh Dosti','Sholay (1975)'],Lily:['Fix You','Coldplay'],Mia:['Riptide','Vance Joy'],Soo:['Dear My Friend','Agust D ft. Kim Jong Wan']};
   var rg=document.getElementById('radiogrid');
   girls.forEach(function(x){var s=SONGS[x.n];if(!s)return;var c=document.createElement('div');c.className='rcard rv';
-    c.innerHTML='<span class="rfl">'+x.f+'</span><div class="rbd"><div class="rsong">'+s[0]+'</div><div class="rart">'+s[1]+'</div><div class="rby">chosen by '+x.n+' · '+x.c+'</div></div><div class="eq"><i></i><i></i><i></i><i></i><i></i></div>';
+    c.innerHTML='<span class="rfl">'+x.f+'</span><div class="rbd"><div class="rsong">'+s[0]+'</div><div class="rart">'+s[1]+'</div><div class="rby">'+t('radio_chosen')+' '+x.n+' · '+x.c+'</div></div><div class="eq"><i></i><i></i><i></i><i></i><i></i></div>';
     c.addEventListener('click',function(){window.open('https://www.youtube.com/results?search_query='+encodeURIComponent(s[0]+' '+s[1]),'_blank','noopener')});
     rg.appendChild(c);io.observe(c);});
-  function gardenStatus(){var awake=girls.filter(function(x){return localInfo(x).awake}).length;document.getElementById('garden-clock').textContent=awake+' of '+girls.length+' flowers are in bloom';document.getElementById('garden-copy').textContent=awake?'Daylight is moving through the garden.':'The whole garden is dreaming.';}gardenStatus();setInterval(gardenStatus,60000);
+  function gardenStatus(){var awake=girls.filter(function(x){return localInfo(x).awake}).length;document.getElementById('garden-clock').textContent=t('gs_bloom').replace('{a}',awake).replace('{b}',girls.length);document.getElementById('garden-copy').textContent=t(awake?'gs_day':'gs_night');}gardenStatus();setInterval(gardenStatus,60000);
   function closeM(){document.getElementById('modal').classList.remove('open')}
   document.getElementById('m-x').addEventListener('click',closeM);
   document.getElementById('modalbk').addEventListener('click',closeM);
@@ -1143,13 +1481,13 @@ var sbc=(window.supabase&&supaOn())?window.supabase.createClient(SUPA.url,SUPA.a
       var tr=new THREE.Sprite(new THREE.SpriteMaterial({map:haloTex,transparent:true,opacity:.55,blending:THREE.AdditiveBlending,depthWrite:false}));tr.scale.set(.2,.2,1);globe.add(tr);travelers.push({curve:cv2,sp:tr,t:Math.random()});}}
     var pinWrap=document.getElementById('gpins'),pins=[];
     function openPanel(x){var n=STATS[x.c]||1;document.getElementById('p-flag').textContent=x.f;document.getElementById('p-country').textContent=x.c;
-      document.getElementById('p-meta').textContent=n+' '+(n>1?'stories':'story');
+      document.getElementById('p-meta').textContent=n+' '+t('lbl_stories');
       document.getElementById('p-latest').textContent=x.n+', '+x.age+' — dreaming to '+x.dream.toLowerCase()+'.';document.getElementById('p-quote').textContent='“'+x.q+'”';
       var gal=document.getElementById('p-gal');gal.innerHTML='';['pink','lav','blue'].forEach(function(cc){var t=x.col||cc;var el=document.createElement('i');el.style.background='linear-gradient(150deg,'+GR[t][0]+','+GR[t][1]+')';gal.appendChild(el)});
       document.getElementById('gpanel').classList.add('open');}
     FEAT.forEach(function(cn){var x=girls.find(function(g){return g.c===cn});if(!x)return;var n=STATS[cn]||1;
       var el=document.createElement('div');el.className='gpin';
-      el.innerHTML='<span class="gdot"></span><span class="gline"></span><div class="glabel"><b>'+cn+'</b><span>'+n+' stories</span></div>';
+      el.innerHTML='<span class="gdot"></span><span class="gline"></span><div class="glabel"><b>'+cn+'</b><span>'+n+' '+t('lbl_stories')+'</span></div>';
       el.addEventListener('click',function(){openPanel(x);focusNode(v3(x.xs,x.ys,R));targetZoom=6.4});
       pinWrap.appendChild(el);pins.push({el:el,pos:v3(x.xs,x.ys,R*1.008)});});
     document.getElementById('gpx').addEventListener('click',function(){document.getElementById('gpanel').classList.remove('open')});
@@ -1345,24 +1683,24 @@ var RM=(function(){
     },function(){if(list)list.innerHTML='<div class="hinttxt" style="margin:0 0 6px">读取房间失败（网络）</div>';});}
   function myRoomOrHub(){loadHub();}
   function refreshWel(){var box=$('#wel-auth');if(!box)return;
-    if(meState){box.innerHTML='<button class="btn btn-primary" onclick="RM.loadHub()">My bestie spaces →</button>'+
-      '<button class="btn btn-ghost" onclick="RM.enterSeed()">🌸 See Catherine &amp; Саша’s story</button>'+
-      '<div class="hinttxt">Signed in as '+myName()+' · <a href="#" onclick="RM.signOut();return false">sign out</a></div>';}
+    if(meState){box.innerHTML='<button class="btn btn-primary" onclick="RM.loadHub()">'+t('auth_continue')+'</button>'+
+      '<button class="btn btn-ghost" onclick="RM.enterSeed()">'+t('auth_seed')+'</button>'+
+      '<div class="hinttxt">'+t('auth_signedin')+' '+myName()+' · <a href="#" onclick="RM.signOut();return false">'+t('auth_signout')+'</a></div>';}
     else{box.innerHTML='<div class="authform">'+
-      '<input id="au-email" type="email" autocomplete="email" placeholder="Email 邮箱">'+
-      '<input id="au-pass" type="password" autocomplete="current-password" placeholder="Password 密码（6 位以上）">'+
-      '<input id="au-name" type="text" autocomplete="nickname" placeholder="Your name 昵称（注册时用，可不填）">'+
+      '<input id="au-email" type="email" autocomplete="email" placeholder="'+t('auth_email')+'">'+
+      '<input id="au-pass" type="password" autocomplete="current-password" placeholder="'+t('auth_pass')+'">'+
+      '<input id="au-name" type="text" autocomplete="nickname" placeholder="'+t('auth_name')+'">'+
       '</div>'+
-      '<button class="btn btn-primary" onclick="RM.signInEmail()">🔐 Sign in 登录</button>'+
-      '<button class="btn btn-ghost" onclick="RM.signUpEmail()">🎀 Create account 注册</button>'+
-      '<button class="btn btn-ghost" onclick="RM.enterSeed()">🌸 See Catherine &amp; Саша’s story</button>'+
-      '<div class="hinttxt">No app, no Google — just an email for you two</div>';
+      '<button class="btn btn-primary" onclick="RM.signInEmail()">'+t('auth_signin')+'</button>'+
+      '<button class="btn btn-ghost" onclick="RM.signUpEmail()">'+t('auth_signup')+'</button>'+
+      '<button class="btn btn-ghost" onclick="RM.enterSeed()">'+t('auth_seed')+'</button>'+
+      '<div class="hinttxt">'+t('auth_hint')+'</div>';
       var pw=$('#au-pass');if(pw)pw.addEventListener('keydown',function(ev){if(ev.key==='Enter')signInEmail();});}}
   function syncChrome(){var live=(mode==='live');
     $$('#roomov .addbtn').forEach(function(b){b.style.display=live?'':'none'});
-    var note=$('#rm-modenote');if(note)note.textContent=live?('🔒 Private room · share code '+roomCode+' with your bestie'):'🌸 Public showcase — sign in to make your own';
+    var note=$('#rm-modenote');if(note)note.textContent=live?t('rm_note_live').replace('{code}',roomCode):t('rm_note_seed');
     var sw=$('#rm-switch');if(sw)sw.style.display=(live&&meState)?'':'none';
-    var badge=$('#rm-userbadge');if(badge)badge.innerHTML=meState?('👤 '+myName()+' · <a href="#" onclick="RM.signOut();return false">sign out</a>'):'';}
+    var badge=$('#rm-userbadge');if(badge)badge.innerHTML=meState?('👤 '+myName()+' · <a href="#" onclick="RM.signOut();return false">'+t('auth_signout')+'</a>'):'';}
   function showCode(code){var box=$('#codebox');if(!box)return;box.innerHTML='';
     String(code).split('').forEach(function(d,i){var el=document.createElement('div');el.className='d';el.textContent=d;el.style.animationDelay=(i*.07)+'s';box.appendChild(el);});st.code=code;}
 
@@ -1419,7 +1757,7 @@ var RM=(function(){
       var my=mineName||myName();
       roomMeet=String(room.meet_date||room.created_at||'').slice(0,10)||null;
       if(nm)nm.textContent=other?(my+' ✕ '+(other.display_name||'her')):(my+' ✕ …');
-      if(sub)sub.textContent=other?('🌸 Together here since '+(roomMeet||'today')):('💌 Waiting for her — share code '+(room.code||roomCode));
+      if(sub)sub.textContent=other?t('rm_since').replace('{d}',roomMeet||''):t('rm_waiting').replace('{code}',room.code||roomCode);
       calcDays();
     }).catch(function(){calcDays();});}
 
