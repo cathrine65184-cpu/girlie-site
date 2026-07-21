@@ -15,3 +15,10 @@
 截屏*
 录屏*
 Gemini_Generated_*
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
