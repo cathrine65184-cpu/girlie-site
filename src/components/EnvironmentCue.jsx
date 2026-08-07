@@ -66,7 +66,8 @@ export function EnvironmentCue({ girl, reveal, reducedMotion }) {
   });
 
   if (reveal < .015) return null;
-  return <group ref={group} position={[girl.position[0] * 1.09, girl.position[1] - .18, girl.position[2] + .42]} scale={.45 + reveal * .55}>
+  // City cues are deliberately set beyond the flower; the botanical specimen remains the first readable object.
+  return <group ref={group} position={[girl.position[0] * 1.09, girl.position[1] - .27, girl.position[2] - .72]} scale={.32 + reveal * .52}>
     <PlantCluster type={world.type} color={world.color} glow={world.glow} />
     <pointLight position={[0, .65, .1]} color={world.glow} intensity={.38 * reveal} distance={2.6} />
   </group>;
