@@ -1,0 +1,93 @@
+/*
+ * One-off asset curator for Girlie Friendship Museum.
+ *
+ * Usage:
+ *   TRIPO_API_KEY="tsk_..." node scripts/generate-tripo-flowers.mjs
+ *
+ * The API key is read only from the environment and is never written to the repo.
+ */
+import { mkdir, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+
+const API_URL = 'https://api.tripo3d.ai/v2/openapi/task';
+const outputDirectory = join(process.cwd(), 'public', 'models', 'flowers');
+const apiKey = process.env.TRIPO_API_KEY;
+
+if (!apiKey) throw new Error('Set TRIPO_API_KEY before running this script.');
+
+const collection = [
+  ['emma', 'lily of the valley', 'a graceful sprig of tiny white bell flowers, soft green leaves, gentle protection'],
+  ['anna', 'blue hydrangea', 'a rounded hydrangea bloom of many pale periwinkle florets, broad serrated leaves, understanding'],
+  ['elise', 'pink camellia', 'a single layered blush pink camellia flower, glossy dark green leaves, loyalty'],
+  ['mei', 'white daisy', 'a delicate white oxeye daisy with a warm golden centre, thin green stem, new beginning'],
+  ['yuki', 'lavender', 'several slender lavender stems with small violet florets, silvery green leaves, memories'],
+  ['grace', 'purple iris', 'an elegant deep violet iris with three falling petals and a small golden throat, courage'],
+  ['sofia', 'pink lotus', 'a graceful open lotus flower with layered rose pink petals and a subtle yellow centre, growth'],
+  ['diya', 'sunflower', 'a tall warm golden sunflower with natural petals, dark brown centre, soft green leaves, support'],
+  ['lily', 'cherry blossom', 'a delicate branch of pale pink cherry blossoms, five petaled flowers and fine stamens, youth'],
+  ['mia', 'white rose', 'a single ivory white rose in a softly unfurling spiral with deep green leaves, trust'],
+  ['soo', 'cream magnolia', 'a cream magnolia branch with large porcelain petals and dark waxy leaves, grace'],
+];
+
+const negativePrompt = 'bouquet, vase, pot, pedestal, background, text, letters, logo, people, insects, duplicate flowers, cartoon, game icon, low resolution';
+
+async function request(path, options = {}) {
+  const response = await fetch(`${API_URL}${path}`, {
+    ...options,
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      ...(options.headers || {}),
+    },
+  });
+  const json = await response.json().catch(() => ({}));
+  if (!response.ok || json.code !== 0) throw new Error(json.message || json.msg || `Tripo API returned ${response.status}`);
+  return json.data;
+}
+
+async function createFlower(id, flower, details, index) {
+  const prompt = `One museum-quality botanical specimen: ${flower}. ${details}. Isolated upright full plant, realistic yet softly stylized, elegant dreamy contemporary museum aesthetic, clean topology, front three-quarter view, centered, no ground plane.`;
+  const task = await request('', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      type: 'text_to_model',
+      model_version: 'P1-20260311',
+      prompt,
+      negative_prompt: negativePrompt,
+      texture: true,
+      pbr: false,
+      face_limit: 2000,
+      compress: 'geometry',
+      model_seed: 1701 + index,
+      texture_seed: 4101 + index,
+    }),
+  });
+
+  process.stdout.write(`Submitted ${id} (${task.task_id})\n`);
+  const deadline = Date.now() + 10 * 60 * 1000;
+  let result;
+  while (Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 2200));
+    result = await request(`/${task.task_id}`);
+    process.stdout.write(`${id}: ${result.status}${result.progress == null ? '' : ` ${result.progress}%`}\n`);
+    if (result.status === 'success') break;
+    if (['failed', 'banned', 'cancelled', 'expired', 'unknown'].includes(result.status)) throw new Error(`${id} ended with ${result.status}`);
+  }
+  if (!result || result.status !== 'success') throw new Error(`${id} did not finish before the timeout.`);
+
+  const modelUrl = result.output?.model || result.output?.pbr_model || result.output?.base_model;
+  if (!modelUrl) throw new Error(`${id} completed without a downloadable model.`);
+  const download = await fetch(modelUrl);
+  if (!download.ok) throw new Error(`Could not download ${id}: ${download.status}`);
+  const bytes = new Uint8Array(await download.arrayBuffer());
+  await writeFile(join(outputDirectory, `${id}.glb`), bytes);
+  return { id, taskId: task.task_id, credits: result.consumed_credit ?? null, bytes: bytes.byteLength };
+}
+
+await mkdir(outputDirectory, { recursive: true });
+const manifest = [];
+for (const [index, [id, flower, details]] of collection.entries()) {
+  manifest.push(await createFlower(id, flower, details, index));
+}
+await writeFile(join(outputDirectory, 'manifest.json'), `${JSON.stringify({ generatedAt: new Date().toISOString(), collection: manifest }, null, 2)}\n`);
+console.table(manifest);

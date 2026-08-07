@@ -1,5 +1,6 @@
 import { useFrame } from '@react-three/fiber';
-import { useRef, useState } from 'react';
+import { useGLTF } from '@react-three/drei';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { isAwake } from '../data/girls';
 
@@ -17,6 +18,32 @@ const botanicalCollection = {
   mia: { number: '10', name: 'White Rose', meaning: 'Trust', petal: '#fff6e8', accent: '#eed4a5', glow: '#fff0c8' },
   soo: { number: '11', name: 'Magnolia', meaning: 'Grace', petal: '#f4eadc', accent: '#cba27d', glow: '#fff2dd' },
 };
+
+const assetPath = (path) => `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`;
+
+function useTripoAsset(id) {
+  const url = assetPath(`models/flowers/${id}.glb`);
+  const [available, setAvailable] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(url, { method: 'HEAD' }).then((response) => {
+      if (!cancelled) setAvailable(response.ok);
+    }).catch(() => {
+      if (!cancelled) setAvailable(false);
+    });
+    return () => { cancelled = true; };
+  }, [url]);
+
+  return { available, url };
+}
+
+/** Generated Tripo flowers remain optional: procedural specimens are the safe fallback until their GLBs exist. */
+function TripoSpecimen({ url }) {
+  const { scene } = useGLTF(url);
+  const model = useMemo(() => scene.clone(true), [scene]);
+  return <primitive object={model} scale={.78} position={[0, -.55, 0]} rotation={[0, Math.PI * .08, 0]} />;
+}
 
 function Petal({ position = [0, 0, 0], rotation = [0, 0, 0], scale = [.2, .28, .055], color, glow = 0, roughness = .62 }) {
   return <mesh position={position} rotation={rotation} scale={scale} castShadow>
@@ -189,6 +216,7 @@ export function Flower({ girl, opened, onOpen, reducedMotion }) {
   const group = useRef();
   const [hovered, setHovered] = useState(false);
   const flower = botanicalCollection[girl.id] || botanicalCollection.mei;
+  const tripo = useTripoAsset(girl.id);
   const awake = isAwake(girl);
   const glow = opened ? .33 : hovered ? .23 : awake ? .09 : .015;
 
@@ -200,7 +228,7 @@ export function Flower({ girl, opened, onOpen, reducedMotion }) {
 
   // The environmental cue sits just behind each specimen, so the flower comes slightly forward as the archive's focal object.
   return <group ref={group} position={[girl.position[0], girl.position[1] + .1, girl.position[2] + 1.2]} scale={hovered || opened ? 1.16 : 1} userData={{ flower: flower.name, meaning: flower.meaning, catalogue: flower.number }}>
-    <BotanicalHead flower={flower} id={girl.id} glow={glow} />
+    {tripo.available ? <TripoSpecimen url={tripo.url} /> : <BotanicalHead flower={flower} id={girl.id} glow={glow} />}
     <mesh
       position={[0, .12, .12]}
       onClick={(event) => { event.stopPropagation(); onOpen(girl.id); }}
