@@ -5,17 +5,27 @@ import { GirlPortal } from '../components/GirlPortal';
 
 function Path() {
   const material = useRef();
-  useFrame(({ clock }) => { if (material.current) material.current.emissiveIntensity = .12 + Math.sin(clock.elapsedTime * .25) * .04; });
+  const stones = useMemo(() => Array.from({ length: 34 }, (_, index) => ({
+    x: Math.sin(index * .86) * .31,
+    z: 8.5 - index * 1.27,
+    r: (index % 3 - 1) * .14,
+    s: .72 + (index % 4) * .08,
+    color: index % 3 === 0 ? '#f39ab8' : index % 3 === 1 ? '#fff1e8' : '#f8c5d5',
+  })), []);
+  useFrame(({ clock }) => { if (material.current) material.current.emissiveIntensity = .09 + Math.sin(clock.elapsedTime * .25) * .035; });
   return <>
-    <mesh position={[0, -.56, -14]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow><planeGeometry args={[14, 52, 1, 1]} /><meshStandardMaterial color="#476047" roughness={1} /></mesh>
-    <mesh position={[0, -.535, -14]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow><planeGeometry args={[2.6, 52, 1, 1]} /><meshStandardMaterial ref={material} color="#c9af8d" emissive="#d89f87" roughness={1} /></mesh>
+    <mesh position={[0, -.56, -14]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow><planeGeometry args={[14, 52, 1, 1]} /><meshStandardMaterial color="#c7959c" roughness={1} /></mesh>
+    <mesh position={[0, -.535, -14]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow><planeGeometry args={[2.8, 52, 1, 1]} /><meshStandardMaterial ref={material} color="#edc6b6" emissive="#f8c8c7" roughness={1} /></mesh>
+    {stones.map((stone, index) => <mesh key={index} position={[stone.x, -.48, stone.z]} rotation={[0, stone.r, 0]} scale={[stone.s, 1, .72 + (index % 2) * .1]} castShadow receiveShadow>
+      <cylinderGeometry args={[.42, .46, .09, 9]} /><meshStandardMaterial color={stone.color} roughness={.78} />
+    </mesh>)}
   </>;
 }
 
 function FogRibbons() {
   const ribbons = useMemo(() => Array.from({ length: 9 }, (_, index) => ({ x: ((index * 3.7) % 12) - 6, z: -index * 4, s: 2 + (index % 3) })), []);
   return <>{ribbons.map((ribbon, index) => <mesh key={index} position={[ribbon.x, .95, ribbon.z]} rotation={[0, .25, 0]}>
-    <sphereGeometry args={[ribbon.s, .16, 18]} /><meshBasicMaterial color="#eee5f0" transparent opacity={.09} depthWrite={false} />
+    <sphereGeometry args={[ribbon.s, .16, 18]} /><meshBasicMaterial color="#fff9f4" transparent opacity={.22} depthWrite={false} />
   </mesh>)}</>;
 }
 

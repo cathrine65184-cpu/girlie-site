@@ -1,8 +1,8 @@
 import { Float } from '@react-three/drei';
 
-/** The field becomes denser as the visitor encounters more stories. */
-export function MemoryBloom({ count, reducedMotion }) {
-  const blooms = Array.from({ length: Math.max(3, count * 4) }, (_, index) => ({
+/** A quiet horizon of arrivals: the collection grows beyond any one visitor. */
+export function MemoryBloom({ reducedMotion }) {
+  const blooms = Array.from({ length: 18 }, (_, index) => ({
     x: ((index * 1.71) % 7) - 3.5,
     z: -31 - ((index * .83) % 5),
     tint: index % 2 ? '#ffd7e7' : '#d8c4ff',
