@@ -1,0 +1,1923 @@
+<div id="gp">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Cormorant+Garamond:wght@500;600&family=Inter:wght@300;400;500;600;700&display=swap');
+#gp{
+  --bg:#FFF9F8; --pink:#F8C8DC; --lav:#EADCF8; --cream:#FFF5EC; --blue:#DCEEFF;
+  --peach:#FFD9C0; --accent:#FF8DB5; --accent-deep:#e7659a;
+  --ink:#5b4a55; --ink-soft:#9a8893; --line:#f6e3ec;
+  --serif:'Playfair Display','Cormorant Garamond',ui-serif,Georgia,serif;
+  --sans:'Inter',-apple-system,system-ui,'Segoe UI',sans-serif;
+  font-family:var(--sans); color:var(--ink); background:var(--bg);
+  position:relative; width:100%; overflow-x:hidden; -webkit-font-smoothing:antialiased;}
+#gp *{box-sizing:border-box; margin:0; padding:0}
+#gp h1,#gp h2,#gp h3,#gp h4{font-family:var(--serif); font-weight:600; letter-spacing:-.01em}
+#gp button{font-family:inherit; cursor:pointer; border:none}
+#gp input,#gp textarea{font-family:inherit; color:var(--ink); outline:none}
+#gp ::placeholder{color:#c9b4be}
+#gp section[id]{scroll-margin-top:84px}
+.gp-cur,.gp-ring{position:fixed; top:0; left:0; pointer-events:none; z-index:9999; border-radius:50%; mix-blend-mode:multiply}
+.gp-cur{width:7px; height:7px; background:var(--accent); transform:translate(-50%,-50%)}
+.gp-ring{width:34px; height:34px; border:1.5px solid rgba(255,141,181,.5); transform:translate(-50%,-50%); transition:width .25s,height .25s,opacity .25s}
+@media (hover:none){.gp-cur,.gp-ring{display:none}}
+.gp-nav{position:fixed; top:14px; left:50%; transform:translateX(-50%); z-index:200; display:flex; align-items:center; gap:4px;
+  padding:7px 8px 7px 15px; background:rgba(255,255,255,.66); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.8); border-radius:40px; box-shadow:0 10px 34px -16px rgba(190,95,150,.45); max-width:calc(100% - 24px)}
+.gp-nav .brand{font-family:var(--serif); font-weight:700; font-size:15.5px; color:var(--accent-deep); padding-right:6px; white-space:nowrap}
+.gp-nav .links{display:flex; align-items:center; gap:2px}
+.gp-nav a{font-size:13px; color:var(--ink-soft); text-decoration:none; padding:7px 12px; border-radius:30px; transition:.25s; white-space:nowrap; cursor:pointer}
+.gp-nav a:hover{color:var(--accent-deep); background:rgba(248,200,220,.4)}
+.gp-nav a.roomlink{background:linear-gradient(120deg,var(--accent),#f5a8cf); color:#fff; font-weight:600; margin-left:4px}
+@media(max-width:720px){.gp-nav .links a:not(.roomlink){display:none}}
+.btn{position:relative; overflow:hidden; font-family:var(--sans); font-weight:500; font-size:15px; padding:14px 28px; border-radius:40px;
+  border:none; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  transition:transform .35s cubic-bezier(.2,1,.3,1),box-shadow .35s}
+.btn::before{content:""; position:absolute; left:var(--mx,50%); top:var(--my,50%); width:0; height:0;
+  background:radial-gradient(circle,rgba(255,255,255,.55),transparent 70%); border-radius:50%; transform:translate(-50%,-50%); transition:width .5s,height .5s}
+.btn:hover::before{width:260px; height:260px}
+.btn:hover{transform:translateY(-3px)}
+.btn-primary{background:linear-gradient(120deg,var(--accent),#f5a8cf 55%,var(--lav)); color:#fff; box-shadow:0 14px 34px -12px rgba(255,141,181,.7)}
+.btn-ghost{background:rgba(255,255,255,.5); color:var(--accent-deep); border:1.5px solid rgba(255,141,181,.4); backdrop-filter:blur(8px)}
+.rv{opacity:0; transform:translateY(30px); transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1; transform:none}
+.kicker{font-size:12px; letter-spacing:4px; text-transform:uppercase; color:var(--accent); font-weight:600; font-family:var(--sans)}
+.wrap{max-width:1180px; margin:0 auto; padding:0 24px}
+.sec{padding:92px 0}
+@media(max-width:640px){.sec{padding:64px 0}}
+.sec-head{text-align:center; max-width:640px; margin:0 auto 44px}
+.sec-head h2{font-size:clamp(30px,4.8vw,54px); color:#4a3a44; margin-top:12px; line-height:1.08}
+.sec-head p{margin-top:14px; color:var(--ink-soft); font-size:16px; font-weight:300; line-height:1.7}
+
+/* ═══ HERO ═══ */
+.hero{min-height:100svh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+  padding:110px 24px 80px; position:relative; overflow:hidden;
+  background:radial-gradient(70% 55% at 50% 18%,rgba(248,200,220,.55),transparent 60%),radial-gradient(60% 50% at 82% 75%,rgba(234,220,248,.5),transparent 60%),radial-gradient(55% 45% at 14% 80%,rgba(220,238,255,.5),transparent 60%),linear-gradient(180deg,#FFF9F8,#FFF1F4 60%,#FBEFF8)}
+.cloud{position:absolute; border-radius:50%; filter:blur(34px); opacity:.7; pointer-events:none; z-index:0; animation:float linear infinite}
+@keyframes float{from{transform:translateX(-12vw)}to{transform:translateX(112vw)}}
+.hero-inner{position:relative; z-index:3; max-width:860px}
+.hero h1{font-size:clamp(46px,9.5vw,116px); line-height:1; font-weight:600;
+  background:linear-gradient(110deg,#c9577f,#9a6fb0 60%,#6d8fc4); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent}
+.hero .sub{margin:22px auto 0; font-size:clamp(15px,2vw,20px); color:var(--ink-soft); font-weight:300; max-width:540px; line-height:1.65}
+.hero .ctas{margin-top:38px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap}
+.hero .scrollcue{position:absolute; bottom:28px; left:50%; transform:translateX(-50%); z-index:3; font-size:11px; letter-spacing:3px; color:var(--ink-soft); text-transform:uppercase; opacity:.7}
+.hero .scrollcue::after{content:""; display:block; width:1px; height:30px; margin:9px auto 0; background:linear-gradient(var(--accent),transparent); animation:cue 2s ease-in-out infinite}
+@keyframes cue{0%,100%{opacity:.3; transform:scaleY(.6)}50%{opacity:1; transform:scaleY(1)}}
+#hero-particles{position:absolute; inset:0; z-index:1; pointer-events:none}
+
+/* ═══ TWILIGHT GARDEN ═══ */
+.hero{background:radial-gradient(60% 58% at 50% 8%,rgba(172,148,230,.55),transparent 62%),radial-gradient(58% 45% at 83% 77%,rgba(240,140,183,.28),transparent 64%),linear-gradient(180deg,#17122e 0%,#30204b 54%,#693b66 100%)}
+.hero:before{content:""; position:absolute; inset:0; z-index:1; pointer-events:none; opacity:.75; background-image:radial-gradient(circle at 18% 20%,#fff 0 1px,transparent 1.8px),radial-gradient(circle at 73% 14%,#fff 0 1.2px,transparent 2px),radial-gradient(circle at 88% 36%,#f9d9ff 0 1px,transparent 1.7px),radial-gradient(circle at 35% 42%,#fff 0 1px,transparent 1.8px); background-size:230px 170px,310px 240px,280px 220px,190px 190px}
+.hero h1{background:linear-gradient(110deg,#fff6fa,#ffd2e5 47%,#d9ccff);-webkit-background-clip:text;background-clip:text}.hero .sub,.hero .scrollcue{color:#eee3f5}.hero .kicker{color:#ffc3db}
+.garden-arch{position:absolute; z-index:2; inset:auto 0 0; height:34%; pointer-events:none; opacity:.9; background:radial-gradient(75% 70% at 50% 140%,#192536 0 39%,transparent 40%),radial-gradient(48% 70% at 3% 115%,#12202a 0 45%,transparent 46%),radial-gradient(48% 70% at 97% 115%,#12202a 0 45%,transparent 46%)}
+.garden-status{position:absolute; bottom:30px; right:clamp(18px,5vw,70px); z-index:4; color:#f3eaff; text-align:right; font-size:11px; letter-spacing:1.6px; text-transform:uppercase; line-height:1.7; opacity:.86}.garden-status b{display:block; color:#ffb5d1; font-size:12px}
+.garden-sprig{position:absolute; z-index:2; bottom:-4px; width:220px; height:190px; pointer-events:none; opacity:.88; filter:drop-shadow(0 12px 12px rgba(0,0,0,.22))}.garden-sprig.l{left:-32px; transform:rotate(-8deg)}.garden-sprig.r{right:-32px; transform:scaleX(-1) rotate(-8deg)}
+.garden-sprig:before,.garden-sprig:after{content:"";position:absolute;border-radius:100% 0 100% 0;background:linear-gradient(135deg,#243e3e,#607856)}.garden-sprig:before{width:165px;height:55px;left:20px;bottom:68px;transform:rotate(-34deg);box-shadow:55px 42px 0 -5px #355242,104px 0 0 -5px #2c4b43}.garden-sprig:after{width:15px;height:190px;left:92px;bottom:0;background:#466047;border-radius:40px;transform:rotate(-27deg)}
+/* ☀️ 白昼花园：按访客本地时间 7:00–19:00 点亮（body.daytime 由 JS 打上），夜晚保持原样 */
+body.daytime .hero{background:radial-gradient(60% 58% at 50% 8%,rgba(255,205,231,.85),transparent 62%),radial-gradient(58% 45% at 83% 77%,rgba(255,170,208,.5),transparent 64%),linear-gradient(180deg,#FFF4FA 0%,#FFE4F2 54%,#F3D7EE 100%)}
+body.daytime .hero h1{background:linear-gradient(110deg,#e75d95,#b76fd0 47%,#8a79e0);-webkit-background-clip:text;background-clip:text}
+body.daytime .hero .sub,body.daytime .hero .scrollcue{color:#96707f}
+body.daytime .hero .kicker{color:#d1568e}
+body.daytime .garden-status{color:#a97b93}body.daytime .garden-status b{color:#d1568e}
+body.daytime .garden-arch{opacity:.45;filter:brightness(2.6) saturate(.75)}
+body.daytime .garden-sprig{opacity:.8;filter:brightness(1.9) saturate(.85) drop-shadow(0 12px 12px rgba(150,90,120,.18))}
+
+/* ═══ MUSEUM + LEXICON ═══ */
+.museum{background:linear-gradient(180deg,#f7eff1,#fff8f3 48%,#f7f0fb)}
+/* 展馆：桌面固定 4 列，向下自适应 3/2/1；四列下收紧内边距与间距，样式其余不变 */
+.museum .masonry{column-count:4;column-gap:16px;max-width:1240px}
+.museum .mcard{margin-bottom:16px}
+.museum .mcard .bd{padding:15px 16px; text-align:center}
+.museum .mcard .weather{justify-content:center; gap:12px; flex-wrap:wrap}
+.museum .mcard .catalog{left:16px}
+@media(max-width:1180px){.museum .masonry{column-count:3}}
+@media(max-width:860px){.museum .masonry{column-count:2}.museum .mcard .bd{padding:18px}}
+@media(max-width:560px){.museum .masonry{column-count:1}}
+.museum-guide{max-width:920px;margin:0 auto 34px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}.guide-chip{padding:10px 14px;border:1px solid #ead9e0;border-radius:30px;background:rgba(255,255,255,.7);font-size:12px;color:#8e6979}.guide-chip b{color:#b04f78;font-weight:600}
+.masonry{column-count:3}.mcard{position:relative;border:1px solid rgba(219,193,204,.65);box-shadow:0 22px 50px -36px rgba(109,74,90,.5)}.mcard:before{content:"";position:absolute;inset:8px;border:1px solid rgba(202,166,181,.45);border-radius:18px;pointer-events:none;z-index:3}.mcard .catalog{position:absolute;z-index:4;left:20px;bottom:12px;padding:5px 8px;border-radius:5px;background:rgba(42,27,38,.74);color:#fff;letter-spacing:1.2px;font-size:9px}.mcard .ph{background:linear-gradient(150deg,#e4d2d9,#d7c7e6)!important}.mcard .bd .ct{font-family:var(--sans);text-transform:uppercase;font-size:10px;letter-spacing:1.5px;color:#b36a8a}.mcard .weather{margin-top:13px;padding:10px 0 0;border-top:1px solid #f3e6ec;display:flex;justify-content:space-between;font-size:11px;color:#93808a}.mcard .weather strong{color:#5d4853;font-weight:500}
+.lexicon{background:#18132b;color:#f9f3ff;position:relative;overflow:hidden}.lexicon:before{content:"";position:absolute;width:620px;height:620px;border-radius:50%;background:radial-gradient(circle,rgba(188,137,219,.25),transparent 68%);top:-320px;right:-170px}.lexicon .sec-head{position:relative}.lexicon .sec-head h2{color:#fff}.lexicon .sec-head p{color:#d8cbeb}.lexicon .kicker{color:#ffb6d3}.lex-grid{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:1050px;margin:0 auto}.word-card{min-height:176px;padding:22px;border-radius:22px;background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.13);display:flex;flex-direction:column;justify-content:space-between;transition:transform .35s,background .35s}.word-card:hover{transform:translateY(-6px);background:rgba(255,255,255,.13)}.word-card .lang{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#d4b9e7}.word-card .word{font-family:var(--serif);font-size:clamp(28px,3vw,38px);margin:14px 0 4px;line-height:1;color:#fff}.word-card .sound{font-size:12px;color:#f4bad2}.word-card .meaning{font-size:12px;color:#d9cfe7;line-height:1.55}.word-card .from{font-size:11px;color:#aa9ab9;margin-top:13px}.word-card .from b{color:#ffc1db;font-weight:500}@media(max-width:760px){.lex-grid{grid-template-columns:repeat(2,1fr)}.garden-status{display:none}}@media(max-width:450px){.lex-grid{grid-template-columns:1fr}.word-card{min-height:145px}}
+
+/* ═══ BLOOM ═══ */
+.bloom{background:linear-gradient(180deg,#FCEFF5,#FFF6F8 45%,#FFF1F5)}
+.mapcard{position:relative; max-width:1060px; margin:0 auto; aspect-ratio:1000/500; border-radius:30px; overflow:hidden;
+  background:radial-gradient(120% 120% at 50% 30%,#fff6f9,#fbe6ef); box-shadow:0 36px 80px -46px rgba(180,110,150,.55); border:1px solid rgba(255,255,255,.8)}
+@media(max-width:640px){.mapcard{border-radius:20px; aspect-ratio:1000/560}}
+.mapviewport{position:absolute; inset:0; overflow:hidden}
+.mapcontent{position:absolute; inset:0; transform-origin:center center; transition:transform .25s ease-out}
+.mapcontent svg{position:absolute; inset:0; width:100%; height:100%}
+.flower-layer{position:absolute; inset:0}
+.flower{position:absolute; transform:translate(-50%,-50%); cursor:pointer; z-index:3; line-height:0; animation:sway 5s ease-in-out infinite;
+  transition:transform .3s cubic-bezier(.2,1.4,.4,1); will-change:transform}
+.flower .fsvg{display:block; filter:drop-shadow(0 3px 5px rgba(189,95,125,.32)); transition:transform .3s cubic-bezier(.2,1.5,.4,1)}
+.flower.story:hover{z-index:60}
+.flower.story:hover .fsvg{transform:scale(1.55)}
+.flower.story.is-awake .fsvg{filter:drop-shadow(0 0 10px rgba(255,226,119,.9)) drop-shadow(0 0 24px rgba(255,153,198,.65))}.flower.story.is-asleep{opacity:.56}.flower.story.is-asleep .fsvg{filter:saturate(.58) brightness(.82)}
+.flower.pair-bloom .fsvg{filter:drop-shadow(0 0 12px rgba(255,223,124,.95)) drop-shadow(0 0 28px rgba(218,124,234,.7))}.pair-bloom .pair-mark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:25px;height:25px;border-radius:50%;background:#fff;color:#c05c8b;font-size:13px;line-height:25px;text-align:center;box-shadow:0 3px 8px rgba(103,58,91,.35)}
+.flower.deco{pointer-events:none}
+.flower.deco .fsvg{opacity:.92}
+@keyframes sway{0%,100%{rotate:-5deg}50%{rotate:5deg}}
+.favatar{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); border-radius:50%; border:2px solid #fff;
+  box-shadow:0 3px 8px rgba(189,95,125,.4); display:flex; align-items:center; justify-content:center; overflow:hidden;
+  transition:transform .3s cubic-bezier(.2,1.4,.4,1)}
+.favatar svg{width:100%; height:100%; display:block}
+.favatar img{width:100%; height:100%; display:block; object-fit:cover; object-position:center top}
+.flower.story:hover .favatar{transform:translate(-50%,-50%) scale(1.55)}
+.avportrait{display:inline-block; border-radius:50%; overflow:hidden; border:4px solid #fff; box-shadow:0 14px 30px -12px rgba(150,80,110,.55)}
+.avportrait svg{width:100%; height:100%; display:block}
+.ftip{position:absolute; left:50%; bottom:148%; transform:translateX(-50%) translateY(8px); background:rgba(255,253,251,.9);
+  backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.85); border-radius:16px; padding:11px 14px; width:176px; text-align:left;
+  opacity:0; pointer-events:none; transition:.22s; z-index:70; box-shadow:0 18px 40px -16px rgba(160,90,120,.5)}
+.ftip.below{bottom:auto; top:148%; transform:translateX(-50%) translateY(-8px)}
+.flower.story:hover .ftip{opacity:1; transform:translateX(-50%)}
+.ftip .nm{font-family:var(--serif); font-weight:600; font-size:16px; color:var(--accent-deep)}
+.ftip .ct{font-size:12px; color:var(--ink-soft); margin:2px 0 7px}
+.ftip .dr{font-size:12.5px; color:var(--ink); line-height:1.45}
+.ftip .dr b{color:var(--accent-deep); font-weight:600; font-size:10px; letter-spacing:1px; text-transform:uppercase; display:block; margin-bottom:1px}
+.zoomctrl{position:absolute; right:14px; bottom:14px; z-index:80; display:flex; flex-direction:column; gap:8px}
+.zoomctrl button{width:40px; height:40px; border-radius:50%; border:1px solid rgba(255,255,255,.9); background:rgba(255,255,255,.75);
+  backdrop-filter:blur(10px); color:var(--accent-deep); font-size:21px; cursor:pointer; box-shadow:0 10px 24px -12px rgba(180,110,150,.6); transition:.2s; line-height:1}
+.zoomctrl button:hover{background:#fff; transform:scale(1.08)}
+.stats{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; max-width:900px; margin:44px auto 0}
+.stat{text-align:center; padding:22px 12px; border-radius:22px; background:rgba(255,255,255,.6); border:1px solid rgba(255,255,255,.8); box-shadow:0 20px 44px -30px rgba(180,110,150,.5)}
+.stat .v{font-family:var(--serif); font-size:clamp(28px,3.6vw,42px); font-weight:600; background:linear-gradient(120deg,var(--accent-deep),#9a6fb0); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent}
+.stat .l{font-size:11.5px; color:var(--ink-soft); letter-spacing:2px; text-transform:uppercase; margin-top:5px}
+@media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}}
+.recent{margin-top:60px}
+.recent h3{text-align:center; font-size:24px; color:#4a3a44; margin-bottom:6px}
+.recent .sm{text-align:center; color:var(--ink-soft); font-size:13.5px; margin-bottom:24px; font-weight:300}
+.rrow{display:flex; gap:18px; overflow-x:auto; padding:6px 24px 22px; margin:0 -24px; scroll-snap-type:x mandatory}
+.rrow::-webkit-scrollbar{height:6px}.rrow::-webkit-scrollbar-thumb{background:rgba(255,141,181,.3); border-radius:10px}
+.gcard{flex:0 0 220px; scroll-snap-align:start; border-radius:22px; overflow:hidden; cursor:pointer; background:#fff; box-shadow:0 22px 46px -32px rgba(180,110,150,.6); transition:transform .4s cubic-bezier(.2,1,.3,1),box-shadow .4s}
+.gcard:hover{transform:translateY(-7px); box-shadow:0 32px 56px -28px rgba(180,110,150,.7)}
+.gcard .ph{height:172px; position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden}
+.gcard .ph .gph{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center top}
+.gcard .ph .flag{position:absolute; top:11px; left:11px; font-size:18px; background:rgba(255,255,255,.7); border-radius:30px; padding:2px 8px; backdrop-filter:blur(6px); z-index:2}
+.gcard .bd{padding:15px 17px 18px}
+.gcard .bd .n{font-family:var(--serif); font-size:18px; font-weight:600; color:#4a3a44}
+.gcard .bd .c{font-size:12px; color:var(--ink-soft); margin-top:2px}
+.gcard .bd .d{font-size:12.5px; color:var(--ink); margin-top:9px; line-height:1.5}
+.gcard .bd .d b{display:block; font-size:9.5px; letter-spacing:1.5px; text-transform:uppercase; color:var(--accent); margin-bottom:2px}
+
+/* ═══ NEW FEATURES ═══ */
+.fnote{position:absolute; left:62%; top:6%; font-size:11px; color:#e07fae; opacity:0; animation:noteup 7s linear infinite; pointer-events:none}
+@keyframes noteup{0%{transform:translateY(4px);opacity:0}8%{opacity:.9}40%{transform:translateY(-26px);opacity:0}100%{transform:translateY(-26px);opacity:0}}
+.ftip .tierline{margin-top:4px; color:#b06f92; font-size:10.5px}
+.voicebtn{display:flex; align-items:center; gap:9px; margin-top:14px; width:100%; border:1.5px dashed #f0b8d2; background:linear-gradient(120deg,#fff5fa,#f6efff); color:#a24d78; font-size:13px; font-weight:600; padding:11px 14px; border-radius:14px; cursor:pointer; transition:.25s; font-family:inherit}
+.voicebtn:hover{border-style:solid; transform:translateY(-1px); box-shadow:0 8px 18px -10px rgba(190,90,140,.5)}
+.voicebtn .vb-ic{font-size:17px}
+.voicebtn.playing .vb-ic{animation:vpulse 1s ease infinite}
+@keyframes vpulse{50%{transform:scale(1.25)}}
+.plant{margin-top:56px; background:#fff; border-radius:24px; padding:26px 28px; box-shadow:0 20px 44px -26px rgba(180,110,150,.5)}
+.plant h3{font-size:22px; color:#4a3a44; margin-bottom:5px}
+.plant .sm{color:var(--ink-soft); font-size:13px; font-weight:300; margin-bottom:16px}
+.plantform{display:flex; gap:10px; flex-wrap:wrap}
+.plantform select,.plantform input{border:1.5px solid #f3d7e5; border-radius:12px; padding:11px 13px; font-size:13.5px; font-family:inherit; color:#5c4450; background:#fffafd; outline:none}
+.plantform select:focus,.plantform input:focus{border-color:#e59fc2}
+.plantform input{flex:1; min-width:200px}
+.plantnote{margin-top:12px; font-size:12px; color:#b78ba1}
+.plantnote b{color:#c05c8b}
+.flower.visitor .vtip{position:absolute; bottom:125%; left:50%; transform:translateX(-50%) scale(.94); width:max-content; max-width:210px; background:#fff; padding:7px 11px; border-radius:11px; font-size:11px; line-height:1.45; color:#7a5468; box-shadow:0 10px 24px -10px rgba(150,80,120,.45); opacity:0; pointer-events:none; transition:.22s; z-index:30}
+.flower.visitor:hover .vtip{opacity:1; transform:translateX(-50%) scale(1)}
+.flower.visitor{cursor:default}
+.tarotbox{position:relative; overflow:hidden; text-align:center; background:linear-gradient(150deg,#fff0f8 0%,#f3e6ff 48%,#e9edff 100%); border:1.5px solid #fff; border-radius:30px; padding:44px 30px 40px; box-shadow:0 30px 70px -34px rgba(180,120,200,.55), inset 0 0 60px rgba(255,255,255,.55)}
+.tarotbox::before{content:""; position:absolute; inset:-40%; background:radial-gradient(circle at 20% 30%,rgba(255,182,222,.38),transparent 45%),radial-gradient(circle at 80% 20%,rgba(187,159,234,.32),transparent 45%),radial-gradient(circle at 60% 85%,rgba(169,205,242,.32),transparent 45%); animation:tbdrift 14s ease-in-out infinite alternate; pointer-events:none}
+@keyframes tbdrift{to{transform:translate(4%,6%) rotate(4deg)}}
+.tb-star{position:absolute; color:#dcaee8; opacity:0; animation:twk 4.5s ease-in-out infinite; pointer-events:none; text-shadow:0 0 8px rgba(220,170,235,.8)}
+@keyframes twk{0%,100%{opacity:0; transform:scale(.4) rotate(0deg)}50%{opacity:.95; transform:scale(1) rotate(35deg)}}
+.tb-lead{position:relative; font-family:'Playfair Display',serif; font-style:italic; color:#8a5fa8; font-size:16.5px; margin-bottom:22px}
+.tarotbox .trow{position:relative; display:flex; gap:14px; flex-wrap:wrap; align-items:center; justify-content:center}
+.tpill{display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.78); backdrop-filter:blur(6px); border:1.5px solid #f2d4ea; border-radius:999px; padding:4px 8px 4px 15px; transition:.3s cubic-bezier(.2,1.2,.4,1); box-shadow:0 8px 22px -14px rgba(190,120,180,.45)}
+.tpill:hover{transform:translateY(-2px); border-color:#e8b7dd; box-shadow:0 14px 28px -14px rgba(190,120,180,.6)}
+.tpill:focus-within{border-color:#d9a1e8; box-shadow:0 0 0 4px rgba(217,161,232,.18), 0 14px 28px -14px rgba(190,120,180,.6); transform:translateY(-2px)}
+.tpill .tp-ic{font-size:15px}
+.tpill input{border:none; background:transparent; outline:none; width:150px; padding:10px 6px; font-size:14px; font-family:inherit; color:#6b4470; text-align:center}
+.tpill input::placeholder{color:#c9a3cf; font-weight:300}
+.tpill.err{border-color:#f5a8b8; box-shadow:0 0 0 4px rgba(245,168,184,.16); animation:tshake .4s ease}
+@keyframes tshake{20%{transform:translateX(-6px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+.tarotbox .amp{position:relative; color:#c887d8; font-size:20px; animation:ampspin 6s linear infinite; display:inline-block}
+@keyframes ampspin{50%{transform:rotate(180deg) scale(1.3); color:#f0a5c8}}
+.starbtn{position:relative; overflow:hidden; margin-top:22px; border:none; cursor:pointer; font-family:inherit; font-weight:700; font-size:14.5px; letter-spacing:.4px; color:#fff; padding:14px 36px; border-radius:999px; background:linear-gradient(110deg,#f48fc0,#bb84e8 55%,#8fa8f0); background-size:200% 100%; box-shadow:0 14px 30px -12px rgba(190,110,200,.65); transition:.35s cubic-bezier(.2,1.2,.4,1)}
+.starbtn:hover{background-position:100% 0; transform:translateY(-2px) scale(1.03); box-shadow:0 20px 38px -12px rgba(190,110,200,.8)}
+.starbtn:active{transform:scale(.96)}
+.starbtn .sb-shine{position:absolute; top:0; left:-70%; width:45%; height:100%; background:linear-gradient(105deg,transparent,rgba(255,255,255,.7),transparent); transform:skewX(-20deg); animation:shine 3.2s ease-in-out infinite; pointer-events:none}
+@keyframes shine{0%,55%{left:-70%}85%,100%{left:130%}}
+.tb-hint{position:relative; margin-top:16px; font-size:11.5px; letter-spacing:1px; color:#b592c4}
+.tb-hint b{color:#9a6ab8}
+.tcard{margin:26px auto 0; max-width:420px; background:linear-gradient(160deg,#fff8fd,#f3e8ff); border-radius:22px; padding:26px 26px 22px; text-align:center; box-shadow:0 24px 50px -20px rgba(40,20,60,.55); animation:rmup .5s ease both}
+.tcard .tt{font-family:'Playfair Display',serif; font-size:21px; color:#5b3a63; margin-bottom:2px}
+.tcard .tn{font-size:12.5px; letter-spacing:2px; color:#b088c2; text-transform:uppercase; margin-bottom:12px}
+.tcard svg{width:100%; height:150px; display:block; margin:4px 0 12px}
+.tcard .tsc{font-size:40px; font-family:'Playfair Display',serif; color:#c05c8b}
+.tcard .tsl{font-size:11px; letter-spacing:2px; color:#b78ba1; text-transform:uppercase; margin-bottom:12px}
+.tcard .trd{font-size:13px; color:#6b4d67; line-height:1.65; margin-bottom:6px}
+.tcard .trd b{color:#8a4d78}
+.tcard .tshare{margin-top:12px; font-size:11px; color:#c3a4ba}
+.radiogrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:16px}
+.rcard{background:#fff; border-radius:20px; padding:17px 18px; display:flex; align-items:center; gap:13px; cursor:pointer; box-shadow:0 16px 34px -24px rgba(180,110,150,.55); transition:.28s}
+.rcard:hover{transform:translateY(-4px); box-shadow:0 22px 40px -22px rgba(180,110,150,.65)}
+.rcard .rfl{font-size:26px}
+.rcard .rbd{flex:1; min-width:0}
+.rcard .rsong{font-size:13.5px; font-weight:700; color:#4a3a44; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.rcard .rart{font-size:11.5px; color:#b78ba1; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.rcard .rby{font-size:10.5px; color:#c9b4be; margin-top:3px}
+.eq{display:flex; gap:2.5px; align-items:flex-end; height:22px}
+.eq i{width:3.5px; border-radius:2px; background:linear-gradient(180deg,#f48fc0,#bb9fea); animation:eqb 1s ease-in-out infinite; animation-play-state:paused; height:30%}
+.rcard:hover .eq i{animation-play-state:running}
+.eq i:nth-child(2){animation-delay:.15s; height:70%}.eq i:nth-child(3){animation-delay:.3s; height:45%}.eq i:nth-child(4){animation-delay:.45s; height:85%}.eq i:nth-child(5){animation-delay:.6s; height:55%}
+@keyframes eqb{50%{transform:scaleY(.35)}}
+/* ═══ GLOBE ═══ */
+.globe-sec{background:linear-gradient(180deg,#0c0a1e,#140e2c 45%,#1a0f33); color:#fff; padding:92px 0 100px; overflow:hidden}
+@media(max-width:640px){.globe-sec{padding:64px 0 72px}}
+.globe-sec .sec-head h2{color:#fff}.globe-sec .sec-head p{color:#c7b9e0}.globe-sec .kicker{color:#ff9ec6}
+.globe-stage{position:relative; width:min(1132px,calc(100% - 36px)); margin:0 auto; height:min(68vh,620px); border-radius:28px; overflow:hidden}
+@media(max-width:640px){.globe-stage{height:64vh; border-radius:20px}}
+#globe-canvas{display:block; width:100%; height:100%; cursor:grab; touch-action:pan-y}
+#globe-canvas:active{cursor:grabbing}
+.globe-hint{position:absolute; bottom:14px; left:50%; transform:translateX(-50%); font-size:11px; letter-spacing:2px; color:rgba(255,255,255,.5); text-transform:uppercase; z-index:5; pointer-events:none; white-space:nowrap}
+.gpins{position:absolute; inset:0; pointer-events:none; z-index:6}
+.gpin{position:absolute; transform:translate(-50%,-50%); pointer-events:auto; cursor:pointer; transition:opacity .3s; will-change:left,top}
+.gpin .glabel{position:relative; transform:translate(14px,-26px); background:rgba(22,14,42,.82); backdrop-filter:blur(8px); border:1px solid rgba(255,158,198,.3);
+  border-radius:12px; padding:5px 10px; white-space:nowrap; box-shadow:0 8px 22px -8px rgba(0,0,0,.6)}
+.gpin .glabel b{display:block; font-family:var(--serif); font-size:13.5px; color:#fff; line-height:1.1}
+.gpin .glabel span{font-size:10.5px; color:#ff9ec6; letter-spacing:.5px}
+.gpin .gdot{position:absolute; left:0; top:0; width:11px; height:11px; transform:translate(-50%,-50%); border-radius:50%; background:#ff8db5; box-shadow:0 0 10px 3px rgba(255,141,181,.8); animation:pulse 2s ease-in-out infinite}
+.gpin .gline{position:absolute; left:0; top:0; width:14px; height:26px; border-left:1px solid rgba(255,158,198,.5); border-top:1px solid rgba(255,158,198,.5); transform:translateY(-26px); pointer-events:none}
+@keyframes pulse{0%,100%{box-shadow:0 0 8px 2px rgba(255,141,181,.7)}50%{box-shadow:0 0 16px 6px rgba(255,141,181,.95)}}
+.gtip{position:absolute; padding:6px 12px; background:rgba(20,12,40,.85); border:1px solid rgba(255,158,198,.4); border-radius:30px; font-size:13px; color:#fff; pointer-events:none; opacity:0; transform:translate(-50%,-150%); transition:opacity .2s; z-index:8; white-space:nowrap; backdrop-filter:blur(6px)}
+.gtip b{color:#ff9ec6}
+.gpanel{position:absolute; top:0; right:0; height:100%; width:min(340px,86%); z-index:9; background:linear-gradient(180deg,rgba(28,16,52,.94),rgba(18,11,36,.97)); backdrop-filter:blur(16px); border-left:1px solid rgba(255,158,198,.25); transform:translateX(105%); transition:transform .55s cubic-bezier(.3,1,.3,1); padding:30px 26px; overflow-y:auto}
+.gpanel.open{transform:none}
+.gpanel .x{position:absolute; top:16px; right:16px; width:34px; height:34px; border-radius:50%; border:1px solid rgba(255,255,255,.2); background:transparent; color:#fff; cursor:pointer; font-size:16px}
+.gpanel .pflag{font-size:38px}
+.gpanel h3{font-size:28px; color:#fff; margin-top:6px}
+.gpanel .meta{color:#ff9ec6; font-size:12.5px; letter-spacing:1px; margin-top:4px}
+.gpanel .lbl{font-size:10.5px; letter-spacing:2px; text-transform:uppercase; color:#a995c9; margin:22px 0 7px}
+.gpanel .quote{font-family:var(--serif); font-style:italic; font-size:17px; line-height:1.5; color:#f3e9ff}
+.gpanel .latest{font-size:13.5px; color:#d9cdf0; line-height:1.6}
+.gpanel .gal{display:flex; gap:8px; margin-top:4px}
+.gpanel .gal i{flex:1; height:60px; border-radius:12px; display:block}
+
+/* ═══ ARCHIVE ═══ */
+.archive{background:linear-gradient(180deg,#FFF5EC,#FFF9F8)}
+.masonry{column-count:3; column-gap:20px; max-width:1100px; margin:0 auto}
+@media(max-width:900px){.masonry{column-count:2}}@media(max-width:580px){.masonry{column-count:1}}
+.mcard{break-inside:avoid; margin-bottom:20px; border-radius:24px; overflow:hidden; background:#fff; cursor:pointer; box-shadow:0 22px 50px -36px rgba(180,110,150,.6); transition:transform .45s cubic-bezier(.2,1,.3,1),box-shadow .45s}
+.mcard:hover{transform:translateY(-8px); box-shadow:0 36px 64px -34px rgba(180,110,150,.75)}
+.mcard .ph{position:relative; display:flex; align-items:center; justify-content:center}
+.mcard .ph .mimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;filter:saturate(.88) contrast(.96)}.mcard .ph:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 52%,rgba(38,23,38,.15));pointer-events:none}
+.mcard .ph .em{filter:drop-shadow(0 6px 10px rgba(0,0,0,.08))}
+.mcard .ph .flag{position:absolute; top:12px; left:12px; font-size:13px; background:rgba(255,255,255,.78); padding:4px 10px; border-radius:30px; backdrop-filter:blur(6px); color:var(--ink)}
+.mcard .ph .age{position:absolute; top:12px; right:12px; font-size:11.5px; background:rgba(255,255,255,.78); padding:4px 10px; border-radius:30px; color:var(--ink-soft)}
+.mcard .bd{padding:20px}
+.mcard .bd .q{font-family:var(--serif); font-style:italic; font-size:18px; line-height:1.45; color:#4a3a44}
+.mcard .bd .ct{font-size:12px; color:var(--accent-deep); letter-spacing:1px; margin-top:12px; font-weight:500}
+.mcard .bd .row{margin-top:12px; padding-top:12px; border-top:1px solid #f3e6ec; font-size:12.5px; color:var(--ink); line-height:1.5}
+.mcard .bd .row b{display:block; font-size:9.5px; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink-soft); margin-bottom:3px}
+
+/* ═══ ROOM TEASER ═══ */
+.roomteaser{background:linear-gradient(180deg,#FFF9F8,#FCEFF7)}
+.rt-card{max-width:1060px; margin:0 auto; border-radius:34px; overflow:hidden; display:grid; grid-template-columns:1.1fr 1fr; align-items:stretch;
+  background:linear-gradient(130deg,#ffe4ef,#f2ddf5 55%,#e2dbf8); box-shadow:0 40px 90px -48px rgba(190,100,150,.6); position:relative}
+@media(max-width:860px){.rt-card{grid-template-columns:1fr}}
+.rt-copy{padding:56px 52px; display:flex; flex-direction:column; justify-content:center}
+@media(max-width:860px){.rt-copy{padding:38px 28px 8px}}
+.rt-copy h2{font-size:clamp(26px,3.6vw,40px); color:#5d3a4f; line-height:1.12; margin-top:12px}
+.rt-copy h2 em{font-style:italic; color:#b34f7e}
+.rt-copy p{margin-top:14px; color:#8a6379; font-size:14.5px; font-weight:300; line-height:1.75; max-width:420px}
+.rt-feats{margin:22px 0 28px; display:grid; gap:10px}
+.rt-feat{display:flex; gap:10px; align-items:flex-start; font-size:13px; color:#7a5468; line-height:1.5}
+.rt-feat .fe{font-size:16px; line-height:1.3}
+.rt-feat b{color:#5d3a4f}
+.rt-copy .btn{align-self:flex-start}
+@media(max-width:860px){.rt-copy .btn{align-self:stretch}}
+.rt-preview{position:relative; display:flex; align-items:center; justify-content:center; padding:46px 36px; min-height:340px}
+@media(max-width:860px){.rt-preview{min-height:0; padding:30px 28px 42px}}
+.rt-mock{width:min(290px,100%); background:rgba(255,255,255,.85); backdrop-filter:blur(10px); border-radius:24px; padding:20px;
+  box-shadow:0 28px 56px -28px rgba(150,70,110,.55); transform:rotate(2.5deg); transition:transform .5s cubic-bezier(.2,1,.3,1)}
+.rt-card:hover .rt-mock{transform:rotate(0) translateY(-6px)}
+.rt-mock .mk-pair{display:flex; align-items:center}
+.rt-mock .mk-nm{margin-left:10px; font-size:13px; font-weight:700; color:#6b4459}
+.rt-mock .mk-days{font-family:var(--serif); font-size:38px; color:#c2517e; margin-top:13px; line-height:1}
+.rt-mock .mk-dl{font-size:11px; color:#a4738c; margin-top:3px}
+.rt-mock .mk-line{margin-top:15px; padding-top:13px; border-top:1px dashed #f0d4e2}
+.rt-mock .mk-item{display:flex; gap:8px; align-items:center; font-size:11.5px; color:#8a6379; margin-bottom:8px}
+.rt-mock .mk-item .dot2{width:8px; height:8px; border-radius:50%; background:linear-gradient(120deg,#ff8db5,#c9a6ec); flex-shrink:0}
+.rt-lock{position:absolute; top:20px; right:22px; font-size:11.5px; color:#a4738c; background:rgba(255,255,255,.6); border-radius:30px; padding:5px 12px; backdrop-filter:blur(6px)}
+
+/* ═══ ROOM OVERLAY ═══ */
+.roomov{position:fixed; inset:0; z-index:300; overflow-y:auto; display:none;
+  background:radial-gradient(80% 55% at 50% 0%,rgba(255,214,232,.6),transparent 55%),linear-gradient(170deg,#FFF6F8,#FCEBF3 50%,#F1E7FA)}
+.roomov.on{display:block; animation:rmfade .45s ease both}
+@keyframes rmfade{from{opacity:0}to{opacity:1}}
+.rm-close{position:fixed; top:16px; right:18px; z-index:320; width:42px; height:42px; border-radius:50%;
+  background:rgba(255,255,255,.85); color:var(--accent-deep); font-size:16px; box-shadow:0 12px 28px -12px rgba(180,110,150,.6); backdrop-filter:blur(10px); transition:.25s}
+.rm-close:hover{transform:rotate(90deg)}
+.rm-shell{max-width:960px; margin:0 auto; padding:70px 22px 80px}
+.rm-scr{display:none; animation:rmup .5s cubic-bezier(.2,.8,.3,1) both}
+.rm-scr.on{display:block}
+@keyframes rmup{from{opacity:0; transform:translateY(20px)}to{opacity:1; transform:none}}
+.rm-gate{min-height:calc(100vh - 160px); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center}
+.rm-gate .lg{font-size:50px; animation:bob 3s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.rm-gate h2{font-size:clamp(28px,4.6vw,42px); color:#4a3a44; margin-top:14px}
+.rm-gate h2 em{font-style:italic; background:linear-gradient(110deg,var(--accent-deep),#9a6fb0); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent}
+.rm-gate .gs{color:var(--ink-soft); font-size:14.5px; font-weight:300; line-height:1.8; margin:12px 0 30px; max-width:400px}
+.rm-gate .gbtns{display:flex; gap:12px; flex-wrap:wrap; justify-content:center}
+.rm-gate .hinttxt{font-size:11px; color:#cdb6bf; letter-spacing:1.5px; margin-top:24px; text-transform:uppercase}
+.rm-gate .gbtns .hinttxt{flex-basis:100%; width:100%; margin-top:10px}
+.rm-gate .gbtns .hinttxt a{color:var(--accent-deep)}
+.authform{flex:0 0 100%; display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:6px}
+.authform input{width:min(320px,90vw); border:1.5px solid #f3d7e5; border-radius:13px; padding:12px 15px; font-size:14px; font-family:inherit; color:#5c4450; background:#fffafd; outline:none; text-align:center; transition:.2s}
+.authform input:focus{border-color:#e59fc2; box-shadow:0 0 0 3px rgba(229,159,194,.15)}
+.roomlist{width:min(360px,92vw); margin:0 auto 16px; display:flex; flex-direction:column; gap:9px}
+.rl-title{font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:#c19bb0; text-align:left; margin-bottom:1px}
+.roomcard{display:flex; align-items:center; gap:10px; width:100%; text-align:left; border:1.5px solid #f0d7e6; background:#fffafd; border-radius:15px; padding:13px 15px; cursor:pointer; font-family:inherit; transition:.2s}
+.roomcard:hover{border-color:#e59fc2; transform:translateY(-2px); box-shadow:0 10px 22px -14px rgba(190,90,140,.5)}
+.roomcard.cur{border-color:#e59fc2; background:linear-gradient(120deg,#fff2f9,#f7eeff)}
+.roomcard .rc-bd{flex:1; min-width:0; display:flex; flex-direction:column}
+.roomcard .rc-bd b{font-size:14.5px; color:#4a3a44}
+.roomcard .rc-bd span{font-size:12px; color:#b0839c; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.roomcard .rc-go{color:#d99ac0; font-size:18px}
+.switchbtn{margin-top:12px; width:100%; border:1.5px solid #e7cfe0; background:#fff; color:#a24d78; font-family:inherit; font-size:12.5px; font-weight:600; padding:9px; border-radius:12px; cursor:pointer; transition:.2s}
+.switchbtn:hover{border-color:#e59fc2; background:#fff5fa}
+.langbar{position:fixed; left:14px; bottom:14px; z-index:210; display:flex; gap:2px; background:rgba(255,255,255,.85); backdrop-filter:blur(10px); padding:4px; border-radius:30px; box-shadow:0 10px 26px -12px rgba(180,110,150,.55); border:1px solid rgba(255,255,255,.9)}
+.langbar button{border:none; background:transparent; font-family:inherit; font-size:11px; font-weight:700; color:#a26a86; padding:6px 9px; border-radius:20px; cursor:pointer; transition:.2s}
+.langbar button:hover{background:#ffeef7}
+.langbar button.on{background:linear-gradient(120deg,#f48fc0,#bb9fea); color:#fff}
+@media(max-width:640px){.langbar{left:10px; bottom:10px}}
+.codebox,.codein{display:flex; gap:9px; justify-content:center; margin:26px 0 20px; flex-wrap:wrap}
+.codebox .d{width:46px; height:58px; border-radius:15px; background:#fff; box-shadow:0 14px 28px -14px rgba(180,110,150,.5);
+  display:flex; align-items:center; justify-content:center; font-size:25px; font-weight:700; color:var(--accent-deep); animation:popd .5s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes popd{from{transform:scale(0) rotate(-14deg); opacity:0}}
+.codein input{width:46px; height:58px; border-radius:15px; border:1.5px solid var(--line); background:#fff; text-align:center;
+  font-size:23px; font-weight:700; color:var(--accent-deep); transition:.2s}
+.codein input:focus{border-color:var(--accent); box-shadow:0 0 0 4px rgba(255,141,181,.18)}
+.copytip{font-size:12px; color:#a9c790; height:16px; opacity:0; transition:.3s; margin-bottom:8px}
+.copytip.show{opacity:1}
+.rm-main-grid{display:grid; grid-template-columns:288px minmax(0,1fr); gap:22px; align-items:start}
+.rm-side{position:sticky; top:16px; display:flex; flex-direction:column; gap:12px}
+.rm-hero{border-radius:26px; padding:24px 22px; position:relative; overflow:hidden;
+  background:linear-gradient(150deg,#ffdcea,#f3d9f2 55%,#ddd4f5); box-shadow:0 24px 54px -30px rgba(190,100,150,.6)}
+.rm-hero .deco{position:absolute; font-size:82px; right:-10px; top:-16px; opacity:.18; transform:rotate(14deg)}
+.rm-hero .rowtop{display:flex; align-items:center; gap:12px}
+.ava{width:50px; height:50px; border-radius:50%; border:3px solid #fff; display:flex; align-items:center; justify-content:center; font-size:25px; box-shadow:0 6px 16px -6px rgba(180,90,130,.5)}
+.ava.a{background:linear-gradient(140deg,#ffe0ec,#ffb9d4); z-index:2}
+.ava.b{background:linear-gradient(140deg,#e6dcfa,#c8b4ee); margin-left:-13px}
+.rm-hero .nm{font-family:var(--serif); font-size:19px; font-weight:600; color:#6b4459; line-height:1.2}
+.rm-hero .sub2{font-size:11.5px; color:#a4738c; margin-top:3px; letter-spacing:.3px}
+.rm-hero .daysrow{display:flex; align-items:flex-end; gap:8px; margin-top:16px}
+.rm-hero .n{font-family:var(--serif); font-size:44px; font-weight:600; line-height:1; color:#c2517e}
+.rm-hero .l{font-size:12px; color:#a4738c; padding-bottom:5px; line-height:1.35}
+.rm-hero .anni{margin-top:12px; display:inline-flex; align-items:center; gap:5px; font-size:11px; color:#a4738c; background:rgba(255,255,255,.55); border-radius:30px; padding:6px 12px}
+.rm-tabs{display:flex; flex-direction:column; gap:8px}
+.rm-tab{display:flex; align-items:center; gap:10px; width:100%; text-align:left; padding:12px 16px; border-radius:16px; font-size:13.5px; background:rgba(255,255,255,.6); color:var(--ink-soft); transition:.25s}
+.rm-tab:hover{background:rgba(255,255,255,.95)}
+.rm-tab.on{background:linear-gradient(120deg,var(--accent),#f5a8cf); color:#fff; font-weight:600; box-shadow:0 10px 24px -10px rgba(255,141,181,.75)}
+.rm-note{font-size:10.5px; color:#c3aab6; text-align:center; letter-spacing:.5px; line-height:1.6}
+.rm-content{min-width:0; background:rgba(255,255,255,.5); border:1px solid rgba(255,255,255,.75); border-radius:26px; padding:26px 26px 30px; backdrop-filter:blur(8px); box-shadow:0 24px 60px -40px rgba(190,100,150,.4)}
+@media(max-width:820px){
+  .rm-main-grid{grid-template-columns:1fr; gap:16px}
+  .rm-side{position:static; gap:14px}
+  .rm-tabs{flex-direction:row; overflow-x:auto; padding-bottom:4px}
+  .rm-tab{width:auto; flex-shrink:0; border-radius:30px; padding:10px 18px; gap:7px}
+  .rm-note{display:none}
+  .rm-content{padding:20px 16px 24px; border-radius:22px}
+}
+.rm-pg{display:none}
+.rm-pg.on{display:block; animation:rmup .4s ease both}
+.rm-secthead{display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:16px; gap:12px; flex-wrap:wrap}
+.rm-secthead h3{font-size:21px; color:#4a3a44}
+.rm-secthead .mini{font-size:12px; color:var(--ink-soft); margin-top:3px; font-weight:300}
+.addbtn{flex-shrink:0; height:38px; padding:0 17px; border-radius:30px; background:linear-gradient(120deg,var(--accent),#f5a8cf); color:#fff;
+  font-size:12.5px; font-weight:600; box-shadow:0 10px 22px -8px rgba(255,141,181,.8); transition:transform .25s; display:inline-flex; align-items:center; gap:6px}
+.addbtn:hover{transform:translateY(-2px) scale(1.03)}
+.tl{position:relative; padding-left:28px; max-width:680px}
+.tl::before{content:""; position:absolute; left:8px; top:6px; bottom:6px; width:2px; background:linear-gradient(var(--accent),#d9c2ef); border-radius:2px; opacity:.5}
+.tle{position:relative; margin-bottom:14px; animation:rmup .4s ease both}
+.tle .dot{position:absolute; left:-26px; top:15px; width:14px; height:14px; border-radius:50%; background:#fff; border:3px solid var(--accent); box-shadow:0 0 0 4px rgba(255,141,181,.15)}
+.tle.mile .dot{background:var(--accent); border-color:#fff; box-shadow:0 0 0 4px rgba(255,141,181,.3)}
+.tlc{background:#fff; border-radius:20px; padding:15px 18px; box-shadow:0 14px 30px -20px rgba(180,110,150,.5); position:relative; overflow:hidden}
+.tle.mile .tlc{background:linear-gradient(130deg,#fff0f6,#f6ecfb)}
+.tlc .top{display:flex; align-items:center; gap:8px; margin-bottom:6px; flex-wrap:wrap}
+.tlc .tag{font-size:10px; letter-spacing:1px; padding:3px 9px; border-radius:20px; font-weight:600}
+.tag.day{background:#FFE3EE; color:var(--accent-deep)}.tag.trip{background:var(--blue); color:#5a86b8}
+.tag.mile{background:linear-gradient(120deg,#ffd7e7,#e6d5f7); color:#a3527f}.tag.word{background:var(--cream); color:#c08a52}
+.tlc .who{font-size:10.5px; color:var(--ink-soft)}
+.tlc .date{font-size:10.5px; color:#c9b4be; margin-left:auto}
+.tlc p{font-size:13.5px; line-height:1.65; margin-top:4px; padding-right:34px}
+.tlc .stick{position:absolute; right:11px; bottom:9px; font-size:26px; opacity:.85; transform:rotate(8deg)}
+.exportbar{margin:20px 0 6px; max-width:680px}
+.exportbar button{width:100%; padding:14px; border-radius:30px; background:rgba(255,255,255,.75); color:var(--accent-deep);
+  font-size:13px; font-weight:600; border:1.5px dashed rgba(255,141,181,.5); transition:.25s}
+.exportbar button:hover{background:#fff}
+.chips{display:flex; gap:8px; overflow-x:auto; padding-bottom:12px}
+.chip{flex-shrink:0; padding:8px 16px; border-radius:30px; font-size:12.5px; background:rgba(255,255,255,.7); color:var(--ink-soft); transition:.25s}
+.chip.on{background:linear-gradient(120deg,var(--accent),#f5a8cf); color:#fff; font-weight:600; box-shadow:0 8px 18px -8px rgba(255,141,181,.7)}
+.rm-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:14px}
+.pcard{border-radius:20px; overflow:hidden; background:#fff; box-shadow:0 16px 32px -22px rgba(180,110,150,.55);
+  transition:transform .3s cubic-bezier(.2,1.2,.4,1); animation:rmup .4s ease both; cursor:pointer}
+.pcard:hover{transform:translateY(-5px) rotate(-.5deg)}
+.pcard .img{aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:52px; position:relative}
+.pcard .img .frame{position:absolute; inset:7px; border:1.5px dashed rgba(255,255,255,.75); border-radius:13px; pointer-events:none}
+.pcard .cap{padding:11px 13px}
+.pcard .cap .c1{font-size:12px; font-weight:600; color:#6b4459; line-height:1.4}
+.pcard .cap .c2{font-size:10px; color:#c9b4be; margin-top:3px}
+.pcard .img .pmedia{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center top}
+.pcard .img .playbadge{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:46px; height:46px; border-radius:50%; background:rgba(255,255,255,.9); color:#c05c8b; font-size:18px; line-height:46px; text-align:center; box-shadow:0 4px 14px rgba(103,58,91,.4); pointer-events:none}
+.lbox{position:fixed; inset:0; z-index:500; background:rgba(40,24,44,.86); backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; padding:24px; opacity:0; transition:opacity .28s}
+.lbox.open{display:flex; opacity:1}
+.lbox .lbin{max-width:min(92vw,560px); max-height:88vh; display:flex; flex-direction:column; align-items:center; gap:14px}
+.lbox img,.lbox video{max-width:100%; max-height:78vh; border-radius:16px; box-shadow:0 24px 60px -18px rgba(0,0,0,.6); background:#000}
+.lbox .lbcap{color:#fff; font-size:14px; text-align:center; max-width:440px; line-height:1.5; text-shadow:0 1px 3px rgba(0,0,0,.4)}
+.lbox .lbx{position:absolute; top:18px; right:20px; width:42px; height:42px; border-radius:50%; border:none; background:rgba(255,255,255,.92); color:#a24d78; font-size:20px; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.updrop{display:flex; align-items:center; justify-content:center; gap:8px; width:100%; min-height:64px; padding:14px; border:2px dashed #f0b8d2; border-radius:14px; background:linear-gradient(120deg,#fff5fa,#f6efff); color:#a24d78; font-size:13px; font-weight:600; cursor:pointer; text-align:center; transition:.2s; margin-bottom:4px}
+.updrop:hover{border-color:#e59fc2; background:#fff0f8}
+.updrop.has{border-style:solid; border-color:#7ec98a; background:#f1fbf3; color:#3f8a55}
+.prog{background:#fff; border-radius:22px; padding:17px 20px; box-shadow:0 16px 32px -22px rgba(180,110,150,.5); margin-bottom:20px; max-width:680px}
+.prog .row{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:9px}
+.prog .row b{font-size:14px; color:#6b4459}
+.prog .row span{font-size:12px; color:var(--accent-deep); font-weight:700}
+.bar{height:9px; border-radius:10px; background:#faeaf1; overflow:hidden}
+.bar i{display:block; height:100%; border-radius:10px; background:linear-gradient(90deg,var(--accent),#c9a6ec); transition:width .6s cubic-bezier(.2,1,.3,1)}
+.ckcols{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px}
+.ckhead{display:flex; align-items:center; gap:8px; margin-bottom:10px}
+.ckhead .em{font-size:16px}
+.ckhead b{font-size:14px; color:#6b4459}
+.ckhead .ct{font-size:10.5px; color:#c9b4be; margin-left:auto}
+.ck{display:flex; align-items:center; gap:11px; background:#fff; border-radius:17px; padding:13px 15px; margin-bottom:9px;
+  box-shadow:0 14px 28px -22px rgba(180,110,150,.5); transition:.3s; animation:rmup .35s ease both; cursor:pointer}
+.ck:hover{transform:translateX(3px)}
+.ck .box{width:22px; height:22px; border-radius:7px; border:2px solid #f0c4d6; flex-shrink:0; display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; transition:.25s}
+.ck.done .box{background:linear-gradient(120deg,var(--accent),#c9a6ec); border-color:transparent}
+.ck .tx{font-size:13px; flex:1; line-height:1.45}
+.ck.done .tx{color:#c9b4be; text-decoration:line-through}
+.ck .by{font-size:9.5px; color:#d9aec4; background:#FFE3EE; padding:3px 8px; border-radius:20px; white-space:nowrap}
+.cdgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-bottom:28px}
+.cd{border-radius:22px; padding:18px; color:#fff; position:relative; overflow:hidden; animation:rmup .4s ease both}
+.cd .big{font-family:var(--serif); font-size:36px; font-weight:600; line-height:1}
+.cd .u{font-size:10.5px; opacity:.85; margin-top:2px}
+.cd .t{font-size:12.5px; font-weight:600; margin-top:11px; line-height:1.4}
+.cd .bgico{position:absolute; right:-6px; bottom:-11px; font-size:56px; opacity:.22}
+.wishgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:11px; max-width:800px}
+.wish{display:flex; align-items:center; gap:12px; background:#fff; border-radius:17px; padding:14px 16px; box-shadow:0 14px 28px -22px rgba(180,110,150,.5)}
+.wish .em{font-size:22px}
+.wish .w1{font-size:13px; font-weight:600; color:#6b4459}
+.wish .w2{font-size:10.5px; color:#c9b4be; margin-top:2px; line-height:1.5}
+.ig-import{margin-top:28px;padding:20px;border-radius:22px;background:linear-gradient(135deg,#fff1f6,#f2ebfb);border:1px solid #eadcec}.ig-import h4{font-family:var(--serif);font-size:18px;color:#5f4055}.ig-import p{font-size:12px;line-height:1.6;color:#927486;margin-top:6px}.ig-import .ig-action{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:10px 15px;border-radius:30px;background:#fff;color:#b1517e;border:1px solid #eec9dc;font-size:12px;font-weight:600;cursor:pointer}.ig-import input{display:none}.ig-import .ig-status{font-size:11px;line-height:1.5;color:#9d7790;margin-top:10px;min-height:17px}
+.mmask{position:fixed; inset:0; z-index:500; background:rgba(90,50,75,.35); backdrop-filter:blur(8px);
+  display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:.3s}
+.mmask.on{opacity:1; pointer-events:auto}
+.msheet{width:min(440px,100%); background:#fffdfd; border-radius:26px; padding:26px 24px; transform:translateY(24px) scale(.97);
+  transition:transform .4s cubic-bezier(.2,1,.3,1); max-height:86vh; overflow-y:auto}
+.mmask.on .msheet{transform:none}
+.msheet h4{font-size:18px; color:#4a3a44; margin-bottom:14px}
+.msheet h4 small{font-size:10.5px; color:#c9b4be; font-weight:400; font-family:var(--sans)}
+.fl{font-size:11px; letter-spacing:1px; color:var(--ink-soft); margin:13px 0 6px; font-weight:600; text-transform:uppercase}
+.fi{width:100%; padding:12px 14px; border-radius:15px; border:1.5px solid var(--line); background:#fff; font-size:14px; transition:.2s}
+.fi:focus{border-color:var(--accent); box-shadow:0 0 0 4px rgba(255,141,181,.15)}
+textarea.fi{resize:none; min-height:84px; line-height:1.6}
+.optrow{display:flex; gap:7px; flex-wrap:wrap}
+.opt{padding:8px 14px; border-radius:30px; font-size:12px; background:#faf0f5; color:var(--ink-soft); transition:.2s}
+.opt.on{background:linear-gradient(120deg,var(--accent),#f5a8cf); color:#fff; font-weight:600}
+.strow{display:flex; gap:7px; flex-wrap:wrap}
+.stk{width:44px; height:44px; border-radius:13px; background:#faf0f5; font-size:22px; display:flex; align-items:center; justify-content:center; transition:.2s; border:1.5px solid transparent}
+.stk.on{background:#fff; border-color:var(--accent); box-shadow:0 6px 14px -6px rgba(255,141,181,.5); transform:scale(1.08)}
+.msave{width:100%; margin-top:20px; padding:14px; border-radius:30px; font-size:14.5px; font-weight:600; color:#fff;
+  background:linear-gradient(120deg,var(--accent),#f5a8cf); box-shadow:0 12px 26px -10px rgba(255,141,181,.7)}
+.mcancel{width:100%; margin-top:9px; padding:9px; background:none; color:var(--ink-soft); font-size:12.5px}
+.expwrap{background:linear-gradient(165deg,#fff6f9,#f6ecfa); border-radius:18px; padding:20px 16px; border:1px solid #f6e3ec; max-height:44vh; overflow-y:auto}
+.expwrap .eh{text-align:center; margin-bottom:14px}
+.expwrap .eh .et{font-family:var(--serif); font-size:19px; color:#c2517e}
+.expwrap .eh .s{font-size:10px; color:var(--ink-soft); margin-top:4px; letter-spacing:2px}
+.expitem{background:#fff; border-radius:13px; padding:10px 12px; margin-bottom:8px; font-size:12px; line-height:1.55; box-shadow:0 8px 18px -14px rgba(180,110,150,.5)}
+.expitem b{color:var(--accent-deep); font-size:10px; letter-spacing:.5px}
+.toast{position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-80px); z-index:600;
+  background:rgba(60,35,50,.85); color:#fff; font-size:12.5px; padding:10px 20px; border-radius:30px; transition:.4s cubic-bezier(.2,1,.3,1); backdrop-filter:blur(8px); max-width:calc(100% - 40px); text-align:center}
+.toast.on{transform:translateX(-50%) translateY(0)}
+
+/* ═══ JOIN + FOOT ═══ */
+.join{padding:110px 24px; text-align:center; position:relative; overflow:hidden; background:radial-gradient(70% 80% at 50% 20%,rgba(248,200,220,.6),transparent 60%),linear-gradient(180deg,#FCEFF7,#FBEFF8)}
+@media(max-width:640px){.join{padding:78px 24px}}
+.join .rv{text-align:center}
+.join h2{font-size:clamp(30px,5.4vw,60px); line-height:1.1; color:#4a3a44; max-width:720px; margin:0 auto; text-align:center}
+.join h2 em{font-style:italic; background:linear-gradient(110deg,var(--accent-deep),#9a6fb0); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent}
+.join p{margin:20px auto 34px; color:var(--ink-soft); font-size:16.5px; font-weight:300; max-width:500px; line-height:1.7; text-align:center}
+.foot{padding:44px 24px; text-align:center; color:var(--ink-soft); font-size:12.5px; background:#FBEFF8}
+.foot .brand{font-family:var(--serif); font-size:19px; color:var(--accent-deep); margin-bottom:7px}
+.smodal{position:fixed; inset:0; z-index:400; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity .35s}
+.smodal.open{opacity:1; pointer-events:auto}
+.smodal .bk{position:absolute; inset:0; background:rgba(80,50,70,.4); backdrop-filter:blur(10px)}
+.smodal .card{position:relative; width:min(440px,100%); max-height:90vh; overflow-y:auto; background:#fff; border-radius:28px; box-shadow:0 50px 110px -40px rgba(120,60,90,.7); transform:translateY(24px) scale(.96); transition:transform .45s cubic-bezier(.2,1,.3,1)}
+.smodal.open .card{transform:none}
+.smodal .ph{height:210px; display:flex; align-items:center; justify-content:center; position:relative}
+.smodal .ph .flag{position:absolute; top:14px; left:14px; font-size:22px; background:rgba(255,255,255,.75); padding:4px 11px; border-radius:30px; backdrop-filter:blur(6px)}
+.smodal .x{position:absolute; top:14px; right:14px; width:36px; height:36px; border-radius:50%; cursor:pointer; background:rgba(255,255,255,.8); font-size:17px; color:var(--ink); backdrop-filter:blur(6px); z-index:2}
+.smodal .bd{padding:24px 26px 28px}
+.smodal .bd h3{font-size:26px; color:#4a3a44}
+.smodal .bd .c{color:var(--accent-deep); font-size:13.5px; margin-top:3px; letter-spacing:.5px}
+.smodal .bd .q{font-family:var(--serif); font-style:italic; font-size:19px; line-height:1.5; color:#4a3a44; margin:18px 0}
+.smodal .bd .grid2{display:grid; gap:13px}
+.smodal .bd .it b{font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--accent); display:block; margin-bottom:3px}
+.smodal .bd .it span{font-size:14px; color:var(--ink); line-height:1.55}
+</style>
+
+<div class="gp-cur"></div><div class="gp-ring"></div>
+<nav class="gp-nav"><span class="brand">🌸 Girlie</span><div class="links">
+  <a href="#bloom">Garden</a><a href="#globe">Globe</a><a href="#archive">Museum</a><a href="#lexicon">Words</a>
+  <a class="roomlink" onclick="RM.open()">🏠 My Room</a>
+</div></nav>
+
+<!-- HERO -->
+<section class="hero">
+  <canvas id="hero-particles"></canvas>
+  <div class="garden-sprig l"></div><div class="garden-sprig r"></div><div class="garden-arch"></div>
+  <div class="hero-inner">
+    <div class="kicker rv">After-hours museum · global friendship garden</div>
+    <h1 class="rv" style="transition-delay:.08s">Girlie Project</h1>
+    <p class="sub rv" style="transition-delay:.16s">Push open the garden gate. Across time zones, every friendship becomes a living exhibit — glowing, resting, and remembered.</p>
+    <div class="ctas rv" style="transition-delay:.24s"><a href="#archive" class="btn btn-primary">Enter the Museum</a><a href="#lexicon" class="btn btn-ghost">Open the Word Book</a></div>
+  </div>
+  <div class="garden-status"><b id="garden-clock">The garden is listening</b><span id="garden-copy">Some flowers are awake somewhere.</span></div>
+  <div class="scrollcue">Scroll</div>
+</section>
+
+<!-- BLOOM -->
+<section class="sec bloom" id="bloom">
+  <div class="wrap">
+    <div class="sec-head rv"><div class="kicker">Friendship Bloom 🌸</div><h2>A world map, painted in flowers.</h2>
+      <p>Every girl we interview blooms where she lives. The more stories a country holds, the wider its flower field grows.</p></div>
+    <div class="mapcard rv">
+      <div class="mapviewport" id="mapvp"><div class="mapcontent" id="mapcontent">
+        <svg viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet" id="watermap"></svg>
+        <div class="flower-layer" id="flowers"></div>
+      </div></div>
+      <div class="zoomctrl"><button id="zin">+</button><button id="zout">−</button></div>
+    </div>
+    <div class="stats rv">
+      <div class="stat"><div class="v" data-n="7">0</div><div class="l">Countries</div></div>
+      <div class="stat"><div class="v" data-n="23">0</div><div class="l">Stories</div></div>
+      <div class="stat"><div class="v" data-n="58">0</div><div class="l">Flowers</div></div>
+      <div class="stat"><div class="v">∞</div><div class="l">Connections</div></div>
+    </div>
+    <div class="recent rv"><h3>Recent Blooms</h3><p class="sm">The newest friendships added to the museum.</p><div class="rrow" id="recentrow"></div></div>
+    <div class="plant rv" id="plant">
+      <h3>💌 Plant a flower for her country</h3>
+      <p class="sm">Leave one kind sentence for the girls of a country — anonymous, fifteen seconds, no sign-up. Your flower blooms on the map.</p>
+      <div class="plantform">
+        <select id="pf-country" aria-label="Choose a country"></select>
+        <input id="pf-msg" maxlength="120" placeholder="One warm sentence for them… (max 120 chars)">
+        <button class="btn btn-primary" id="pf-go">Plant it 🌱</button>
+      </div>
+      <div class="plantnote" id="pf-note">🌷 <b id="pf-count">0</b> flowers planted by visitors so far — hover them on the map to read the messages.</div>
+    </div>
+  </div>
+</section>
+
+<!-- GLOBE -->
+<section class="sec globe-sec" id="globe">
+  <div class="wrap"><div class="sec-head rv"><div class="kicker">Friendship Globe 🌍</div><h2>Stories, connected across the dark.</h2>
+    <p>Each glowing point is a country where a girl shared her story. Drag to rotate, scroll to zoom, click a light to listen.</p></div></div>
+  <div class="globe-stage rv">
+    <canvas id="globe-canvas"></canvas>
+    <div class="gpins" id="gpins"></div>
+    <div class="gtip" id="gtip"></div>
+    <div class="globe-hint">Drag · Zoom · Click a glowing country · Double-click to reset</div>
+    <aside class="gpanel" id="gpanel">
+      <button class="x" id="gpx">✕</button>
+      <div class="pflag" id="p-flag">🌍</div><h3 id="p-country">—</h3><div class="meta" id="p-meta">—</div>
+      <div class="lbl">Latest Story</div><div class="latest" id="p-latest">—</div>
+      <div class="lbl">Gallery</div><div class="gal" id="p-gal"></div>
+      <div class="lbl">In Her Words</div><div class="quote" id="p-quote">—</div>
+    </aside>
+  </div>
+</section>
+
+<!-- MUSEUM -->
+<section class="sec museum archive" id="archive">
+  <div class="wrap"><div class="sec-head rv"><div class="kicker">Gallery I · Emotional Museum</div><h2>Eleven lives, eleven irreplaceable exhibits.</h2>
+    <p>Walk the collection slowly. Every portrait has a catalogue number, a city climate, and the precise local hour in which she is living.</p></div>
+    <div class="museum-guide rv"><span class="guide-chip"><b>CAT.</b> a unique friendship record</span><span class="guide-chip"><b>LOCAL HOUR</b> updates with her city</span><span class="guide-chip"><b>CLIMATE</b> the weather she calls home</span></div>
+    <div class="masonry" id="masonry"></div></div>
+</section>
+
+<!-- LEXICON -->
+<section class="sec lexicon" id="lexicon">
+  <div class="wrap"><div class="sec-head rv"><div class="kicker">The Girlie Lexicon · 第 01 册</div><h2>How the world says “best friend.”</h2>
+    <p>Not a translation exercise — a small collection of words that hold someone close.</p></div>
+    <div class="lex-grid" id="lexgrid"></div></div>
+</section>
+
+<!-- TAROT -->
+<section class="sec tarot" id="tarot">
+  <div class="wrap"><div class="sec-head rv"><div class="kicker">Gallery III · Destiny Parlour 🎴</div><h2>The Friendship Star Chart.</h2>
+    <p>Every pair of best friends leaves a small pattern in the sky. Give the parlour your two names, and it will trace the constellation you make together.</p></div>
+    <div class="tarotbox rv">
+      <p class="tb-lead">Whisper two names to the night sky…</p>
+      <div class="trow">
+        <div class="tpill"><span class="tp-ic">🌸</span><input id="tt-a" maxlength="20" placeholder="Your name" autocomplete="off"></div>
+        <span class="amp">✦</span>
+        <div class="tpill"><span class="tp-ic">🌙</span><input id="tt-b" maxlength="20" placeholder="Her name" autocomplete="off"></div>
+      </div>
+      <button class="starbtn" id="tt-go"><span class="sb-shine"></span>Read our stars ✨</button>
+      <div class="tb-hint" id="tt-hint">The parlour keeps no secrets — only constellations.</div>
+      <div class="tcard" id="tt-card" hidden></div>
+    </div>
+  </div>
+</section>
+
+<!-- RADIO -->
+<section class="sec radio" id="radio">
+  <div class="wrap"><div class="sec-head rv"><div class="kicker">Gallery IV · Global Bestie Radio 📻</div><h2>Every friendship has a soundtrack.</h2>
+    <p>Each girl chose the one song that sounds like her and her best friend. Hover to hear the waves — press to play.</p></div>
+    <div class="radiogrid rv" id="radiogrid"></div>
+  </div>
+</section>
+
+<!-- ROOM TEASER -->
+<section class="sec roomteaser" id="room">
+  <div class="wrap">
+    <div class="rt-card rv">
+      <div class="rt-copy">
+        <div class="kicker">Girlie Room 🏠 · Private, invite only</div>
+        <h2>Some stories are <em>just for two.</em></h2>
+        <p>The stories above belong to the world — this room belongs to just you and her. Pair with a secret code and keep your own history together.</p>
+        <div class="rt-feats">
+          <div class="rt-feat"><span class="fe">💌</span><span><b>Secret pairing code</b> — only the two of you can ever enter.</span></div>
+          <div class="rt-feat"><span class="fe">🧵</span><span><b>Friendship timeline</b> — days counted since you met, milestones marked automatically.</span></div>
+          <div class="rt-feat"><span class="fe">✅</span><span><b>Shared bucket list</b> — check things off together, across any distance.</span></div>
+        </div>
+        <button class="btn btn-primary" onclick="RM.open()">Enter Girlie Room</button>
+      </div>
+      <div class="rt-preview">
+        <span class="rt-lock">🔒 Visible only to you two</span>
+        <div class="rt-mock">
+          <div class="mk-pair"><div class="ava a" style="width:38px;height:38px;font-size:19px;border-width:2px">👩🏻</div><div class="ava b" style="width:38px;height:38px;font-size:19px;border-width:2px">👩🏼</div><span class="mk-nm">Catherine ✕ Саша</span></div>
+          <div class="mk-days" id="mk-days">—</div>
+          <div class="mk-dl">days of friendship · China — Ivano-Frankivsk</div>
+          <div class="mk-line">
+            <div class="mk-item"><span class="dot2"></span>After-school homework calls, across two worlds 📚</div>
+            <div class="mk-item"><span class="dot2"></span>Harry Potter was our first shared universe ✨</div>
+            <div class="mk-item"><span class="dot2"></span>From middle school to university — still here 💌</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JOIN -->
+<section class="join" id="join"><div class="rv">
+  <h2>Every friendship deserves to be <em>remembered.</em></h2>
+  <p>Add your voice to a living museum of women who hold each other up across the world.</p>
+  <a href="#" class="btn btn-primary" id="joinbtn">Share Your Story</a></div>
+</section>
+
+<footer class="foot"><div class="brand">🌸 Girlie Project</div>A digital museum preserving female friendship across the world.</footer>
+
+<!-- story modal -->
+<div class="smodal" id="modal"><div class="bk" id="modalbk"></div>
+  <div class="card"><div class="ph" id="m-ph"><span class="flag" id="m-flag"></span><span id="m-em" style="font-size:78px"></span></div>
+    <button class="x" id="m-x">✕</button>
+    <div class="bd"><h3 id="m-name"></h3><div class="c" id="m-country"></div><div class="q" id="m-quote"></div>
+      <div class="grid2"><div class="it"><b>Dream</b><span id="m-dream"></span></div><div class="it"><b>Friendship taught her</b><span id="m-lesson"></span></div></div>
+      <button class="voicebtn" id="m-voice"><span class="vb-ic">🔊</span><span id="m-voice-t"></span></button>
+    </div></div>
+</div>
+
+<!-- ROOM OVERLAY -->
+<div class="roomov" id="roomov">
+  <button class="rm-close" onclick="RM.close()">✕</button>
+  <div class="rm-shell">
+
+    <div class="rm-scr on" id="rm-wel">
+      <div class="rm-gate">
+        <div class="lg">🌷</div>
+        <h2>Welcome to <em>Girlie Room</em></h2>
+        <p class="gs">你们的私密小屋 — a space no visitor can see. Sign in with your bestie and keep your own history: photos, videos, milestones — all private to just the two of you.</p>
+        <div class="gbtns" id="wel-auth"></div>
+      </div>
+    </div>
+
+    <div class="rm-scr" id="rm-hub">
+      <div class="rm-gate">
+        <div class="lg">🏠</div>
+        <h2>Your bestie spaces</h2>
+        <p class="gs">Switch between your rooms — one for each friend. Or start a new one and invite her with a code.</p>
+        <div class="roomlist" id="rm-roomlist"></div>
+        <div class="gbtns">
+          <button class="btn btn-primary" onclick="RM.createRoom()">🏠 New room</button>
+          <button class="btn btn-ghost" onclick="RM.go('rm-join')">💌 Enter a code</button>
+        </div>
+        <div class="hinttxt" id="rm-userbadge"></div>
+      </div>
+    </div>
+
+    <div class="rm-scr" id="rm-create">
+      <div class="rm-gate">
+        <h2>Your pairing code ✨</h2>
+        <p class="gs">把这串数字发给你的她 — once she signs in and enters it, you’ll share this room together.</p>
+        <div class="codebox" id="codebox"></div>
+        <div class="copytip" id="copytip">Copied 💗</div>
+        <div class="gbtns">
+          <button class="btn btn-ghost" onclick="RM.copyCode()">Copy Code</button>
+          <button class="btn btn-primary" onclick="RM.enterLive()">Enter our room →</button>
+        </div>
+        <div class="hinttxt" style="cursor:pointer" onclick="RM.go('rm-hub')">← Back</div>
+      </div>
+    </div>
+
+    <div class="rm-scr" id="rm-join">
+      <div class="rm-gate">
+        <h2>Enter her code 💌</h2>
+        <p class="gs">6 digits — the room opens the moment they match.</p>
+        <div class="codein" id="codein"></div>
+        <div class="hinttxt">The code your bestie created and sent you</div>
+        <div class="hinttxt" style="cursor:pointer; margin-top:14px" onclick="RM.go('rm-hub')">← Back</div>
+      </div>
+    </div>
+
+    <div class="rm-scr" id="rm-main">
+      <div class="rm-main-grid">
+      <aside class="rm-side">
+      <div class="rm-hero">
+        <span class="deco">🌸</span>
+        <div class="rowtop">
+          <div style="display:flex"><div class="ava a">👩🏻</div><div class="ava b">👩🏼</div></div>
+          <div><div class="nm">Catherine ✕ Oleksandra</div><div class="sub2">🇨🇳 China — Ivano-Frankivsk 🇺🇦</div></div>
+        </div>
+        <div class="daysrow"><span class="n" id="rm-days">0</span><span class="l">days of friendship<br>year <b id="rm-years"></b> together</span></div>
+        <div class="anni">🎂 <b id="rm-anni" style="margin:0 3px"></b> days to your anniversary</div>
+      </div>
+
+      <div class="rm-tabs">
+        <button class="rm-tab on" data-pg="tl" onclick="RM.tab(this)">🧵 Timeline</button>
+        <button class="rm-tab" data-pg="al" onclick="RM.tab(this)">📸 Album</button>
+        <button class="rm-tab" data-pg="ck" onclick="RM.tab(this)">✅ Bucket List</button>
+        <button class="rm-tab" data-pg="mo" onclick="RM.tab(this)">🎀 More</button>
+      </div>
+      <div class="rm-note" id="rm-modenote">🔒 Only the two of you can see this room</div>
+      <button class="switchbtn" id="rm-switch" onclick="RM.loadHub()">⇄ Switch space</button>
+      <div class="rm-note" id="rm-userbadge" style="margin-top:6px"></div>
+      </aside>
+
+      <div class="rm-content">
+
+      <div class="rm-pg on" id="rm-pg-tl">
+        <div class="rm-secthead">
+          <div><h3>Friendship Timeline</h3><div class="mini">Photos, words and milestones — woven into one scroll of memory.</div></div>
+          <button class="addbtn" onclick="RM.openModal('tl')">＋ Add a memory</button>
+        </div>
+        <div class="tl" id="tl-list"></div>
+        <div class="exportbar"><button onclick="RM.exportPreview()">📜 Generate our memoir (export as PDF)</button></div>
+      </div>
+
+      <div class="rm-pg" id="rm-pg-al">
+        <div class="rm-secthead">
+          <div><h3>Shared Album</h3><div class="mini">Journal-style frames · sorted into the little drawers of your life.</div></div>
+          <button class="addbtn" onclick="RM.openModal('al')">＋ Add a photo</button>
+        </div>
+        <div class="chips" id="al-chips"></div>
+        <div class="rm-grid" id="al-grid"></div>
+      </div>
+
+      <div class="rm-pg" id="rm-pg-ck">
+        <div class="rm-secthead">
+          <div><h3>Shared Bucket List</h3><div class="mini">What we promised — checked off together, synced across the world.</div></div>
+          <button class="addbtn" onclick="RM.openModal('ck')">＋ New goal</button>
+        </div>
+        <div class="prog"><div class="row"><b>Our progress</b><span id="prog-n">0%</span></div><div class="bar"><i id="prog-bar" style="width:0%"></i></div></div>
+        <div class="ckcols" id="ck-groups"></div>
+      </div>
+
+      <div class="rm-pg" id="rm-pg-mo">
+        <div class="rm-secthead"><div><h3>Countdowns</h3><div class="mini">Every reunion is worth counting the days for.</div></div></div>
+        <div class="cdgrid" id="cd-grid"></div>
+        <div class="rm-secthead"><div><h3>Her Wish List 🎁</h3><div class="mini">Gifts, tastes and little notes — birthday reminders included.</div></div></div>
+        <div class="wishgrid" id="wish-list"></div>
+        <div class="ig-import"><h4>📥 Instagram chat archive</h4><p>Choose Instagram’s exported <b>message_1.json</b>. It is read only in this browser and turns your messages into private timeline notes — nothing is uploaded.</p><label class="ig-action">Choose exported chat file<input type="file" id="rm-ig-file" accept="application/json,.json" onchange="RM.importIG(this)"></label><div class="ig-status" id="ig-status">No chat archive imported yet.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mmask" id="mmask"><div class="msheet" id="msheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ═════════ SHARED BACKEND CONFIG (Supabase) ═════════ */
+var SUPA={url:'https://xvdsrmagrultbhmqihuq.supabase.co',anon:'sb_publishable_6DFGWf1w1xh9guD2365bjw_Fuwa7VTJ'};
+function supaOn(){return !!(SUPA.url&&SUPA.anon)}
+function supaH(){return {apikey:SUPA.anon,Authorization:'Bearer '+SUPA.anon,'Content-Type':'application/json'}}
+/* auth-aware client (Google sign-in, RLS, private storage) */
+var sbc=(window.supabase&&supaOn())?window.supabase.createClient(SUPA.url,SUPA.anon,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}):null;
+
+/* ═════════ i18n：中 / EN / FR / УКР / BM ═════════
+   界面文案全量翻译；女孩们的引言与星盘卡片等「展品内容」保留英文原件 */
+var I18N={
+en:{nav_garden:'Garden',nav_globe:'Globe',nav_museum:'Museum',nav_words:'Words',nav_room:'My Room',
+hero_kicker_day:'Daylight museum · global friendship garden',hero_kicker_night:'After-hours museum · global friendship garden',
+hero_sub:'Push open the garden gate. Across time zones, every friendship becomes a living exhibit — glowing, resting, and remembered.',
+hero_cta1:'Enter the Museum',hero_cta2:'Open the Word Book',hero_scroll:'Scroll',
+bloom_kicker:'Friendship Bloom 🌸',bloom_h2:'A world map, painted in flowers.',
+bloom_p:'Every girl we interview blooms where she lives. The more stories a country holds, the wider its flower field grows.',
+stat1:'Countries',stat2:'Stories',stat3:'Flowers',stat4:'Connections',
+recent_h3:'Recent Blooms',recent_p:'The newest friendships added to the museum.',
+plant_h3:'💌 Plant a flower for her country',
+plant_p:'Leave one kind sentence for the girls of a country — anonymous, fifteen seconds, no sign-up. Your flower blooms on the map.',
+plant_ph:'One warm sentence for them… (max 120 chars)',plant_btn:'Plant it 🌱',
+plant_note_full:'🌷 <b id="pf-count">0</b> flowers planted by visitors so far — hover them on the map to read the messages.',
+plant_done:'🌸 Your flower is blooming in {c} — thank you.',plant_count:'<b id="pf-count">{n}</b> flowers planted so far.',
+plant_busy:'🥀 The garden is busy — try again in a moment.',
+globe_kicker:'Friendship Globe 🌍',globe_h2:'Stories, connected across the dark.',
+globe_p:'Each glowing point is a country where a girl shared her story. Drag to rotate, scroll to zoom, click a light to listen.',
+globe_hint:'Drag · Zoom · Click a glowing country · Double-click to reset',lbl_stories:'stories',
+museum_kicker:'Gallery I · Emotional Museum',museum_h2:'Eleven lives, eleven irreplaceable exhibits.',
+museum_p:'Walk the collection slowly. Every portrait has a catalogue number, a city climate, and the precise local hour in which she is living.',
+guide1:'<b>CAT.</b> a unique friendship record',guide2:'<b>LOCAL HOUR</b> updates with her city',guide3:'<b>CLIMATE</b> the weather she calls home',
+lbl_dream:'Dream',lbl_taught:'Friendship taught her',lbl_exhibit:'Exhibit',lbl_local:'local',
+lex_kicker:'The Girlie Lexicon · 第 01 册',lex_h2:'How the world says “best friend.”',
+lex_p:'Not a translation exercise — a small collection of words that hold someone close.',
+lex_meaning:'a friend who knows the quiet version of your heart.',lex_shared:'Shared by',
+tarot_kicker:'Gallery III · Destiny Parlour 🎴',tarot_h2:'The Friendship Star Chart.',
+tarot_p:'Every pair of best friends leaves a small pattern in the sky. Give the parlour your two names, and it will trace the constellation you make together.',
+tarot_lead:'Whisper two names to the night sky…',tarot_ph_a:'Your name',tarot_ph_b:'Her name',tarot_btn:'Read our stars ✨',
+tarot_hint:'The parlour keeps no secrets — only constellations.',
+tarot_hint_need:'✧ The sky needs both names to draw your constellation…',
+tarot_count:'✦ <b>{n}</b> constellations have been traced in this parlour',
+radio_kicker:'Gallery IV · Global Bestie Radio 📻',radio_h2:'Every friendship has a soundtrack.',
+radio_p:'Each girl chose the one song that sounds like her and her best friend. Hover to hear the waves — press to play.',radio_chosen:'chosen by',
+rt_kicker:'Girlie Room 🏠 · Private, invite only',rt_h2:'Some stories are <em>just for two.</em>',
+rt_p:'The stories above belong to the world — this room belongs to just you and her. Pair with a secret code and keep your own history together.',
+rt_f1:'<b>Secret pairing code</b> — only the two of you can ever enter.',
+rt_f2:'<b>Friendship timeline</b> — days counted since you met, milestones marked automatically.',
+rt_f3:'<b>Shared bucket list</b> — check things off together, across any distance.',
+rt_btn:'Enter Girlie Room',rt_lock:'🔒 Visible only to you two',
+join_h2:'Every friendship deserves to be <em>remembered.</em>',
+join_p:'Add your voice to a living museum of women who hold each other up across the world.',join_btn:'Share Your Story',
+foot:'<div class="brand">🌸 Girlie Project</div>A digital museum preserving female friendship across the world.',
+gs_bloom:'{a} of {b} flowers are in bloom',gs_day:'Daylight is moving through the garden.',gs_night:'The whole garden is dreaming.',
+rm_wel_h2:'Welcome to <em>Girlie Room</em>',
+rm_wel_p:'你们的私密小屋 — a space no visitor can see. Sign in with your bestie and keep your own history: photos, videos, milestones — all private to just the two of you.',
+auth_email:'Email',auth_pass:'Password (6+ characters)',auth_name:'Your name (for sign-up, optional)',
+auth_signin:'🔐 Sign in',auth_signup:'🎀 Create account',auth_seed:'🌸 See Catherine &amp; Саша’s story',
+auth_hint:'No app, no Google — just an email for you two',auth_signedin:'Signed in as',auth_signout:'sign out',auth_continue:'My bestie spaces →',
+hub_h2:'Your bestie spaces',hub_p:'Switch between your rooms — one for each friend. Or start a new one and invite her with a code.',
+hub_new:'🏠 New room',hub_code:'💌 Enter a code',
+joinscr_h2:'Enter her code 💌',joinscr_p:'6 digits — the room opens the moment they match.',
+tab_tl:'🧵 Timeline',tab_al:'📸 Album',tab_ck:'✅ Bucket List',tab_mo:'🎀 More',
+rmh_tl:'Friendship Timeline',rmh_al:'Shared Album',rmh_ck:'Shared Bucket List',
+add_tl:'＋ Add a memory',add_al:'＋ Add a photo',add_ck:'＋ New goal',
+rm_days_l:'days of friendship<br>year <b id="rm-years"></b> together',
+rm_anni_l:'🎂 <b id="rm-anni" style="margin:0 3px"></b> days to your anniversary',
+rm_note_live:'🔒 Private room · share code {code} with your bestie',rm_note_seed:'🌸 Public showcase — sign in to make your own',
+rm_since:'🌸 Together here since {d}',rm_waiting:'💌 Waiting for her — share code {code}'},
+zh:{nav_garden:'花园',nav_globe:'星球',nav_museum:'博物馆',nav_words:'词册',nav_room:'我的小屋',
+hero_kicker_day:'白昼博物馆 · 全球友谊花园',hero_kicker_night:'星夜博物馆 · 全球友谊花园',
+hero_sub:'推开花园的门。跨越时区，每段友谊都是一件活着的展品——发光、休憩、被铭记。',
+hero_cta1:'走进博物馆',hero_cta2:'翻开词册',hero_scroll:'下滑',
+bloom_kicker:'友谊花田 🌸',bloom_h2:'一张用花朵绘成的世界地图。',
+bloom_p:'每位受访的女孩都会在她生活的地方开出花来。一个国家的故事越多，花田就越辽阔。',
+stat1:'国家',stat2:'故事',stat3:'花朵',stat4:'联结',
+recent_h3:'新开的花',recent_p:'最新加入博物馆的友谊。',
+plant_h3:'💌 为她的国家种一朵花',
+plant_p:'给那个国家的女孩们留一句温柔的话——匿名、十五秒、无需注册。你的花会开在地图上。',
+plant_ph:'想对她们说的一句话…（最多 120 字）',plant_btn:'种下 🌱',
+plant_note_full:'🌷 访客已种下 <b id="pf-count">0</b> 朵花——在地图上悬停花朵即可读到留言。',
+plant_done:'🌸 你的花正在 {c} 盛开——谢谢你。',plant_count:'目前共 <b id="pf-count">{n}</b> 朵。',
+plant_busy:'🥀 花园有点忙——稍后再试。',
+globe_kicker:'友谊星球 🌍',globe_h2:'黑夜之中，故事彼此相连。',
+globe_p:'每个发光的点都是一个有女孩分享过故事的国家。拖动旋转、滚轮缩放、点击光点聆听。',
+globe_hint:'拖动 · 缩放 · 点击发光的国家 · 双击复位',lbl_stories:'个故事',
+museum_kicker:'第一展厅 · 情感博物馆',museum_h2:'十一段人生，十一件无可替代的展品。',
+museum_p:'请慢慢走过这座展馆。每幅肖像都有目录编号、城市气候，以及她此刻正在生活的当地时间。',
+guide1:'<b>编号</b> 独一无二的友谊档案',guide2:'<b>当地时间</b> 随她的城市实时更新',guide3:'<b>气候</b> 她称之为家的天气',
+lbl_dream:'梦想',lbl_taught:'友谊教会她',lbl_exhibit:'展品',lbl_local:'当地',
+lex_kicker:'闺蜜词册 · 第 01 册',lex_h2:'全世界如何说「闺蜜」。',
+lex_p:'这不是翻译练习——而是一小册把人抱紧的词。',
+lex_meaning:'一个认识你心底安静版本的朋友。',lex_shared:'来自',
+tarot_kicker:'第三展厅 · 缘分占卜屋 🎴',tarot_h2:'友谊星盘。',
+tarot_p:'每一对闺蜜都会在夜空留下一小片星图。告诉占卜屋你们的名字，它会描出属于你们的星座。',
+tarot_lead:'向夜空轻声说出两个名字……',tarot_ph_a:'你的名字',tarot_ph_b:'她的名字',tarot_btn:'占我们的星 ✨',
+tarot_hint:'占卜屋不留秘密——只留星座。',
+tarot_hint_need:'✧ 天空需要两个名字，才能画出你们的星座……',
+tarot_count:'✦ 这间占卜屋已描绘 <b>{n}</b> 个星座',
+radio_kicker:'第四展厅 · 全球闺蜜电台 📻',radio_h2:'每段友谊都有自己的原声带。',
+radio_p:'每位女孩选了一首最像她和闺蜜的歌。悬停听声浪，点击去播放。',radio_chosen:'选歌',
+rt_kicker:'闺蜜小屋 🏠 · 私密 · 仅限邀请',rt_h2:'有些故事，<em>只属于两个人。</em>',
+rt_p:'上面的故事属于世界——这间小屋只属于你和她。用一串暗号配对，一起收藏你们自己的历史。',
+rt_f1:'<b>秘密配对码</b>——永远只有你们两人能进入。',
+rt_f2:'<b>友谊时间线</b>——自相识起计天，里程碑自动标记。',
+rt_f3:'<b>共同愿望清单</b>——无论相隔多远，一起打勾完成。',
+rt_btn:'进入闺蜜小屋',rt_lock:'🔒 只有你们两人可见',
+join_h2:'每段友谊都值得<em>被铭记。</em>',
+join_p:'把你的声音加入这座活的博物馆——世界各地相互扶持的女性都在这里。',join_btn:'分享你的故事',
+foot:'<div class="brand">🌸 Girlie Project</div>一座保存全世界女性友谊的数字博物馆。',
+gs_bloom:'{a}/{b} 朵花正在盛开',gs_day:'日光正掠过花园。',gs_night:'整座花园都在做梦。',
+rm_wel_h2:'欢迎来到<em>闺蜜小屋</em>',
+rm_wel_p:'你们的私密小屋——访客看不见的空间。和你的闺蜜一起登录，收藏只属于你们两个人的照片、视频与里程碑。',
+auth_email:'邮箱',auth_pass:'密码（6 位以上）',auth_name:'昵称（注册时用，可不填）',
+auth_signin:'🔐 登录',auth_signup:'🎀 注册',auth_seed:'🌸 看 Catherine 和 Саша 的故事',
+auth_hint:'不用装 App、不用 Google——一个邮箱就够你们俩',auth_signedin:'已登录：',auth_signout:'退出',auth_continue:'我的闺蜜空间 →',
+hub_h2:'你的闺蜜空间',hub_p:'在你的房间之间切换——每位朋友一间。也可以新建一间，用配对码邀请她。',
+hub_new:'🏠 新建小屋',hub_code:'💌 输入配对码',
+joinscr_h2:'输入她的配对码 💌',joinscr_p:'6 位数字——对上的那一刻，房间就为你们打开。',
+tab_tl:'🧵 时间线',tab_al:'📸 相册',tab_ck:'✅ 愿望清单',tab_mo:'🎀 更多',
+rmh_tl:'友谊时间线',rmh_al:'共享相册',rmh_ck:'共同愿望清单',
+add_tl:'＋ 添一段回忆',add_al:'＋ 添照片',add_ck:'＋ 新目标',
+rm_days_l:'天的友谊<br>在一起的第 <b id="rm-years"></b> 年',
+rm_anni_l:'🎂 距你们的纪念日还有 <b id="rm-anni" style="margin:0 3px"></b> 天',
+rm_note_live:'🔒 私密房间 · 把配对码 {code} 发给你的闺蜜',rm_note_seed:'🌸 公开样板——登录即可拥有你们自己的',
+rm_since:'🌸 从 {d} 起在这里相伴',rm_waiting:'💌 等她加入——把码 {code} 发给她'},
+fr:{nav_garden:'Jardin',nav_globe:'Globe',nav_museum:'Musée',nav_words:'Mots',nav_room:'Ma Chambre',
+hero_kicker_day:'Musée de jour · jardin mondial de l’amitié',hero_kicker_night:'Musée après minuit · jardin mondial de l’amitié',
+hero_sub:'Poussez la porte du jardin. À travers les fuseaux horaires, chaque amitié devient une œuvre vivante — qui brille, se repose et reste en mémoire.',
+hero_cta1:'Entrer au musée',hero_cta2:'Ouvrir le livre des mots',hero_scroll:'Défiler',
+bloom_kicker:'Floraison d’amitié 🌸',bloom_h2:'Une carte du monde peinte en fleurs.',
+bloom_p:'Chaque fille interviewée fleurit là où elle vit. Plus un pays compte d’histoires, plus son champ de fleurs s’étend.',
+stat1:'Pays',stat2:'Histoires',stat3:'Fleurs',stat4:'Liens',
+recent_h3:'Floraisons récentes',recent_p:'Les amitiés les plus récentes du musée.',
+plant_h3:'💌 Plantez une fleur pour son pays',
+plant_p:'Laissez une phrase douce aux filles d’un pays — anonyme, quinze secondes, sans inscription. Votre fleur fleurira sur la carte.',
+plant_ph:'Une phrase chaleureuse… (120 car. max)',plant_btn:'Planter 🌱',
+plant_note_full:'🌷 <b id="pf-count">0</b> fleurs plantées par les visiteurs — survolez-les sur la carte pour lire les messages.',
+plant_done:'🌸 Votre fleur fleurit en {c} — merci.',plant_count:'<b id="pf-count">{n}</b> fleurs plantées.',
+plant_busy:'🥀 Le jardin est occupé — réessayez dans un instant.',
+globe_kicker:'Globe de l’amitié 🌍',globe_h2:'Des histoires reliées à travers la nuit.',
+globe_p:'Chaque point lumineux est un pays où une fille a partagé son histoire. Glissez pour tourner, molette pour zoomer, cliquez pour écouter.',
+globe_hint:'Glisser · Zoomer · Cliquer un pays lumineux · Double-clic pour réinitialiser',lbl_stories:'histoires',
+museum_kicker:'Galerie I · Musée des émotions',museum_h2:'Onze vies, onze œuvres irremplaçables.',
+museum_p:'Parcourez la collection lentement. Chaque portrait a un numéro de catalogue, un climat, et l’heure locale où elle vit.',
+guide1:'<b>CAT.</b> un dossier d’amitié unique',guide2:'<b>HEURE LOCALE</b> à l’heure de sa ville',guide3:'<b>CLIMAT</b> le temps qu’il fait chez elle',
+lbl_dream:'Rêve',lbl_taught:'L’amitié lui a appris',lbl_exhibit:'Œuvre',lbl_local:'heure locale',
+lex_kicker:'Le Lexique Girlie · Vol. 01',lex_h2:'Comment le monde dit « meilleure amie ».',
+lex_p:'Pas un exercice de traduction — une petite collection de mots qui serrent quelqu’un contre soi.',
+lex_meaning:'une amie qui connaît la version silencieuse de ton cœur.',lex_shared:'Partagé par',
+tarot_kicker:'Galerie III · Salon du destin 🎴',tarot_h2:'La carte des étoiles de l’amitié.',
+tarot_p:'Chaque paire de meilleures amies laisse un petit motif dans le ciel. Donnez vos deux prénoms, et le salon tracera votre constellation.',
+tarot_lead:'Murmurez deux prénoms au ciel nocturne…',tarot_ph_a:'Ton prénom',tarot_ph_b:'Son prénom',tarot_btn:'Lire nos étoiles ✨',
+tarot_hint:'Le salon ne garde aucun secret — seulement des constellations.',
+tarot_hint_need:'✧ Le ciel a besoin des deux prénoms pour tracer votre constellation…',
+tarot_count:'✦ <b>{n}</b> constellations tracées dans ce salon',
+radio_kicker:'Galerie IV · Radio Besties du monde 📻',radio_h2:'Chaque amitié a sa bande-son.',
+radio_p:'Chaque fille a choisi la chanson qui leur ressemble. Survolez pour les ondes, cliquez pour écouter.',radio_chosen:'choisie par',
+rt_kicker:'Chambre Girlie 🏠 · Privée, sur invitation',rt_h2:'Certaines histoires sont <em>juste pour deux.</em>',
+rt_p:'Les histoires ci-dessus appartiennent au monde — cette chambre n’appartient qu’à vous deux. Associez-vous avec un code secret et gardez votre histoire ensemble.',
+rt_f1:'<b>Code secret</b> — seules vous deux pouvez entrer.',
+rt_f2:'<b>Frise de l’amitié</b> — les jours comptés depuis votre rencontre, les étapes marquées.',
+rt_f3:'<b>Liste de rêves commune</b> — cochez ensemble, à n’importe quelle distance.',
+rt_btn:'Entrer dans la chambre',rt_lock:'🔒 Visible par vous deux seulement',
+join_h2:'Chaque amitié mérite d’être <em>retenue.</em>',
+join_p:'Ajoutez votre voix à un musée vivant de femmes qui se soutiennent à travers le monde.',join_btn:'Partager votre histoire',
+foot:'<div class="brand">🌸 Girlie Project</div>Un musée numérique qui préserve l’amitié féminine à travers le monde.',
+gs_bloom:'{a} fleurs sur {b} sont écloses',gs_day:'La lumière du jour traverse le jardin.',gs_night:'Tout le jardin rêve.',
+rm_wel_h2:'Bienvenue dans la <em>Chambre Girlie</em>',
+rm_wel_p:'Votre refuge privé — un espace invisible aux visiteurs. Connectez-vous avec votre meilleure amie et gardez votre histoire : photos, vidéos, étapes — rien que pour vous deux.',
+auth_email:'E-mail',auth_pass:'Mot de passe (6+)',auth_name:'Votre prénom (inscription, facultatif)',
+auth_signin:'🔐 Se connecter',auth_signup:'🎀 Créer un compte',auth_seed:'🌸 Voir l’histoire de Catherine &amp; Саша',
+auth_hint:'Pas d’appli, pas de Google — juste un e-mail pour vous deux',auth_signedin:'Connectée :',auth_signout:'déconnexion',auth_continue:'Mes espaces besties →',
+hub_h2:'Vos espaces besties',hub_p:'Passez d’une chambre à l’autre — une par amie. Ou créez-en une nouvelle et invitez-la avec un code.',
+hub_new:'🏠 Nouvelle chambre',hub_code:'💌 Entrer un code',
+joinscr_h2:'Entrez son code 💌',joinscr_p:'6 chiffres — la chambre s’ouvre dès qu’ils correspondent.',
+tab_tl:'🧵 Frise',tab_al:'📸 Album',tab_ck:'✅ Liste de rêves',tab_mo:'🎀 Plus',
+rmh_tl:'Frise de l’amitié',rmh_al:'Album partagé',rmh_ck:'Liste de rêves commune',
+add_tl:'＋ Ajouter un souvenir',add_al:'＋ Ajouter une photo',add_ck:'＋ Nouvel objectif',
+rm_days_l:'jours d’amitié<br>année <b id="rm-years"></b> ensemble',
+rm_anni_l:'🎂 <b id="rm-anni" style="margin:0 3px"></b> jours avant votre anniversaire',
+rm_note_live:'🔒 Chambre privée · partagez le code {code} avec votre bestie',rm_note_seed:'🌸 Vitrine publique — connectez-vous pour créer la vôtre',
+rm_since:'🌸 Ensemble ici depuis {d}',rm_waiting:'💌 En attendant — partagez le code {code}'},
+uk:{nav_garden:'Сад',nav_globe:'Глобус',nav_museum:'Музей',nav_words:'Слова',nav_room:'Моя кімната',
+hero_kicker_day:'Денний музей · світовий сад дружби',hero_kicker_night:'Нічний музей · світовий сад дружби',
+hero_sub:'Відчини хвіртку саду. Крізь часові пояси кожна дружба стає живим експонатом — вона сяє, відпочиває і залишається в пам’яті.',
+hero_cta1:'Увійти до музею',hero_cta2:'Відкрити книгу слів',hero_scroll:'Гортай',
+bloom_kicker:'Цвітіння дружби 🌸',bloom_h2:'Карта світу, намальована квітами.',
+bloom_p:'Кожна дівчина розквітає там, де живе. Що більше історій у країни, то ширше її квіткове поле.',
+stat1:'Країни',stat2:'Історії',stat3:'Квіти',stat4:'Зв’язки',
+recent_h3:'Нові квіти',recent_p:'Найновіші дружби музею.',
+plant_h3:'💌 Посади квітку для її країни',
+plant_p:'Залиш одне тепле речення дівчатам країни — анонімно, за п’ятнадцять секунд, без реєстрації. Твоя квітка розквітне на мапі.',
+plant_ph:'Одне тепле речення… (до 120 знаків)',plant_btn:'Посадити 🌱',
+plant_note_full:'🌷 Відвідувачі посадили <b id="pf-count">0</b> квіток — наведи на них на мапі, щоб прочитати послання.',
+plant_done:'🌸 Твоя квітка розквітає у {c} — дякуємо.',plant_count:'Усього <b id="pf-count">{n}</b>.',
+plant_busy:'🥀 Сад зайнятий — спробуй за мить.',
+globe_kicker:'Глобус дружби 🌍',globe_h2:'Історії, з’єднані крізь темряву.',
+globe_p:'Кожна світна точка — країна, де дівчина поділилася історією. Тягни, щоб обертати; гортай, щоб наблизити; клікни, щоб послухати.',
+globe_hint:'Тягни · Масштабуй · Клікни світну країну · Подвійний клік — скинути',lbl_stories:'історій',
+museum_kicker:'Зала I · Музей почуттів',museum_h2:'Одинадцять життів, одинадцять незамінних експонатів.',
+museum_p:'Проходь колекцією повільно. Кожен портрет має номер каталогу, клімат міста й точну місцеву годину її життя.',
+guide1:'<b>КАТ.</b> унікальний запис дружби',guide2:'<b>МІСЦЕВИЙ ЧАС</b> оновлюється з її містом',guide3:'<b>КЛІМАТ</b> погода її дому',
+lbl_dream:'Мрія',lbl_taught:'Дружба навчила її',lbl_exhibit:'Експонат',lbl_local:'місцевий',
+lex_kicker:'Дівочий словник · Том 01',lex_h2:'Як світ каже «найкраща подруга».',
+lex_p:'Це не вправа з перекладу — це збірка слів, що тримають когось поруч.',
+lex_meaning:'подруга, що знає тиху версію твого серця.',lex_shared:'Поділилася',
+tarot_kicker:'Зала III · Салон долі 🎴',tarot_h2:'Зоряна карта дружби.',
+tarot_p:'Кожна пара найкращих подруг лишає візерунок у небі. Назви два імені — і салон намалює ваше сузір’я.',
+tarot_lead:'Прошепочи небу два імені…',tarot_ph_a:'Твоє ім’я',tarot_ph_b:'Її ім’я',tarot_btn:'Прочитати наші зорі ✨',
+tarot_hint:'Салон не зберігає таємниць — лише сузір’я.',
+tarot_hint_need:'✧ Небу потрібні обидва імені, щоб намалювати сузір’я…',
+tarot_count:'✦ У салоні накреслено вже <b>{n}</b> сузір’їв',
+radio_kicker:'Зала IV · Всесвітнє радіо подруг 📻',radio_h2:'У кожної дружби є свій саундтрек.',
+radio_p:'Кожна дівчина обрала пісню про них двох. Наведи — і почуєш хвилі, клікни — і слухай.',radio_chosen:'обрала',
+rt_kicker:'Кімната Girlie 🏠 · Приватно, лише за запрошенням',rt_h2:'Деякі історії — <em>лише для двох.</em>',
+rt_p:'Історії вище належать світові — ця кімната лише твоя і її. З’єднайтеся таємним кодом і зберігайте власну історію разом.',
+rt_f1:'<b>Таємний код</b> — увійти можете лише ви двоє.',
+rt_f2:'<b>Стрічка дружби</b> — дні від знайомства, віхи позначаються самі.',
+rt_f3:'<b>Спільний список мрій</b> — відмічайте разом на будь-якій відстані.',
+rt_btn:'Увійти до кімнати',rt_lock:'🔒 Бачите лише ви двоє',
+join_h2:'Кожна дружба варта того, щоб її <em>пам’ятали.</em>',
+join_p:'Додай свій голос до живого музею жінок, які підтримують одна одну по всьому світу.',join_btn:'Поділитися історією',
+foot:'<div class="brand">🌸 Girlie Project</div>Цифровий музей, що зберігає жіночу дружбу в усьому світі.',
+gs_bloom:'Квітнуть {a} з {b} квіток',gs_day:'Денне світло пливе садом.',gs_night:'Увесь сад бачить сни.',
+rm_wel_h2:'Ласкаво просимо до <em>кімнати Girlie</em>',
+rm_wel_p:'Ваш приватний куточок — простір, якого не бачать відвідувачі. Увійдіть разом із подругою та зберігайте власну історію: фото, відео, віхи — лише для вас двох.',
+auth_email:'Ел. пошта',auth_pass:'Пароль (від 6 знаків)',auth_name:'Ім’я (для реєстрації, необов’язково)',
+auth_signin:'🔐 Увійти',auth_signup:'🎀 Створити акаунт',auth_seed:'🌸 Історія Catherine і Саші',
+auth_hint:'Без застосунку й Google — лише e-mail для вас двох',auth_signedin:'Ви увійшли як',auth_signout:'вийти',auth_continue:'Мої простори подруг →',
+hub_h2:'Твої простори подруг',hub_p:'Перемикайся між кімнатами — по одній на подругу. Або створи нову та запроси її кодом.',
+hub_new:'🏠 Нова кімната',hub_code:'💌 Ввести код',
+joinscr_h2:'Введи її код 💌',joinscr_p:'6 цифр — кімната відчиниться, щойно вони збіжаться.',
+tab_tl:'🧵 Стрічка',tab_al:'📸 Альбом',tab_ck:'✅ Список мрій',tab_mo:'🎀 Більше',
+rmh_tl:'Стрічка дружби',rmh_al:'Спільний альбом',rmh_ck:'Спільний список мрій',
+add_tl:'＋ Додати спогад',add_al:'＋ Додати фото',add_ck:'＋ Нова ціль',
+rm_days_l:'днів дружби<br>рік <b id="rm-years"></b> разом',
+rm_anni_l:'🎂 <b id="rm-anni" style="margin:0 3px"></b> днів до вашої річниці',
+rm_note_live:'🔒 Приватна кімната · надішли їй код {code}',rm_note_seed:'🌸 Публічний приклад — увійди, щоб створити свій',
+rm_since:'🌸 Разом тут із {d}',rm_waiting:'💌 Чекаємо на неї — надішли код {code}'},
+ms:{nav_garden:'Taman',nav_globe:'Glob',nav_museum:'Muzium',nav_words:'Kata',nav_room:'Bilik Saya',
+hero_kicker_day:'Muzium siang · taman persahabatan dunia',hero_kicker_night:'Muzium malam · taman persahabatan dunia',
+hero_sub:'Tolak pintu taman ini. Merentasi zon waktu, setiap persahabatan menjadi pameran yang hidup — bersinar, berehat dan dikenang.',
+hero_cta1:'Masuk ke Muzium',hero_cta2:'Buka Buku Kata',hero_scroll:'Skrol',
+bloom_kicker:'Bunga Persahabatan 🌸',bloom_h2:'Peta dunia, dilukis dengan bunga.',
+bloom_p:'Setiap gadis yang kami temui berbunga di tempat dia tinggal. Semakin banyak cerita sebuah negara, semakin luas ladang bunganya.',
+stat1:'Negara',stat2:'Cerita',stat3:'Bunga',stat4:'Ikatan',
+recent_h3:'Bunga Terbaru',recent_p:'Persahabatan terbaru dalam muzium.',
+plant_h3:'💌 Tanam sekuntum bunga untuk negaranya',
+plant_p:'Tinggalkan satu ayat baik untuk gadis-gadis sesebuah negara — tanpa nama, lima belas saat, tanpa daftar. Bunga anda akan mekar di peta.',
+plant_ph:'Satu ayat mesra… (maks 120 aksara)',plant_btn:'Tanam 🌱',
+plant_note_full:'🌷 <b id="pf-count">0</b> bunga ditanam oleh pengunjung — tuding pada peta untuk baca pesanannya.',
+plant_done:'🌸 Bunga anda mekar di {c} — terima kasih.',plant_count:'Kini <b id="pf-count">{n}</b> bunga.',
+plant_busy:'🥀 Taman sedang sibuk — cuba sebentar lagi.',
+globe_kicker:'Glob Persahabatan 🌍',globe_h2:'Cerita yang terhubung merentasi malam.',
+globe_p:'Setiap titik bercahaya ialah negara tempat seorang gadis berkongsi ceritanya. Seret untuk pusing, skrol untuk zum, klik untuk dengar.',
+globe_hint:'Seret · Zum · Klik negara bercahaya · Dwi-klik untuk set semula',lbl_stories:'cerita',
+museum_kicker:'Galeri I · Muzium Emosi',museum_h2:'Sebelas kehidupan, sebelas pameran yang tak tergantikan.',
+museum_p:'Susuri koleksi ini perlahan-lahan. Setiap potret ada nombor katalog, iklim bandar, dan waktu tempatan dia hidup.',
+guide1:'<b>KAT.</b> rekod persahabatan unik',guide2:'<b>WAKTU TEMPATAN</b> mengikut bandarnya',guide3:'<b>IKLIM</b> cuaca kampung halamannya',
+lbl_dream:'Impian',lbl_taught:'Persahabatan mengajarnya',lbl_exhibit:'Pameran',lbl_local:'tempatan',
+lex_kicker:'Leksikon Girlie · Jilid 01',lex_h2:'Bagaimana dunia menyebut “sahabat baik”.',
+lex_p:'Bukan latihan terjemahan — koleksi kecil kata yang mendakap seseorang.',
+lex_meaning:'sahabat yang mengenali sisi sunyi hatimu.',lex_shared:'Dikongsi oleh',
+tarot_kicker:'Galeri III · Bilik Takdir 🎴',tarot_h2:'Carta Bintang Persahabatan.',
+tarot_p:'Setiap pasangan sahabat meninggalkan corak kecil di langit. Berikan dua nama anda, dan bilik ini akan melakar buruj milik anda berdua.',
+tarot_lead:'Bisikkan dua nama kepada langit malam…',tarot_ph_a:'Nama anda',tarot_ph_b:'Nama dia',tarot_btn:'Baca bintang kami ✨',
+tarot_hint:'Bilik ini tidak menyimpan rahsia — hanya buruj.',
+tarot_hint_need:'✧ Langit perlukan kedua-dua nama untuk melakar buruj anda…',
+tarot_count:'✦ <b>{n}</b> buruj telah dilakar di bilik ini',
+radio_kicker:'Galeri IV · Radio Sahabat Sedunia 📻',radio_h2:'Setiap persahabatan ada runut bunyinya.',
+radio_p:'Setiap gadis memilih satu lagu tentang mereka berdua. Tuding untuk gelombang, klik untuk main.',radio_chosen:'pilihan',
+rt_kicker:'Bilik Girlie 🏠 · Peribadi, jemputan sahaja',rt_h2:'Ada cerita yang <em>untuk berdua sahaja.</em>',
+rt_p:'Cerita di atas milik dunia — bilik ini milik anda berdua sahaja. Berpasangan dengan kod rahsia dan simpan sejarah anda bersama.',
+rt_f1:'<b>Kod rahsia</b> — hanya anda berdua boleh masuk.',
+rt_f2:'<b>Garis masa persahabatan</b> — hari dikira sejak bertemu, detik penting ditanda.',
+rt_f3:'<b>Senarai impian bersama</b> — tanda bersama walau berjauhan.',
+rt_btn:'Masuk Bilik Girlie',rt_lock:'🔒 Hanya anda berdua nampak',
+join_h2:'Setiap persahabatan layak <em>dikenang.</em>',
+join_p:'Tambahkan suara anda ke muzium hidup wanita yang saling menyokong di seluruh dunia.',join_btn:'Kongsi Cerita Anda',
+foot:'<div class="brand">🌸 Girlie Project</div>Muzium digital yang memelihara persahabatan wanita di seluruh dunia.',
+gs_bloom:'{a} daripada {b} bunga sedang mekar',gs_day:'Cahaya siang melintasi taman.',gs_night:'Seluruh taman sedang bermimpi.',
+rm_wel_h2:'Selamat datang ke <em>Bilik Girlie</em>',
+rm_wel_p:'Ruang peribadi anda — tidak kelihatan kepada pengunjung. Log masuk bersama sahabat anda dan simpan sejarah anda: foto, video, detik penting — hanya untuk anda berdua.',
+auth_email:'E-mel',auth_pass:'Kata laluan (6+)',auth_name:'Nama anda (untuk daftar, pilihan)',
+auth_signin:'🔐 Log masuk',auth_signup:'🎀 Daftar akaun',auth_seed:'🌸 Lihat kisah Catherine &amp; Саша',
+auth_hint:'Tiada aplikasi, tiada Google — cukup satu e-mel untuk anda berdua',auth_signedin:'Log masuk sebagai',auth_signout:'log keluar',auth_continue:'Ruang sahabat saya →',
+hub_h2:'Ruang sahabat anda',hub_p:'Tukar antara bilik anda — satu untuk setiap sahabat. Atau buka yang baru dan jemput dia dengan kod.',
+hub_new:'🏠 Bilik baru',hub_code:'💌 Masukkan kod',
+joinscr_h2:'Masukkan kod dia 💌',joinscr_p:'6 digit — bilik terbuka sebaik sahaja sepadan.',
+tab_tl:'🧵 Garis masa',tab_al:'📸 Album',tab_ck:'✅ Senarai impian',tab_mo:'🎀 Lagi',
+rmh_tl:'Garis Masa Persahabatan',rmh_al:'Album Bersama',rmh_ck:'Senarai Impian Bersama',
+add_tl:'＋ Tambah kenangan',add_al:'＋ Tambah foto',add_ck:'＋ Matlamat baru',
+rm_days_l:'hari persahabatan<br>tahun ke-<b id="rm-years"></b> bersama',
+rm_anni_l:'🎂 <b id="rm-anni" style="margin:0 3px"></b> hari ke ulang tahun anda',
+rm_note_live:'🔒 Bilik peribadi · kongsi kod {code} dengan sahabat anda',rm_note_seed:'🌸 Pameran umum — log masuk untuk milik anda',
+rm_since:'🌸 Bersama di sini sejak {d}',rm_waiting:'💌 Menunggunya — kongsi kod {code}'}};
+var LANG=(function(){try{var s=localStorage.getItem('gp_lang');if(s&&I18N[s])return s}catch(e){}
+  var n=(navigator.language||'en').toLowerCase();
+  if(n.indexOf('zh')===0)return 'zh';if(n.indexOf('fr')===0)return 'fr';if(n.indexOf('uk')===0)return 'uk';if(n.indexOf('ms')===0)return 'ms';return 'en'})();
+function t(k){var d=I18N[LANG]||{};return d[k]!==undefined?d[k]:(I18N.en[k]!==undefined?I18N.en[k]:k)}
+function setLang(l){try{localStorage.setItem('gp_lang',l)}catch(e){}location.reload()}
+/* ═════════ MUSEUM (public site) ═════════ */
+(function(){
+  var gp=document.getElementById('gp');
+  /* ☀️/🌙 封面随访客本地时间变化：7:00–19:00 亮粉白昼，其余为夜晚花园 */
+  (function(){var hr=new Date().getHours(),day=hr>=7&&hr<19;
+    document.body.classList.toggle('daytime',day);
+    var kk=document.querySelector('.hero .kicker');
+    if(kk)kk.textContent=t(day?'hero_kicker_day':'hero_kicker_night');})();
+  /* 🌐 i18n：静态文案按当前语言批量替换 + 左下角语言切换条 */
+  (function(){
+    var S=[['.gp-nav a[href="#bloom"]','nav_garden'],['.gp-nav a[href="#globe"]','nav_globe'],['.gp-nav a[href="#archive"]','nav_museum'],['.gp-nav a[href="#lexicon"]','nav_words'],
+      ['.hero .sub','hero_sub'],['.hero .ctas .btn-primary','hero_cta1'],['.hero .ctas .btn-ghost','hero_cta2'],['.hero .scrollcue','hero_scroll'],
+      ['#bloom .sec-head .kicker','bloom_kicker'],['#bloom .sec-head h2','bloom_h2'],['#bloom .sec-head p','bloom_p'],
+      ['.stats .stat:nth-child(1) .l','stat1'],['.stats .stat:nth-child(2) .l','stat2'],['.stats .stat:nth-child(3) .l','stat3'],['.stats .stat:nth-child(4) .l','stat4'],
+      ['.recent h3','recent_h3'],['.recent .sm','recent_p'],
+      ['#plant h3','plant_h3'],['#plant .sm','plant_p'],['#pf-msg','plant_ph','ph'],['#pf-go','plant_btn'],['#pf-note','plant_note_full'],
+      ['#globe .sec-head .kicker','globe_kicker'],['#globe .sec-head h2','globe_h2'],['#globe .sec-head p','globe_p'],['.globe-hint','globe_hint'],
+      ['#archive .sec-head .kicker','museum_kicker'],['#archive .sec-head h2','museum_h2'],['#archive .sec-head p','museum_p'],
+      ['.museum-guide .guide-chip:nth-child(1)','guide1'],['.museum-guide .guide-chip:nth-child(2)','guide2'],['.museum-guide .guide-chip:nth-child(3)','guide3'],
+      ['#lexicon .sec-head .kicker','lex_kicker'],['#lexicon .sec-head h2','lex_h2'],['#lexicon .sec-head p','lex_p'],
+      ['#tarot .sec-head .kicker','tarot_kicker'],['#tarot .sec-head h2','tarot_h2'],['#tarot .sec-head p','tarot_p'],
+      ['.tb-lead','tarot_lead'],['#tt-a','tarot_ph_a','ph'],['#tt-b','tarot_ph_b','ph'],['#tt-hint','tarot_hint'],
+      ['#radio .sec-head .kicker','radio_kicker'],['#radio .sec-head h2','radio_h2'],['#radio .sec-head p','radio_p'],
+      ['#room .kicker','rt_kicker'],['#room h2','rt_h2'],['#room .rt-copy>p','rt_p'],
+      ['.rt-feat:nth-child(1)>span:last-child','rt_f1'],['.rt-feat:nth-child(2)>span:last-child','rt_f2'],['.rt-feat:nth-child(3)>span:last-child','rt_f3'],
+      ['#room .rt-copy .btn-primary','rt_btn'],['.rt-lock','rt_lock'],
+      ['#join h2','join_h2'],['#join p','join_p'],['#joinbtn','join_btn'],['.foot','foot'],
+      ['#rm-wel h2','rm_wel_h2'],['#rm-wel .gs','rm_wel_p'],
+      ['#rm-hub h2','hub_h2'],['#rm-hub .gs','hub_p'],['#rm-hub .btn-primary','hub_new'],['#rm-hub .gbtns .btn-ghost','hub_code'],
+      ['#rm-join h2','joinscr_h2'],['#rm-join .gs','joinscr_p'],
+      ['.rm-tab[data-pg="tl"]','tab_tl'],['.rm-tab[data-pg="al"]','tab_al'],['.rm-tab[data-pg="ck"]','tab_ck'],['.rm-tab[data-pg="mo"]','tab_mo'],
+      ['#rm-pg-tl .rm-secthead h3','rmh_tl'],['#rm-pg-al .rm-secthead h3','rmh_al'],['#rm-pg-ck .rm-secthead h3','rmh_ck'],
+      ['#rm-pg-tl .addbtn','add_tl'],['#rm-pg-al .addbtn','add_al'],['#rm-pg-ck .addbtn','add_ck'],
+      ['.daysrow .l','rm_days_l'],['.anni','rm_anni_l'],
+      ['#modal .grid2 .it:nth-child(1) b','lbl_dream'],['#modal .grid2 .it:nth-child(2) b','lbl_taught']];
+    S.forEach(function(p){var el=document.querySelector(p[0]);if(!el)return;
+      if(p[2]==='ph')el.setAttribute('placeholder',t(p[1]));else el.innerHTML=t(p[1]);});
+    document.documentElement.lang=({zh:'zh-CN',en:'en',fr:'fr',uk:'uk',ms:'ms'})[LANG]||'en';
+    /* 找到导航里的 My Room 胶囊（按文本匹配，结构无关） */
+    Array.prototype.forEach.call(document.querySelectorAll('.gp-nav a,.gp-nav button'),function(a){
+      if(/My Room/i.test(a.textContent))a.innerHTML=a.innerHTML.replace(/My Room/i,t('nav_room'));});
+    var lb=document.createElement('div');lb.className='langbar';
+    [['zh','中'],['en','EN'],['fr','FR'],['uk','УКР'],['ms','BM']].forEach(function(L){
+      var b=document.createElement('button');b.textContent=L[1];if(L[0]===LANG)b.className='on';
+      b.onclick=function(){setLang(L[0])};lb.appendChild(b);});
+    document.body.appendChild(lb);
+  })();
+  var CONT=[
+    ['NA',[[33,69],[167,56],[278,78],[347,111],[292,139],[283,169],[255,182],[278,225],[220,190],[186,172],[161,144],[153,114],[60,92]]],
+    ['SA',[[300,220],[403,272],[392,298],[368,318],[360,330],[311,397],[296,360],[283,290],[281,250]]],
+    ['AF',[[472,153],[528,147],[597,167],[642,228],[611,278],[606,319],[556,347],[536,314],[525,264],[514,236],[475,233],[453,211],[456,175]]],
+    ['EU',[[475,147],[475,131],[500,111],[542,80],[600,72],[639,100],[611,128],[561,144],[539,139]]],
+    ['AS',[[639,100],[700,55],[820,50],[944,61],[972,90],[889,111],[839,164],[800,217],[778,236],[717,228],[694,189],[661,194],[625,214],[606,172],[597,142],[633,130]]],
+    ['AU',[[817,306],[867,283],[903,292],[925,328],[917,356],[861,349],[819,344]]]
+  ];
+  var ISL=[{cx:496,cy:100,rx:14,ry:18},{cx:370,cy:52,rx:38,ry:30},{cx:888,cy:150,rx:15,ry:30},{cx:805,cy:262,rx:46,ry:15},{cx:845,cy:220,rx:13,ry:21},{cx:965,cy:372,rx:11,ry:19},{cx:632,cy:300,rx:9,ry:20}];
+  function inPoly(x,y,p){var n=p.length,ins=false;for(var i=0,j=n-1;i<n;j=i++){var xi=p[i][0],yi=p[i][1],xj=p[j][0],yj=p[j][1];
+    if(((yi>y)!=(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi))ins=!ins;}return ins;}
+  function onLand(x,y){for(var i=0;i<CONT.length;i++)if(inPoly(x,y,CONT[i][1]))return true;
+    for(var k=0;k<ISL.length;k++){var e=ISL[k],dx=(x-e.cx)/e.rx,dy=(y-e.cy)/e.ry;if(dx*dx+dy*dy<=1)return true;}return false;}
+
+  var COLS={pink:['#ffd9e8','#f48fc0','#ffd86a'],lav:['#ece2fb','#bb9fea','#fff0c0'],cream:['#fff6ea','#ffd9a6','#ffce6a'],blue:['#e7f2ff','#a9cdf2','#ffe6a0'],peach:['#ffe7d6','#ffb98f','#ffd66a']};
+  var GR={pink:['#ffd6e6','#f5a8cf'],lav:['#ece0fb','#c3a6ec'],cream:['#fff3e3','#ffd9b8'],blue:['#e3f1ff','#b8d8f5'],peach:['#ffe6d4','#ffc09e']};
+  /* 真实开发模式：每个女孩绑定一张真实插画，文件放在与本页面同级的 avatars/ 文件夹
+     图1→emma 图2→mia 图3→yuki 图4→sofia 图5→elise 图6→soo 图7→diya 图8→mei 图9→grace 图10→anna 图11→lily
+     预览环境找不到文件时自动回退为花朵占位，部署后即显示真图 */
+  var girls=[
+    {n:'Emma',c:'China',f:'🇨🇳',age:22,col:'pink',e:'🌸',lat:31.23,lon:121.47,dream:'Become a designer',lesson:'To listen before fixing.',q:'My best friend taught me my softness was never a weakness.',av:'👩🏻',img:'avatars/Emma.jpg'},
+    {n:'Anna',c:'Ukraine',f:'🇺🇦',age:24,col:'lav',e:'🌷',lat:50.45,lon:30.52,dream:'Open a flower studio',lesson:'That distance can\u2019t dilute real love.',q:'We met through language exchange and never stopped translating each other\u2019s hearts.',av:'👩🏼',img:'avatars/anna.jpg'},
+    {n:'Élise',c:'France',f:'🇫🇷',age:23,col:'cream',e:'🌹',lat:48.85,lon:2.35,dream:'Write a children\u2019s book',lesson:'To say the hard thing, kindly.',q:'A true friend is the one who stays for the boring afternoons.',img:'avatars/elise-web.jpg'},
+    {n:'Mei',c:'Malaysia',f:'🇲🇾',age:21,col:'blue',e:'🌼',lat:3.14,lon:101.69,dream:'Study abroad',lesson:'That asking for help is brave.',q:'She believed in my dream before I dared to.',img:'avatars/mei.jpg'},
+    {n:'Yuki',c:'Japan',f:'🇯🇵',age:22,col:'peach',e:'🌺',lat:35.68,lon:139.65,dream:'Become an illustrator',lesson:'To celebrate small wins loudly.',q:'We grew up together by growing apart and back again.',img:'avatars/yuki.jpg'},
+    {n:'Grace',c:'USA',f:'🇺🇸',age:25,col:'pink',e:'🌷',lat:40.71,lon:-74.0,dream:'Start a nonprofit',lesson:'That vulnerability is a doorway.',q:'My friends are the family I assembled myself.',img:'avatars/grace.jpg'},
+    {n:'Sofia',c:'Brazil',f:'🇧🇷',age:23,col:'lav',e:'🌼',lat:-23.55,lon:-46.63,dream:'Dance professionally',lesson:'To forgive faster.',q:'We laugh until it heals.',img:'avatars/sofia.jpg'},
+    {n:'Diya',c:'India',f:'🇮🇳',age:20,col:'peach',e:'🪷',lat:28.6,lon:77.2,dream:'Be a doctor',lesson:'That presence beats advice.',q:'She sat with me in silence and that was everything.',img:'avatars/diya.jpg'},
+    {n:'Lily',c:'UK',f:'🇬🇧',age:24,col:'blue',e:'🌸',lat:51.5,lon:-0.12,dream:'Curate a gallery',lesson:'To take up space.',q:'Friendship is the art I never have to explain.',img:'avatars/lily.jpg'},
+    {n:'Mia',c:'Australia',f:'🇦🇺',age:23,col:'pink',e:'🌺',lat:-33.86,lon:151.2,dream:'Sail around the world',lesson:'That roots can travel.',q:'Some people feel like home in any time zone.',img:'avatars/mia-web.jpg'},
+    {n:'Soo',c:'Korea',f:'🇰🇷',age:22,col:'peach',e:'🌷',lat:37.56,lon:126.97,dream:'Debut as a stylist',lesson:'To dress for herself first.',q:'She hypes my mirror photos like they are art in a gallery.',img:'avatars/soo-web.jpg'}
+  ];
+  var STATS={China:7,France:3,Ukraine:2,Japan:2,Malaysia:3,USA:4,India:2,Brazil:2,UK:2,Australia:2,Korea:2};
+  var FEAT=['France','Ukraine','China','Japan','Malaysia','India'];
+  var MUSEUM={
+    Emma:{city:'Shanghai',zone:'Asia/Shanghai',climate:'Humid subtropical · 24°C',word:'闺蜜',sound:'guī mì',lang:'Mandarin Chinese'},
+    Anna:{city:'Kyiv',zone:'Europe/Kyiv',climate:'Continental · 18°C',word:'подруга',sound:'podruha',lang:'Ukrainian'},
+    'Élise':{city:'Paris',zone:'Europe/Paris',climate:'Oceanic · 19°C',word:'meilleure amie',sound:'meh-yur ah-mee',lang:'French'},
+    Mei:{city:'Kuala Lumpur',zone:'Asia/Kuala_Lumpur',climate:'Tropical rain · 29°C',word:'sahabat',sound:'sa-ha-bat',lang:'Malay'},
+    Yuki:{city:'Tokyo',zone:'Asia/Tokyo',climate:'Humid subtropical · 26°C',word:'親友',sound:'shinyū',lang:'Japanese'},
+    Grace:{city:'New York',zone:'America/New_York',climate:'Humid continental · 23°C',word:'bestie',sound:'bes-tee',lang:'American English'},
+    Sofia:{city:'São Paulo',zone:'America/Sao_Paulo',climate:'Subtropical highland · 21°C',word:'melhor amiga',sound:'mel-yor ah-mee-gah',lang:'Brazilian Portuguese'},
+    Diya:{city:'Delhi',zone:'Asia/Kolkata',climate:'Semi-arid · 33°C',word:'सहेली',sound:'sa-hey-lee',lang:'Hindi'},
+    Lily:{city:'London',zone:'Europe/London',climate:'Temperate oceanic · 17°C',word:'best friend',sound:'best frend',lang:'British English'},
+    Mia:{city:'Sydney',zone:'Australia/Sydney',climate:'Humid subtropical · 16°C',word:'best mate',sound:'best mayt',lang:'Australian English'},
+    Soo:{city:'Seoul',zone:'Asia/Seoul',climate:'Humid continental · 25°C',word:'절친',sound:'jeol-chin',lang:'Korean'}
+  };
+  function localInfo(x){var p=MUSEUM[x.n],d=new Date(),parts=new Intl.DateTimeFormat('en-GB',{timeZone:p.zone,hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d),h=+parts.filter(function(q){return q.type==='hour'})[0].value;return {p:p,time:parts.map(function(q){return q.type==='hour'||q.type==='minute'?q.value:(q.type==='literal'?q.value:'')}).join('').trim(),awake:h>=7&&h<22};}
+  girls.forEach(function(x){x.xs=(x.lon+180)/360*1000;x.ys=(90-x.lat)/180*500;});
+
+  if(!window.matchMedia('(hover:none)').matches){
+    var cur=gp.querySelector('.gp-cur'),ring=gp.querySelector('.gp-ring'),rx=0,ry=0,mx=0,my=0;
+    window.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+    (function loop(){rx+=(mx-rx)*.16;ry+=(my-ry)*.16;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();}
+  gp.querySelectorAll('.btn').forEach(function(b){b.addEventListener('mousemove',function(e){var r=b.getBoundingClientRect();b.style.setProperty('--mx',(e.clientX-r.left)+'px');b.style.setProperty('--my',(e.clientY-r.top)+'px')})});
+  var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target)}})},{threshold:.1});
+  gp.querySelectorAll('.rv').forEach(function(el){io.observe(el)});
+  var sio=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){var el=en.target,to=+el.dataset.n,n=0,s=Math.max(1,Math.round(to/30));
+    var t=setInterval(function(){n+=s;if(n>=to){n=to;clearInterval(t)}el.textContent=n},32);sio.unobserve(el)}})},{threshold:.6});
+  gp.querySelectorAll('.stat .v[data-n]').forEach(function(el){sio.observe(el)});
+
+  var clouds=['rgba(248,200,220,.7)','rgba(234,220,248,.65)','rgba(220,238,255,.6)','rgba(255,245,236,.7)'],hero=gp.querySelector('.hero');
+  for(var i=0;i<6;i++){var cl=document.createElement('div');cl.className='cloud';var w=200+Math.random()*260;cl.style.width=w+'px';cl.style.height=(w*.55)+'px';cl.style.top=(Math.random()*80)+'%';cl.style.background=clouds[i%clouds.length];cl.style.animationDuration=(34+Math.random()*30)+'s';cl.style.animationDelay=(-Math.random()*40)+'s';hero.appendChild(cl);}
+  (function(){var cv=document.getElementById('hero-particles'),ctx=cv.getContext('2d'),ps=[],W,H;function rs(){W=cv.width=hero.offsetWidth;H=cv.height=hero.offsetHeight}rs();window.addEventListener('resize',rs);
+    for(var i=0;i<46;i++)ps.push({x:Math.random()*W,y:Math.random()*H,r:1+Math.random()*2.4,s:.2+Math.random()*.5,o:.2+Math.random()*.5});
+    (function d(){ctx.clearRect(0,0,W,H);ps.forEach(function(p){p.y-=p.s;if(p.y<-6){p.y=H+6;p.x=Math.random()*W}ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.28);ctx.fillStyle='rgba(255,170,200,'+p.o+')';ctx.fill()});requestAnimationFrame(d)})();})();
+
+  var smap=document.getElementById('watermap'),NS='http://www.w3.org/2000/svg';
+  var frag=document.createDocumentFragment();
+  for(var yy=6;yy<500;yy+=8){for(var xx=6;xx<1000;xx+=8){
+    var jx=xx+(Math.random()*3-1.5),jy=yy+(Math.random()*3-1.5);
+    if(onLand(jx,jy)){var c=document.createElementNS(NS,'circle');c.setAttribute('cx',jx.toFixed(1));c.setAttribute('cy',jy.toFixed(1));c.setAttribute('r',(1.5+Math.random()*1.1).toFixed(1));
+      var lav=(jx>470&&jx<900&&jy>70&&jy<250&&Math.random()<.3);
+      c.setAttribute('fill',lav?'#cdb1e6':'#f0a8c6');c.setAttribute('opacity',(0.4+Math.random()*0.45).toFixed(2));frag.appendChild(c);}}}
+  smap.appendChild(frag);
+
+  var fcount=0;
+  function blossom(col,size){var C=COLS[col]||COLS.pink,id='fg'+(fcount++);var s='<svg class="fsvg" width="'+size+'" height="'+size+'" viewBox="0 0 100 100">';
+    s+='<defs><radialGradient id="'+id+'" cx="50%" cy="50%" r="55%" gradientUnits="userSpaceOnUse" fx="50" fy="50"><stop offset="0%" stop-color="'+C[0]+'"/><stop offset="100%" stop-color="'+C[1]+'"/></radialGradient></defs>';
+    s+='<circle cx="50" cy="50" r="34" fill="'+C[0]+'" opacity=".35"/>';
+    for(var i=0;i<5;i++){var a=i*72-90,rad=a*Math.PI/180,px2=50+Math.cos(rad)*20,py2=50+Math.sin(rad)*20;
+      s+='<g transform="rotate('+(a+90)+' '+px2+' '+py2+')"><ellipse cx="'+px2.toFixed(1)+'" cy="'+py2.toFixed(1)+'" rx="15" ry="24" fill="url(#'+id+')"/></g>';}
+    for(var k=0;k<6;k++){var aa=k*60*Math.PI/180;s+='<circle cx="'+(50+Math.cos(aa)*5).toFixed(1)+'" cy="'+(50+Math.sin(aa)*5).toFixed(1)+'" r="2.1" fill="'+C[2]+'"/>';}
+    s+='<circle cx="50" cy="50" r="3.4" fill="'+C[2]+'"/></svg>';return s;}
+
+  /* 手绘 SVG 头像 — 复刻参考插画：Anna=金发花环蓝花窗 / Emma=棕卷发红丝带黑蕾丝 */
+  var AV={
+  'Anna':'<svg viewBox="0 0 100 100"><defs><clipPath id="avc1"><circle cx="50" cy="50" r="50"/></clipPath></defs><g clip-path="url(#avc1)"><rect width="100" height="100" fill="#8fb3e2"/><path d="M50 6C26 6 16 26 16 46L16 100L84 100L84 46C84 26 74 6 50 6Z" fill="#a9c9ee"/><g fill="#fff" opacity=".9"><circle cx="13" cy="30" r="4"/><circle cx="21" cy="20" r="3"/><circle cx="87" cy="32" r="4"/><circle cx="80" cy="19" r="3"/><circle cx="91" cy="62" r="3.4"/><circle cx="9" cy="60" r="3.4"/></g><path d="M50 12C28 12 22 30 22 48C22 70 26 88 30 100L70 100C74 88 78 70 78 48C78 30 72 12 50 12Z" fill="#f2e7cd"/><rect x="45" y="58" width="10" height="20" fill="#ffefe4"/><path d="M28 100C30 82 38 74 50 74C62 74 70 82 72 100Z" fill="#3f6fb5"/><path d="M40 78C44 71 56 71 60 78C56 83 44 83 40 78Z" fill="#fff" opacity=".92"/><ellipse cx="50" cy="46" rx="17" ry="19" fill="#ffefe4"/><path d="M50 14C34 14 28 28 30 44C34 33 40 27 50 27C60 27 66 33 70 44C72 28 66 14 50 14Z" fill="#f6ecd6"/><path d="M30 42C28 60 29 80 33 97" stroke="#eadcba" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M70 42C72 60 71 80 67 97" stroke="#eadcba" stroke-width="3.4" fill="none" stroke-linecap="round"/><ellipse cx="43" cy="48" rx="3" ry="3.6" fill="#3f6fb5"/><ellipse cx="57" cy="48" rx="3" ry="3.6" fill="#3f6fb5"/><circle cx="43.9" cy="47" r="1" fill="#fff"/><circle cx="57.9" cy="47" r="1" fill="#fff"/><path d="M39 42Q43 40 47 42M53 42Q57 40 61 42" stroke="#d8c9a4" stroke-width="1.4" fill="none" stroke-linecap="round"/><circle cx="38.5" cy="55" r="3" fill="#ffc9c2" opacity=".55"/><circle cx="61.5" cy="55" r="3" fill="#ffc9c2" opacity=".55"/><path d="M47 60Q50 62.4 53 60" stroke="#e08a86" stroke-width="1.6" fill="none" stroke-linecap="round"/><g><circle cx="32" cy="31" r="3.4" fill="#fff"/><circle cx="32" cy="31" r="1.2" fill="#5a86c9"/><circle cx="41" cy="25" r="3.4" fill="#fff"/><circle cx="41" cy="25" r="1.2" fill="#d9b45a"/><circle cx="50" cy="22" r="3.6" fill="#fff"/><circle cx="50" cy="22" r="1.3" fill="#5a86c9"/><circle cx="59" cy="25" r="3.4" fill="#fff"/><circle cx="59" cy="25" r="1.2" fill="#d9b45a"/><circle cx="68" cy="31" r="3.4" fill="#fff"/><circle cx="68" cy="31" r="1.2" fill="#5a86c9"/></g></g><circle cx="50" cy="50" r="48.5" fill="none" stroke="#dce8f8" stroke-width="3"/></svg>',
+  'Emma':'<svg viewBox="0 0 100 100"><defs><clipPath id="avc2"><circle cx="50" cy="50" r="50"/></clipPath></defs><g clip-path="url(#avc2)"><rect width="100" height="100" fill="#f6efe2"/><path d="M50 10C30 10 20 26 22 44C23 58 26 72 30 84L70 84C75 72 78 56 78 42C78 24 68 10 50 10Z" fill="#5c4433"/><path d="M28 32Q24 42 27 52" stroke="#7d5f46" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M72 30Q76 42 73 54" stroke="#7d5f46" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M34 18Q28 24 27 34" stroke="#7d5f46" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M66 16Q73 22 74 32" stroke="#7d5f46" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M68 22C76 12 86 16 86 24C80 24 74 28 71 33Z" fill="#e03a2f"/><path d="M68 22C70 12 60 6 56 12C60 14 64 18 65 23Z" fill="#e03a2f"/><circle cx="67" cy="22" r="3" fill="#b52a22"/><path d="M70 28C76 40 78 54 76 68" stroke="#e03a2f" stroke-width="4.4" fill="none" stroke-linecap="round"/><rect x="45" y="60" width="10" height="18" fill="#ffeee2"/><path d="M27 100C29 84 38 76 50 76C62 76 71 84 73 100Z" fill="#221c20"/><path d="M39 79Q50 71 61 79" stroke="#221c20" stroke-width="5.6" fill="none" stroke-linecap="round"/><g fill="#d9b45a"><circle cx="44" cy="76.6" r="1"/><circle cx="50" cy="75" r="1"/><circle cx="56" cy="76.6" r="1"/></g><ellipse cx="50" cy="48" rx="16.5" ry="18.5" fill="#ffeee2"/><path d="M50 22C38 22 33 30 34 42C38 33 44 29 50 29C56 29 62 33 66 42C67 30 62 22 50 22Z" fill="#5c4433"/><path d="M34 40Q31 50 34 60" stroke="#5c4433" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M66 40Q69 50 66 60" stroke="#5c4433" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="43" cy="49" rx="3.2" ry="3.8" fill="#6e6258"/><ellipse cx="57" cy="49" rx="3.2" ry="3.8" fill="#6e6258"/><circle cx="44" cy="48" r="1.1" fill="#fff"/><circle cx="58" cy="48" r="1.1" fill="#fff"/><path d="M39 44Q43 42 47 44M53 44Q57 42 61 44" stroke="#4a382c" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="38.5" cy="56" r="3" fill="#ffc4bc" opacity=".6"/><circle cx="61.5" cy="56" r="3" fill="#ffc4bc" opacity=".6"/><path d="M46 61Q50 64.6 54 61Q50 59.6 46 61Z" fill="#d6493f"/><circle cx="66.5" cy="57" r="2" fill="#d9a83f"/><circle cx="66.5" cy="60.8" r="1.3" fill="#c23b31"/></g><circle cx="50" cy="50" r="48.5" fill="none" stroke="#f0dfe6" stroke-width="3"/></svg>'
+  };
+  var flayer=document.getElementById('flowers');
+  function openStory(x){document.getElementById('m-ph').style.background='linear-gradient(150deg,'+GR[x.col][0]+','+GR[x.col][1]+')';
+    document.getElementById('m-flag').textContent=x.f;
+    var em=document.getElementById('m-em');
+    var fb=AV[x.n]?AV[x.n]:'<span style="display:flex;width:100%;height:100%;align-items:center;justify-content:center;font-size:72px">'+x.e+'</span>';
+    em.innerHTML='<span class="avportrait" style="width:150px;height:150px;position:relative">'+fb+(x.img?'<img src="'+x.img+'" alt="'+x.n+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top" onerror="this.remove()">':'')+'</span>';
+    document.getElementById('m-name').textContent=x.n;
+    document.getElementById('m-country').textContent=x.c+' · '+x.age;document.getElementById('m-quote').textContent='“'+x.q+'”';
+    document.getElementById('m-dream').textContent=x.dream;document.getElementById('m-lesson').textContent=x.lesson;
+    /* 🔊 用她的语言说一遍：voices/<name>.mp3 就绪后自动可播，缺文件时提示 coming soon */
+    var vp=MUSEUM[x.n],vb=document.getElementById('m-voice'),vt=document.getElementById('m-voice-t');
+    var vlabel='Hear “'+vp.word+'” in her voice';vt.textContent=vlabel;vb.classList.remove('playing');
+    vb.onclick=function(){
+      var f='voices/'+x.n.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase()+'.mp3';
+      var a=new Audio(f);
+      var soon=function(){vt.textContent='Her voice is on its way ✨';vb.classList.remove('playing');setTimeout(function(){vt.textContent=vlabel},2200)};
+      a.onerror=soon;
+      a.onended=function(){vb.classList.remove('playing');vt.textContent=vlabel};
+      a.play().then(function(){vb.classList.add('playing');vt.textContent='“'+vp.word+'” · '+vp.lang}).catch(soon);
+    };
+    document.getElementById('modal').classList.add('open');}
+  var decoCols=['pink','lav','cream','blue','peach'];
+  /* 🌍 实时天气：Open-Meteo 免费接口，无需 key；按国家缓存，悬停时才请求 */
+  var WXC={};
+  function wxEmoji(c){return c===0?'☀️':c<3?'🌤️':c===3?'☁️':c<49?'🌫️':c<68?'🌦️':c<78?'❄️':c<85?'🌧️':'⛈️'}
+  function fetchWX(x,el){if(!el)return;if(WXC[x.c]){el.textContent=WXC[x.c];return}
+    el.textContent='◌ checking her sky…';
+    fetch('https://api.open-meteo.com/v1/forecast?latitude='+x.lat+'&longitude='+x.lon+'&current=temperature_2m,weather_code')
+      .then(function(r){return r.json()})
+      .then(function(d){var t=wxEmoji(d.current.weather_code)+' '+Math.round(d.current.temperature_2m)+'°C right now';WXC[x.c]=t;el.textContent=t})
+      .catch(function(){el.textContent=(MUSEUM[x.n]||{}).climate||''});}
+  /* 🌸 生长感：1 个故事=花苞，3+ =盛开，7+ =一整片花田 */
+  girls.forEach(function(x,i){
+    var n=STATS[x.c]||1,tier=n>=7?3:(n>=3?2:1);
+    var fx=x.xs/10,fy=x.ys/5,fld=tier===3?12:(tier===2?6:2);
+    for(var k=0;k<fld;k++){var ang=Math.random()*6.28,r=2+Math.random()*(tier===3?7:4.5);var d=document.createElement('div');d.className='flower deco';
+      d.style.left=(fx+Math.cos(ang)*r)+'%';d.style.top=(fy+Math.sin(ang)*r*1.5)+'%';d.style.animationDelay=(Math.random()*4)+'s';d.style.zIndex=2;
+      d.innerHTML=blossom(decoCols[k%5],12+Math.random()*(tier===3?16:12));flayer.appendChild(d);}
+    var fl=document.createElement('div');fl.className='flower story';fl.style.left=fx+'%';fl.style.top=fy+'%';fl.style.animationDelay=(i*.3)+'s';
+    var bsz=tier===3?54:(tier===2?46:36),asz=tier===1?24:28;
+    var inner=blossom(x.col,bsz);
+    if(x.img)inner+='<div class="favatar" style="width:'+asz+'px;height:'+asz+'px;font-size:15px;background:linear-gradient(150deg,'+GR[x.col][0]+','+GR[x.col][1]+')"><img src="'+x.img+'" alt="'+x.n+'" onerror="this.remove()"></div>';
+    else if(AV[x.n])inner+='<div class="favatar" style="width:26px;height:26px">'+AV[x.n]+'</div>';
+    else if(x.av)inner+='<div class="favatar" style="width:22px;height:22px;font-size:15px;background:linear-gradient(150deg,'+GR[x.col][0]+','+GR[x.col][1]+')">'+x.av+'</div>';
+    inner+='<span class="fnote" style="animation-delay:'+(Math.random()*7).toFixed(1)+'s">♪</span>';
+    var below=fy<32; /* 顶部的花朵，卡片朝下弹，避免被裁切 */
+    var li=localInfo(x);fl.classList.add(li.awake?'is-awake':'is-asleep');
+    var tl=tier===3?'🌾 A whole field here · '+n+' stories':(tier===2?'🌸 In full bloom · '+n+' stories':'🌱 First bud · '+n+' '+(n>1?'stories':'story'));
+    fl.innerHTML=inner+'<div class="ftip'+(below?' below':'')+'"><div class="nm">'+x.n+'</div><div class="ct">'+x.f+' '+li.p.city+' · <span class="ltime">'+li.time+'</span> her time</div><div class="dr"><b>'+(li.awake?'In bloom':'Resting')+'</b><span class="wx">'+li.p.climate+'</span></div><div class="tierline">'+tl+'</div></div>';
+    fl.addEventListener('mouseenter',function(){fetchWX(x,fl.querySelector('.wx'));var lt=fl.querySelector('.ltime');if(lt)lt.textContent=localInfo(x).time;});
+    fl.addEventListener('click',function(){openStory(x)});flayer.appendChild(fl);
+  });
+  /* The private friendship room is also a living exhibit: two paired flowers mark Catherine and Саша. */
+  [{n:'Catherine',f:'🇨🇳',col:'pink',lat:31.23,lon:121.47,city:'China'},{n:'Oleksandra · Саша',f:'🇺🇦',col:'lav',lat:48.9226,lon:24.7111,city:'Ivano-Frankivsk'}].forEach(function(x,i){
+    var fl=document.createElement('div'),fx=(x.lon+180)/360*100,fy=(90-x.lat)/180*100;
+    fl.className='flower story pair-bloom is-awake';fl.style.left=fx+'%';fl.style.top=fy+'%';fl.style.zIndex=20;fl.style.animationDelay=(i*.35)+'s';
+    fl.innerHTML=blossom(x.col,58)+'<span class="pair-mark">✦</span><div class="ftip'+(fy<32?' below':'')+'"><div class="nm">'+x.n+'</div><div class="ct">'+x.f+' '+x.city+'</div><div class="dr"><b>Private bloom</b>A friendship growing since 2018.</div></div>';
+    fl.addEventListener('click',function(){RM.open()});flayer.appendChild(fl);
+  });
+
+  (function(){var s=1,panX=0,panY=0,vp=document.getElementById('mapvp'),mc=document.getElementById('mapcontent'),drag=false,sx,sy;
+    function apply(){mc.style.transform='translate('+panX+'px,'+panY+'px) scale('+s+')';}
+    function clamp(){var mX=(s-1)/2*vp.offsetWidth;panX=Math.max(-mX,Math.min(mX,panX));var mY=(s-1)/2*vp.offsetHeight;panY=Math.max(-mY,Math.min(mY,panY));}
+    document.getElementById('zin').addEventListener('click',function(){s=Math.min(2.4,s+0.4);clamp();apply()});
+    document.getElementById('zout').addEventListener('click',function(){s=Math.max(1,s-0.4);if(s===1){panX=panY=0}clamp();apply()});
+    vp.addEventListener('mousedown',function(e){if(s<=1)return;drag=true;sx=e.clientX-panX;sy=e.clientY-panY;vp.style.cursor='grabbing'});
+    window.addEventListener('mouseup',function(){drag=false;vp.style.cursor=''});
+    vp.addEventListener('mousemove',function(e){if(!drag)return;panX=e.clientX-sx;panY=e.clientY-sy;clamp();apply()});})();
+
+  var rr=document.getElementById('recentrow');
+  girls.slice().reverse().forEach(function(x){var c=document.createElement('div');c.className='gcard';
+    c.innerHTML='<div class="ph" style="background:linear-gradient(150deg,'+GR[x.col][0]+','+GR[x.col][1]+')"><span class="flag">'+x.f+'</span>'+blossom(x.col,84)+(x.img?'<img class="gph" src="'+x.img+'" alt="'+x.n+'" onerror="this.remove()">':'')+'</div><div class="bd"><div class="n">'+x.n+'</div><div class="c">'+x.c+' · '+x.age+'</div><div class="d"><b>'+t('lbl_dream')+'</b>'+x.dream+'</div></div>';
+    c.addEventListener('click',function(){openStory(x)});rr.appendChild(c);});
+  var ms=document.getElementById('masonry');
+  girls.forEach(function(x){var h=190+((x.n.length*7+x.age)%80);var c=document.createElement('div');c.className='mcard';
+    var mi=localInfo(x),cat='GP-'+String(girls.indexOf(x)+1).padStart(3,'0');
+    c.innerHTML='<div class="ph" style="height:'+h+'px;background:linear-gradient(150deg,'+GR[x.col][0]+','+GR[x.col][1]+')"><span class="flag">'+x.f+' '+mi.p.city+'</span><span class="age">'+x.age+'</span>'+(x.img?'<img class="mimg" src="'+x.img+'" alt="Portrait of '+x.n+'" onerror="this.remove()">':'<span class="em">'+blossom(x.col,Math.min(104,h*0.5))+'</span>')+'<span class="catalog">CAT. '+cat+'</span></div><div class="bd"><div class="q">“'+x.q+'”</div><div class="ct">'+t('lbl_exhibit')+' '+cat+' · '+x.n+'</div><div class="row"><b>'+t('lbl_dream')+'</b>'+x.dream+'</div><div class="row"><b>'+t('lbl_taught')+'</b>'+x.lesson+'</div><div class="weather"><span>◷ <strong>'+mi.time+'</strong> '+t('lbl_local')+'</span><span>'+mi.p.climate+'</span></div></div>';
+    c.addEventListener('click',function(){openStory(x)});ms.appendChild(c);});
+  var lex=document.getElementById('lexgrid');
+  girls.forEach(function(x){var p=MUSEUM[x.n],c=document.createElement('article');c.className='word-card rv';c.innerHTML='<div><div class="lang">'+p.lang+'</div><div class="word">'+p.word+'</div><div class="sound">/'+p.sound+'/</div></div><div><div class="meaning">'+t('lex_meaning')+'</div><div class="from">'+t('lex_shared')+' <b>'+x.n+'</b> · '+p.city+'</div></div>';lex.appendChild(c);io.observe(c);});
+
+  /* ═══ 💌 Plant a flower — Supabase 后端就绪；未填 key 时自动降级为本地存储 ═══ */
+  /* SUPA / supaH 现在是全局共享（见文件顶部） */
+  var planted=[],pfSel=document.getElementById('pf-country');
+  girls.forEach(function(x){var o=document.createElement('option');o.value=x.c;o.textContent=x.f+' '+x.c;pfSel.appendChild(o)});
+  function renderPlanted(){
+    Array.prototype.slice.call(document.querySelectorAll('.flower.visitor')).forEach(function(e){e.remove()});
+    planted.slice(-100).forEach(function(p,i){var g=null;girls.forEach(function(q){if(q.c===p.country)g=g||q});if(!g)return;
+      var d=document.createElement('div');d.className='flower deco visitor';var ang=i*2.399,r=2.6+((i*37)%42)/10;
+      d.style.left=(g.xs/10+Math.cos(ang)*r)+'%';d.style.top=(g.ys/5+Math.sin(ang)*r*1.5)+'%';d.style.zIndex=3;
+      d.innerHTML=blossom(decoCols[i%5],11+((i*7)%9))+'<div class="vtip">“'+String(p.message||'').replace(/</g,'&lt;')+'”</div>';
+      flayer.appendChild(d);});
+    var el=document.getElementById('pf-count');if(el)el.textContent=planted.length;}
+  function loadPlanted(){
+    if(SUPA.url&&SUPA.anon){fetch(SUPA.url+'/rest/v1/planted_flowers?select=country,message&message=neq.__connection_test__&order=id.asc&limit=500',{headers:supaH()})
+      .then(function(r){return r.json()}).then(function(d){if(Array.isArray(d)){planted=d;renderPlanted()}}).catch(function(){});}
+    else{try{planted=JSON.parse(localStorage.getItem('gp_planted')||'[]')}catch(e){planted=[]}renderPlanted();}}
+  document.getElementById('pf-go').addEventListener('click',function(){
+    var btn=this,c=pfSel.value,mEl=document.getElementById('pf-msg'),m=mEl.value.trim();
+    if(m.length<2){mEl.focus();return}
+    btn.disabled=true;
+    var done=function(){planted.push({country:c,message:m});renderPlanted();mEl.value='';btn.disabled=false;
+      document.getElementById('pf-note').innerHTML=t('plant_done').replace('{c}',c)+' '+t('plant_count').replace('{n}',planted.length);};
+    if(SUPA.url&&SUPA.anon){fetch(SUPA.url+'/rest/v1/planted_flowers',{method:'POST',headers:supaH(),body:JSON.stringify({country:c,message:m})})
+      .then(function(r){if(!r.ok)throw 0;done()}).catch(function(){btn.disabled=false;document.getElementById('pf-note').textContent=t('plant_busy')});}
+    else{done();try{localStorage.setItem('gp_planted',JSON.stringify(planted))}catch(e){}}
+  });
+  loadPlanted();
+
+  /* ═══ 🎴 Friendship Star Chart ═══ */
+  function thash(s){var h=9;for(var i=0;i<s.length;i++){h=(h*131+s.charCodeAt(i))>>>0}return h}
+  function tesc(s){return String(s).replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+  var T_TITLE=['Twin Flames of the Autumn Moon','Two Rivers, One Sea','The Parallel Comets','Sisters of the Same Star','The Mirror Constellation','Keepers of the Peach Garden','The Red Thread Astronomers','Moonlight Co-Conspirators'];
+  var T_PAST=['royal seamstresses who embroidered the same robe','two lighthouse keepers writing letters across a strait','travelling musicians who shared one violin','sister astronomers who named a comet after each other','tea-house poets who finished each other’s verses','gardeners of one imperial peach orchard','pen pals on two different silk-road caravans','twin pastry chefs in a snowy mountain village'];
+  var T_ELEM=['Moonlight','Rose Gold','Sea Glass','First Snow','Peach Blossom','Northern Star','Morning Fog','Candlelight'];
+  var T_LUCK=['a red bead necklace','a pressed four-leaf clover','matching hair ribbons','a shared playlist','one very old inside joke','a half-and-half bracelet','postcards with terrible handwriting','the same book in two languages'];
+  (function(){
+    var ta=document.getElementById('tt-a'),tb=document.getElementById('tt-b'),go=document.getElementById('tt-go'),hint=document.getElementById('tt-hint');
+    var box=document.querySelector('.tarotbox'),hint0=hint.textContent;
+    /* 星尘：随机撒 10 颗一闪一闪的小星 */
+    for(var i=0;i<10;i++){var sp=document.createElement('span');sp.className='tb-star';sp.textContent=i%2?'✦':'✧';
+      sp.style.left=(3+Math.random()*93)+'%';sp.style.top=(4+Math.random()*88)+'%';sp.style.fontSize=(8+Math.random()*11)+'px';
+      sp.style.animationDelay=(Math.random()*4.5).toFixed(1)+'s';box.appendChild(sp);}
+    function pill(el){var p=el.parentElement;while(p&&p.className.indexOf('tpill')<0)p=p.parentElement;return p}
+    [ta,tb].forEach(function(el){
+      el.addEventListener('input',function(){pill(el).classList.remove('err');hint.textContent=hint0;});
+      el.addEventListener('keydown',function(e){if(e.key==='Enter')go.click()});});
+    /* 真实 API：占卜总数（Supabase star_charts 表） */
+    function chartCount(){if(!supaOn())return;
+      var hh=supaH();hh.Prefer='count=exact';hh.Range='0-0';
+      fetch(SUPA.url+'/rest/v1/star_charts?select=id',{headers:hh}).then(function(r){
+        var cr=r.headers.get('content-range'),n=cr&&cr.split('/')[1];
+        if(n&&n!=='*'&&+n>0)hint.innerHTML=t('tarot_count').replace('{n}',Number(n).toLocaleString());
+      }).catch(function(){});}
+    chartCount();
+    go.addEventListener('click',function(){
+      var a=ta.value.trim(),b=tb.value.trim();
+      if(!a||!b){var miss=!a?ta:tb;pill(miss).classList.add('err');miss.focus();
+        hint.textContent=t('tarot_hint_need');return;}
+      var h=thash([a.toLowerCase(),b.toLowerCase()].sort().join('✦'));
+      var seed=h;function rnd(){seed=(seed*1103515245+12345)>>>0;return seed/4294967296}
+      var N=7+h%3,pts=[];for(var i=0;i<N;i++)pts.push([(20+rnd()*320).toFixed(1),(16+rnd()*112).toFixed(1)]);
+      var svg='<svg viewBox="0 0 360 144"><polyline points="'+pts.map(function(p){return p[0]+','+p[1]}).join(' ')+'" fill="none" stroke="#c9a6dd" stroke-width="1" stroke-dasharray="3 4" opacity=".8"/>';
+      pts.forEach(function(p,i){svg+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+(i%3===0?3.4:2.2)+'" fill="'+(i%2?'#c05c8b':'#8a5fb0')+'"/><circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+(i%3===0?7:5)+'" fill="none" stroke="#e0c3ef" stroke-width=".7" opacity=".7"/>'});
+      svg+='<text x="'+pts[0][0]+'" y="'+(pts[0][1]-10)+'" font-size="10" fill="#a06a90" text-anchor="middle">'+tesc(a)+'</text>';
+      svg+='<text x="'+pts[N-1][0]+'" y="'+(pts[N-1][1]-10)+'" font-size="10" fill="#a06a90" text-anchor="middle">'+tesc(b)+'</text></svg>';
+      var card=document.getElementById('tt-card');card.hidden=false;
+      card.innerHTML='<div class="tn">Friendship Star Chart · <span id="tt-no">No.'+(100+h%900)+'</span></div><div class="tt">'+T_TITLE[h%8]+'</div>'+svg+
+        '<div class="tsc">'+(82+h%18)+'%</div><div class="tsl">written in the stars</div>'+
+        '<div class="trd"><b>'+tesc(a)+' ✦ '+tesc(b)+'</b> — in a past life you were '+T_PAST[(h>>>3)%8]+'.</div>'+
+        '<div class="trd">Your shared element is <b>'+T_ELEM[(h>>>6)%8]+'</b> · your lucky keepsake is <b>'+T_LUCK[(h>>>9)%8]+'</b>.</div>'+
+        '<div class="tshare">📸 Screenshot this card and send it to her.</div>';
+      card.scrollIntoView({behavior:'smooth',block:'nearest'});
+      /* 真实 API：把这次占卜写入 Supabase，用返回的真实自增 id 作为卡片编号 */
+      if(supaOn()){var hh=supaH();hh.Prefer='return=representation';
+        fetch(SUPA.url+'/rest/v1/star_charts',{method:'POST',headers:hh,body:JSON.stringify({pair_hash:String(h),title:T_TITLE[h%8],score:82+h%18})})
+          .then(function(r){return r.ok?r.json():null}).then(function(d){
+            var no=document.getElementById('tt-no');
+            if(d&&d[0]&&no)no.textContent='No.'+d[0].id;chartCount();}).catch(function(){});}
+    });
+  })();
+
+  /* ═══ 📻 Global Bestie Radio ═══ */
+  var SONGS={Emma:['小幸运','Hebe Tian 田馥甄'],Anna:['Обійми','Okean Elzy'],'Élise':['La Vie en rose','Édith Piaf'],Mei:['Count on Me','Bruno Mars'],Yuki:['打上花火','DAOKO × Kenshi Yonezu'],Grace:['You’ve Got a Friend','Carole King'],Sofia:['Trem-Bala','Ana Vilela'],Diya:['Yeh Dosti','Sholay (1975)'],Lily:['Fix You','Coldplay'],Mia:['Riptide','Vance Joy'],Soo:['Dear My Friend','Agust D ft. Kim Jong Wan']};
+  var rg=document.getElementById('radiogrid');
+  girls.forEach(function(x){var s=SONGS[x.n];if(!s)return;var c=document.createElement('div');c.className='rcard rv';
+    c.innerHTML='<span class="rfl">'+x.f+'</span><div class="rbd"><div class="rsong">'+s[0]+'</div><div class="rart">'+s[1]+'</div><div class="rby">'+t('radio_chosen')+' '+x.n+' · '+x.c+'</div></div><div class="eq"><i></i><i></i><i></i><i></i><i></i></div>';
+    c.addEventListener('click',function(){window.open('https://www.youtube.com/results?search_query='+encodeURIComponent(s[0]+' '+s[1]),'_blank','noopener')});
+    rg.appendChild(c);io.observe(c);});
+  function gardenStatus(){var awake=girls.filter(function(x){return localInfo(x).awake}).length;document.getElementById('garden-clock').textContent=t('gs_bloom').replace('{a}',awake).replace('{b}',girls.length);document.getElementById('garden-copy').textContent=t(awake?'gs_day':'gs_night');}gardenStatus();setInterval(gardenStatus,60000);
+  function closeM(){document.getElementById('modal').classList.remove('open')}
+  document.getElementById('m-x').addEventListener('click',closeM);
+  document.getElementById('modalbk').addEventListener('click',closeM);
+  document.getElementById('joinbtn').addEventListener('click',function(e){e.preventDefault();openStory(girls[0])});
+
+  /* globe */
+  (function(){
+    if(typeof THREE==='undefined')return;
+    var canvas=document.getElementById('globe-canvas'),stage=canvas.parentElement,W=stage.offsetWidth,H=stage.offsetHeight;
+    var renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true,alpha:true});renderer.setSize(W,H);renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+    var scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(40,W/H,.1,100);camera.position.z=8.2;
+    var globe=new THREE.Group();scene.add(globe);var R=2.5;
+    scene.add(new THREE.AmbientLight(0xffffff,.62));var dir=new THREE.DirectionalLight(0xfff2f6,1.15);dir.position.set(4,2.5,5);scene.add(dir);
+    function softTex(c){var s=64,cv=document.createElement('canvas');cv.width=cv.height=s;var x=cv.getContext('2d');var g=x.createRadialGradient(s/2,s/2,0,s/2,s/2,s/2);g.addColorStop(0,c);g.addColorStop(.4,c);g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,0,s,s);return new THREE.CanvasTexture(cv);}
+    function makeEarth(){var TW=2048,TH=1024,cv=document.createElement('canvas');cv.width=TW;cv.height=TH;var x=cv.getContext('2d');
+      var og=x.createLinearGradient(0,0,0,TH);og.addColorStop(0,'#10315a');og.addColorStop(.5,'#1d4f82');og.addColorStop(1,'#102e56');x.fillStyle=og;x.fillRect(0,0,TW,TH);
+      for(var o=0;o<120;o++){x.globalAlpha=.05;x.fillStyle=Math.random()<.5?'#2a5b88':'#0c2748';x.beginPath();x.arc(Math.random()*TW,Math.random()*TH,30+Math.random()*120,0,6.28);x.fill();}x.globalAlpha=1;
+      /* 注意：Three.js 上传贴图时 flipY，画布顶部对应北极，py 无需翻转（原版这里翻了导致南北颠倒） */
+      function TX(px){return px/1000*TW}function TY(py){return py/500*TH}
+      /* 平滑海岸线：顶点两侧 25% 处进出、顶点作二次贝塞尔控制点——只削尖角，保留大陆轮廓 */
+      function landPath(){x.beginPath();var K=.25;
+        CONT.forEach(function(c){var p=c[1],n=p.length;
+          function P(i){var q=p[((i%n)+n)%n];return [TX(q[0]),TY(q[1])];}
+          function lerp(a,b){return [a[0]+(b[0]-a[0])*K,a[1]+(b[1]-a[1])*K];}
+          var v0=P(0),a0=lerp(v0,P(1));x.moveTo(a0[0],a0[1]);
+          for(var i=1;i<=n;i++){var v=P(i),ain=lerp(v,P(i-1)),aout=lerp(v,P(i+1));
+            x.lineTo(ain[0],ain[1]);x.quadraticCurveTo(v[0],v[1],aout[0],aout[1]);}
+          x.closePath();});
+        ISL.forEach(function(e){x.moveTo(TX(e.cx+e.rx),TY(e.cy));x.ellipse(TX(e.cx),TY(e.cy),e.rx/1000*TW,e.ry/500*TH,0,0,6.28);});}
+      /* 浅海光晕：陆地外围多道渐弱描边，模拟浅滩 */
+      landPath();x.lineJoin='round';
+      [[26,.07],[16,.12],[8,.2]].forEach(function(s){x.strokeStyle='rgba(168,220,238,'+s[1]+')';x.lineWidth=s[0];x.stroke();});
+      x.save();landPath();x.clip();
+      var lg=x.createLinearGradient(0,0,0,TH);lg.addColorStop(0,'#748244');lg.addColorStop(.5,'#617e42');lg.addColorStop(1,'#748244');x.fillStyle=lg;x.fillRect(0,0,TW,TH);
+      var cols=['#4c6730','#7f8c47','#9d8b53','#b6a35f','#3f5b2f','#86763f'];
+      for(var i=0;i<300;i++){x.globalAlpha=.32;x.fillStyle=cols[(Math.random()*cols.length)|0];x.beginPath();x.arc(Math.random()*TW,Math.random()*TH,18+Math.random()*85,0,6.28);x.fill();}
+      x.globalAlpha=1;
+      /* 陆地内侧海岸线定义 */
+      landPath();x.strokeStyle='rgba(50,75,38,.45)';x.lineWidth=7;x.stroke();
+      x.restore();
+      var ic=x.createLinearGradient(0,0,0,TH*.07);ic.addColorStop(0,'rgba(255,255,255,.95)');ic.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=ic;x.fillRect(0,0,TW,TH*.07);
+      var ic2=x.createLinearGradient(0,TH,0,TH*.93);ic2.addColorStop(0,'rgba(255,255,255,.95)');ic2.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=ic2;x.fillRect(0,TH*.93,TW,TH*.07);
+      return new THREE.CanvasTexture(cv);}
+    function makeClouds(){var TW=1024,TH=512,cv=document.createElement('canvas');cv.width=TW;cv.height=TH;var x=cv.getContext('2d');
+      for(var i=0;i<70;i++){var cx=Math.random()*TW,cy=Math.random()*TH,r=20+Math.random()*70;var g=x.createRadialGradient(cx,cy,0,cx,cy,r);g.addColorStop(0,'rgba(255,255,255,'+(0.35+Math.random()*0.4)+')');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.beginPath();x.arc(cx,cy,r,0,6.28);x.fill();}
+      return new THREE.CanvasTexture(cv);}
+    var earth=new THREE.Mesh(new THREE.SphereGeometry(R,64,64),new THREE.MeshStandardMaterial({map:makeEarth(),roughness:.92,metalness:0}));globe.add(earth);
+    var cloudMesh=new THREE.Mesh(new THREE.SphereGeometry(R*1.012,48,48),new THREE.MeshStandardMaterial({map:makeClouds(),transparent:true,opacity:.55,depthWrite:false,roughness:1}));globe.add(cloudMesh);
+    var atmo=new THREE.Mesh(new THREE.SphereGeometry(R*1.2,48,48),new THREE.ShaderMaterial({transparent:true,blending:THREE.AdditiveBlending,side:THREE.BackSide,
+      vertexShader:'varying vec3 vN;void main(){vN=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+      fragmentShader:'varying vec3 vN;void main(){float i=pow(.68-dot(vN,vec3(0.,0.,1.)),2.6);vec3 col=mix(vec3(.45,.7,1.),vec3(1.,.6,.84),clamp(vN.y*.9+.45,0.,1.));gl_FragColor=vec4(col,1.)*i;}'}));globe.add(atmo);
+    var rim=new THREE.Mesh(new THREE.SphereGeometry(R*1.02,64,64),new THREE.ShaderMaterial({transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,
+      vertexShader:'varying vec3 vN;varying vec3 vE;void main(){vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.);vE=normalize(-mv.xyz);gl_Position=projectionMatrix*mv;}',
+      fragmentShader:'varying vec3 vN;varying vec3 vE;void main(){float f=pow(1.-abs(dot(vN,vE)),3.);vec3 col=mix(vec3(.55,.75,1.),vec3(1.,.68,.86),clamp(vN.y*.9+.45,0.,1.));gl_FragColor=vec4(col,1.)*f*.55;}'}));globe.add(rim);
+    (function(){var n=620,p=[];for(var i=0;i<n;i++){var r=20+Math.random()*22,t=Math.random()*6.28,ph=Math.acos(2*Math.random()-1);p.push(r*Math.sin(ph)*Math.cos(t),r*Math.sin(ph)*Math.sin(t),r*Math.cos(ph));}
+      var geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(p,3));scene.add(new THREE.Points(geo,new THREE.PointsMaterial({size:.09,color:0xffffff,transparent:true,opacity:.85,map:softTex('rgba(255,255,255,1)'),depthWrite:false})));})();
+    function v3(xs,ys,rr){var A=xs/1000*Math.PI*2,B=ys/500*Math.PI;return new THREE.Vector3(-rr*Math.cos(A)*Math.sin(B),rr*Math.cos(B),rr*Math.sin(A)*Math.sin(B));}
+    var haloTex=softTex('rgba(255,150,200,1)'),nodes=[];
+    girls.forEach(function(x){var p=v3(x.xs,x.ys,R*1.008);
+      var dot=new THREE.Mesh(new THREE.SphereGeometry(.045,12,12),new THREE.MeshBasicMaterial({color:0xff8db5}));dot.position.copy(p);dot.userData=x;globe.add(dot);
+      var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:haloTex,transparent:true,opacity:.72,blending:THREE.AdditiveBlending,depthWrite:false}));sp.scale.set(.4,.4,1);sp.position.copy(p);globe.add(sp);
+      nodes.push({mesh:dot,halo:sp,data:x});});
+    var feat=FEAT.map(function(c){return girls.find(function(g){return g.c===c})}).filter(Boolean),travelers=[];
+    for(var a2=0;a2<feat.length;a2++){for(var b2=a2+1;b2<feat.length;b2++){if((a2+b2)%2)continue;
+      var s=v3(feat[a2].xs,feat[a2].ys,R),e=v3(feat[b2].xs,feat[b2].ys,R),mid=s.clone().add(e).multiplyScalar(.5).normalize().multiplyScalar(R*(1.28+s.distanceTo(e)*.05));
+      var cv2=new THREE.QuadraticBezierCurve3(s,mid,e),lg2=new THREE.BufferGeometry().setFromPoints(cv2.getPoints(50));
+      globe.add(new THREE.Line(lg2,new THREE.LineBasicMaterial({color:0xff9ec6,transparent:true,opacity:.28,blending:THREE.AdditiveBlending})));
+      var tr=new THREE.Sprite(new THREE.SpriteMaterial({map:haloTex,transparent:true,opacity:.55,blending:THREE.AdditiveBlending,depthWrite:false}));tr.scale.set(.2,.2,1);globe.add(tr);travelers.push({curve:cv2,sp:tr,t:Math.random()});}}
+    var pinWrap=document.getElementById('gpins'),pins=[];
+    function openPanel(x){var n=STATS[x.c]||1;document.getElementById('p-flag').textContent=x.f;document.getElementById('p-country').textContent=x.c;
+      document.getElementById('p-meta').textContent=n+' '+t('lbl_stories');
+      document.getElementById('p-latest').textContent=x.n+', '+x.age+' — dreaming to '+x.dream.toLowerCase()+'.';document.getElementById('p-quote').textContent='“'+x.q+'”';
+      var gal=document.getElementById('p-gal');gal.innerHTML='';['pink','lav','blue'].forEach(function(cc){var t=x.col||cc;var el=document.createElement('i');el.style.background='linear-gradient(150deg,'+GR[t][0]+','+GR[t][1]+')';gal.appendChild(el)});
+      document.getElementById('gpanel').classList.add('open');}
+    FEAT.forEach(function(cn){var x=girls.find(function(g){return g.c===cn});if(!x)return;var n=STATS[cn]||1;
+      var el=document.createElement('div');el.className='gpin';
+      el.innerHTML='<span class="gdot"></span><span class="gline"></span><div class="glabel"><b>'+cn+'</b><span>'+n+' '+t('lbl_stories')+'</span></div>';
+      el.addEventListener('click',function(){openPanel(x);focusNode(v3(x.xs,x.ys,R));targetZoom=6.4});
+      pinWrap.appendChild(el);pins.push({el:el,pos:v3(x.xs,x.ys,R*1.008)});});
+    document.getElementById('gpx').addEventListener('click',function(){document.getElementById('gpanel').classList.remove('open')});
+    var ray=new THREE.Raycaster(),mouse=new THREE.Vector2(),tip=document.getElementById('gtip');
+    var nodeMeshes=nodes.map(function(n){return n.mesh});
+    var drag=false,lx,ly,velX=0,velY=0,rotX=.18,rotY=-1.1,auto=true,zoom=8.2,targetZoom=8.2,focusV=null;
+    function setM(e){var r=canvas.getBoundingClientRect(),cx=(e.touches?e.touches[0].clientX:e.clientX),cy=(e.touches?e.touches[0].clientY:e.clientY);mouse.x=((cx-r.left)/r.width)*2-1;mouse.y=-((cy-r.top)/r.height)*2+1;return{cx:cx-r.left,cy:cy-r.top}}
+    function focusNode(v){focusV={tx:-Math.atan2(v.x,v.z)-Math.PI/2,ty:Math.asin(Math.max(-1,Math.min(1,v.y/v.length())))};}
+    canvas.addEventListener('mousedown',function(e){drag=true;lx=e.clientX;ly=e.clientY;auto=false});
+    window.addEventListener('mouseup',function(){drag=false});
+    canvas.addEventListener('mousemove',function(e){var pos=setM(e);if(drag){velY=(e.clientX-lx)*.005;velX=(e.clientY-ly)*.005;rotY+=velY;rotX+=velX;rotX=Math.max(-1.2,Math.min(1.2,rotX));lx=e.clientX;ly=e.clientY;focusV=null;return;}
+      ray.setFromCamera(mouse,camera);var hit=ray.intersectObjects(nodeMeshes);
+      if(hit.length){var d=hit[0].object.userData;tip.style.left=pos.cx+'px';tip.style.top=pos.cy+'px';tip.innerHTML=d.f+' <b>'+d.n+'</b> · '+d.c;tip.style.opacity='1';canvas.style.cursor='pointer';}
+      else{tip.style.opacity='0';canvas.style.cursor=drag?'grabbing':'grab';}});
+    canvas.addEventListener('wheel',function(e){e.preventDefault();targetZoom=Math.max(5.2,Math.min(11,targetZoom+e.deltaY*.006))},{passive:false});
+    var pinchD=0;
+    canvas.addEventListener('touchstart',function(e){auto=false;
+      if(e.touches.length===2){drag=false;pinchD=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);}
+      else{drag=true;lx=e.touches[0].clientX;ly=e.touches[0].clientY;}},{passive:true});
+    canvas.addEventListener('touchmove',function(e){
+      if(e.touches.length===2){var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+        targetZoom=Math.max(5.2,Math.min(11,targetZoom-(d-pinchD)*.015));pinchD=d;return;}
+      if(!drag)return;rotY+=(e.touches[0].clientX-lx)*.005;rotX+=(e.touches[0].clientY-ly)*.005;rotX=Math.max(-1.2,Math.min(1.2,rotX));lx=e.touches[0].clientX;ly=e.touches[0].clientY},{passive:true});
+    canvas.addEventListener('touchend',function(e){if(e.touches.length===0)drag=false;else{drag=true;lx=e.touches[0].clientX;ly=e.touches[0].clientY;}});
+    canvas.addEventListener('click',function(e){if(Math.abs(velX)+Math.abs(velY)>.02)return;setM(e);ray.setFromCamera(mouse,camera);var hit=ray.intersectObjects(nodeMeshes);if(hit.length){var d=hit[0].object.userData;openPanel(d);focusNode(v3(d.xs,d.ys,R));targetZoom=6.4;}});
+    canvas.addEventListener('dblclick',function(){auto=true;focusV=null;targetZoom=8.2;});
+    function resize(){W=stage.offsetWidth;H=stage.offsetHeight;renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(W,H);camera.aspect=W/H;camera.updateProjectionMatrix();}window.addEventListener('resize',resize);
+    var running=true;new IntersectionObserver(function(es){running=es[0].isIntersecting},{threshold:.03}).observe(stage);
+    var clock=0,_wp=new THREE.Vector3(),_n=new THREE.Vector3(),_cd=new THREE.Vector3();
+    function animate(){requestAnimationFrame(animate);if(!running)return;clock+=.016;
+      if(auto&&!drag&&!focusV)rotY+=.0016;
+      if(!drag){velY*=.94;velX*=.94;if(Math.abs(velY)>.0001){rotY+=velY;rotX+=velX;rotX=Math.max(-1.2,Math.min(1.2,rotX));}}
+      if(focusV){rotY+=(focusV.tx-rotY)*.07;rotX+=(focusV.ty-rotX)*.07;if(Math.abs(focusV.tx-rotY)<.01)focusV=null;}
+      globe.rotation.set(rotX,rotY,0);cloudMesh.rotation.y+=.0004;
+      zoom+=(targetZoom-zoom)*.08;camera.position.z=zoom;
+      nodes.forEach(function(n,i){var sc=.4*(1+Math.sin(clock*2+i)*.22);n.halo.scale.set(sc,sc,1)});
+      travelers.forEach(function(tr){tr.t+=.004;if(tr.t>1)tr.t=0;tr.sp.position.copy(tr.curve.getPoint(tr.t))});
+      pins.forEach(function(p){_wp.copy(p.pos).applyMatrix4(globe.matrixWorld);var facing=_n.copy(_wp).normalize().dot(_cd.copy(camera.position).sub(_wp).normalize());
+        if(facing>0.12){_wp.project(camera);p.el.style.left=((_wp.x*.5+.5)*W)+'px';p.el.style.top=((-_wp.y*.5+.5)*H)+'px';p.el.style.opacity=Math.min(1,(facing-0.12)*4);}else p.el.style.opacity='0';});
+      renderer.render(scene,camera);}
+    globe.rotation.set(rotX,rotY,0);globe.updateMatrixWorld();animate();
+  })();
+})();
+
+/* ═════════ GIRLIE ROOM ═════════ */
+var RM=(function(){
+  var $=function(s){return document.querySelector(s)};
+  var $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+  var MEET='2018-09-01';
+  var ME='Catherine',HER='Oleksandra (Саша)';
+  var st={
+    code:'',entered:false,alFilter:'All',
+    timeline:[
+      {d:'2018-09-01',type:'mile',tag:'First Hello',who:'Catherine & Oleksandra',tx:'We met when we were twelve, two girls the same age who loved languages, Harry Potter, and a world larger than our own. Even our younger siblings turned out to be the same age — as if our families were quietly meant to mirror each other.',st:'🌱'},
+      {d:'2019-03-15',type:'word',tag:'Little Words',who:'Catherine & Саша',tx:'We began teaching each other our mother tongues, turning new words into our own small bridge between Chinese and Ukrainian.',st:'🗣️'},
+      {d:'2020-10-08',type:'day',tag:'Daily',who:'Catherine & Саша',tx:'After school, we would call to do homework together. Even through a phone screen, ordinary afternoons became shared time.',st:'📚'},
+      {d:'2021-06-12',type:'trip',tag:'A City Through Her Phone',who:'Catherine & Саша',tx:'We took each other on video walks through our cities — streets, windows, skies, and the little places that made home feel real.',st:'🌆'},
+      {d:'2022-02-24',type:'mile',tag:'Through the Hardest Days',who:'Catherine & Саша',tx:'When war came to Ukraine, the distance between us felt unbearable. All I could do was keep showing up on the other end of the call — and she kept answering. Some friendships are proven by how they hold on.',st:'🕊️'},
+      {d:'2024-09-01',type:'mile',tag:'Growing Together',who:'Catherine & Oleksandra',tx:'From middle schoolers to university students, we witnessed so much in each other’s lives — exams and new schools, first loves, family, and everything in between.',st:'🎓'},
+      {d:'2026-07-14',type:'mile',tag:'Still Here',who:'Catherine & Oleksandra',tx:'One thing has never changed: we have each kept an important place for the other in our hearts. Best friends across countries, still choosing each other.',st:'💛'}
+    ],
+    albums:['All','Us','Gifts','Ukraine','Everyday'],
+    photos:[
+      {cat:'Us',src:'room-media/beach.jpg',g:['#dcecff','#aecdf0'],c1:'Two girls, one watermelon, one endless summer by the sea 🍉',c2:'Us'},
+      {cat:'Us',vid:'room-media/video-together.mp4',g:['#ffe0ec','#ffb9d4'],c1:'A little clip saved from our chat 🎥',c2:'Us'},
+      {cat:'Us',vid:'room-media/video-casa.mp4',g:['#e6dcfa','#c8b4ee'],c1:'“Casa” — a video from home 🎥',c2:'Us'},
+      {cat:'Gifts',src:'room-media/catherine-vyshyvanka.jpg',g:['#dcecff','#aecdf0'],c1:'Wearing the vyshyvanka Саша sent me all the way from Ukraine 💙',c2:'Gifts'},
+      {cat:'Gifts',src:'room-media/red-necklace.jpg',g:['#ffe0ec','#ffb9d4'],c1:'The red коралі that came with it — a piece of Ukraine in my hand ❤️',c2:'Gifts'},
+      {cat:'Gifts',src:'room-media/gift-story.jpg',g:['#ffe3ee','#f5b8d5'],c1:'A qipao for her birthday, wrapped with a hand-drawn card — “16 is a beautiful age” 🎁',c2:'Gifts'},
+      {cat:'Gifts',src:'room-media/thank-you-story.jpg',g:['#fff0dd','#ffd9ae'],c1:'“Thanks you so much” — 📍КИТАЙ to Ukraine, and back 💌',c2:'Gifts'},
+      {cat:'Ukraine',src:'room-media/sasha-park.jpg',g:['#e6f6e2','#bfe6b8'],c1:'A spring afternoon in her city, Ivano-Frankivsk 🌳',c2:'Ukraine'},
+      {cat:'Ukraine',src:'room-media/independence-day.jpg',g:['#dcecff','#aecdf0'],c1:'Watching Ukraine’s Independence Day together, learning her country’s history 🇺🇦',c2:'2021 · Ukraine'},
+      {cat:'Us',src:'room-media/sasha-mirror.jpg',g:['#f3e3fa','#dcb9f0'],c1:'Саша — with hair almost as long as our friendship 🤍',c2:'Us'},
+      {cat:'Everyday',src:'room-media/birthday-message.jpg',g:['#ffe0ec','#ffb9d4'],c1:'“You’re on my mind and in my heart” — her birthday message to me 💗',c2:'Everyday'},
+      {cat:'Everyday',src:'room-media/cafe-2022.jpg',g:['#fff0dd','#ffd9ae'],c1:'Even our little siblings grew up side by side ☕',c2:'2022 · Everyday'}
+    ],
+    checks:[
+      {cat:'life',tx:'Visit each other’s cities for real',done:false,by:''},
+      {cat:'life',tx:'Take a train trip through Ukraine together',done:false,by:''},
+      {cat:'grow',tx:'Keep teaching each other Chinese and Ukrainian',done:true,by:'Together ✓'},
+      {cat:'grow',tx:'Read Harry Potter again in each other’s languages',done:false,by:''},
+      {cat:'grow',tx:'Celebrate the next university milestone together',done:false,by:''},
+      {cat:'heal',tx:'Keep our weekly call, no matter the time zone',done:false,by:''},
+      {cat:'heal',tx:'Keep making room for each other’s real lives',done:true,by:'Together ✓'}
+    ],
+    cds:[
+      {t:'Next video call',days:2,em:'📞',g:['#ff9ec6','#f5a8cf']},
+      {t:'Our friendship anniversary',days:null,em:'🌱',g:['#c9a6ec','#b8a4ee'],custom:'Sept 1'},
+      {t:'A real walk through Ivano-Frankivsk',days:null,em:'🌆',g:['#8fc3f0','#aecdf0'],custom:'someday'},
+      {t:'Reunion fund',days:null,em:'💰',g:['#ffc39a','#ffd9ae'],custom:'in progress'}
+    ],
+    wishes:[
+      {em:'📖',w1:'Harry Potter in Ukrainian',w2:'For the first universe we shared'},
+      {em:'🗣️',w1:'A notebook for new Chinese & Ukrainian words',w2:'Our language bridge, still growing'},
+      {em:'📮',w1:'A postcard from a city walk',w2:'For the day a phone screen becomes a real street'}
+    ]
+  };
+  var CKCAT={life:{em:'🌏',name:'Life'},grow:{em:'📚',name:'Growth'},heal:{em:'🫧',name:'Healing'}};
+  var TAGCLS={mile:'mile',trip:'trip',word:'word',day:'day'};
+
+  /* ═══ BACKEND: Google auth + shared private rooms + real uploads ═══ */
+  var SEED_CODE='180901';
+  var mode='seed';        /* 'seed' = public showcase (read-only) · 'live' = your private room */
+  var roomId=null, roomCode='', meState=null, roomChan=null;
+  function ckClone(c){return {cat:c.cat,tx:c.tx,done:c.done,by:c.by}}
+  var SEED={timeline:st.timeline.slice(),photos:st.photos.slice(),checks:st.checks.map(ckClone)};
+  function isSeed(){return mode==='seed'}
+  function myName(){return meState&&((meState.user_metadata&&meState.user_metadata.name)||meState.email)||ME}
+  function resetRoom(){st.timeline=isSeed()?SEED.timeline.slice():[];st.photos=isSeed()?SEED.photos.slice():[];st.checks=isSeed()?SEED.checks.map(ckClone):[];}
+
+  function signedUrl(path,cb){if(!sbc||!path){cb('');return;}
+    sbc.storage.from('room-uploads').createSignedUrl(path,604800).then(function(r){cb((r.data&&r.data.signedUrl)||'')}).catch(function(){cb('')});}
+  function roomUpload(file,cb,err){
+    if(!sbc||!roomId){(err||function(){})();return;}
+    var safe=(file.name||'file').replace(/[^\w.\-]/g,'_'),path=roomId+'/'+Date.now()+'_'+safe;
+    sbc.storage.from('room-uploads').upload(path,file,{upsert:true,contentType:file.type||undefined})
+      .then(function(r){if(r.error)throw r.error;cb(path)}).catch(function(e){(err||function(){})(e)});}
+  function roomPush(kind,payload,done){
+    if(mode!=='live'||!sbc||!roomId){done&&done();return;}
+    sbc.from('room_entries').insert({room_id:roomId,kind:kind,payload:payload,author:meState&&meState.id}).select().single()
+      .then(function(r){done&&done(r&&r.data)}).catch(function(){done&&done()});}
+  function roomPatch(id,payload){if(mode!=='live'||!sbc||!id)return;
+    sbc.from('room_entries').update({payload:payload}).eq('id',id).then(function(){},function(){});}
+  function loadRoom(){resetRoom();renderAll();updateRoomHeader();
+    if(mode!=='live'||!sbc||!roomId)return;
+    sbc.from('room_entries').select('id,kind,payload').eq('room_id',roomId).order('id',{ascending:true}).limit(800)
+      .then(function(res){var rows=res&&res.data;if(!rows)return;var pend=0;
+        rows.forEach(function(row){var p=row.payload||{};p._id=row.id;
+          if(row.kind==='timeline')st.timeline.push(p);
+          else if(row.kind==='check')st.checks.push(p);
+          else if(row.kind==='album'){st.photos.unshift(p);
+            if(p.path){pend++;signedUrl(p.path,function(u){if(p.mtype==='video')p.vid=u;else p.src=u;if(--pend===0)renderAL();});}}
+        });renderAll();});}
+  function subscribeRoom(){
+    if(roomChan){sbc.removeChannel(roomChan);roomChan=null;}
+    if(mode!=='live'||!sbc||!roomId)return;
+    roomChan=sbc.channel('room-'+roomId).on('postgres_changes',
+      {event:'INSERT',schema:'public',table:'room_entries',filter:'room_id=eq.'+roomId},function(pl){
+        var row=pl.new;if(!row||(meState&&row.author===meState.id))return; /* skip our own echoes */
+        var p=row.payload||{};p._id=row.id;
+        if(row.kind==='timeline'){st.timeline.push(p);renderTL();}
+        else if(row.kind==='check'){st.checks.push(p);renderCK();}
+        else if(row.kind==='album'){st.photos.unshift(p);if(p.path)signedUrl(p.path,function(u){if(p.mtype==='video')p.vid=u;else p.src=u;renderAL();});else renderAL();}
+        toast('✨ Your friend just added something');
+      }).subscribe();}
+
+  /* auth + room lifecycle — 邮箱+密码注册登录，零外部配置 */
+  function signIn(){go('rm-wel');refreshWel();var e=$('#au-email');if(e)e.focus();toast('先登录或注册一下 💗');}
+  function authVals(){return {e:($('#au-email')?$('#au-email').value.trim():''),p:($('#au-pass')?$('#au-pass').value:''),n:($('#au-name')?$('#au-name').value.trim():'')}}
+  function signInEmail(){if(!sbc){toast('Backend not connected');return;}
+    var v=authVals();if(!v.e||!v.p){toast('邮箱和密码都填一下 ✍️');return;}
+    sbc.auth.signInWithPassword({email:v.e,password:v.p}).then(function(r){
+      if(r.error){toast(/invalid/i.test(r.error.message)?'邮箱或密码不对 💔':r.error.message);return;}
+      setUser(r.data.user);myRoomOrHub();toast('Welcome back 🌷');});}
+  function signUpEmail(){if(!sbc){toast('Backend not connected');return;}
+    var v=authVals();if(!v.e||!v.p){toast('邮箱和密码都填一下 ✍️');return;}
+    if(v.p.length<6){toast('密码至少 6 位哦');return;}
+    sbc.auth.signUp({email:v.e,password:v.p,options:{data:{name:v.n||v.e.split('@')[0]}}}).then(function(r){
+      if(r.error){toast(/already/i.test(r.error.message)?'这个邮箱已注册过，直接登录吧':r.error.message);return;}
+      if(r.data&&r.data.session){setUser(r.data.user);go('rm-hub');toast('账号建好啦，欢迎 🎀');}
+      else{toast('注册成功！去邮箱点一下确认链接再回来登录 📮');}});}
+  function signOut(){if(sbc)sbc.auth.signOut();meState=null;mode='seed';roomId=null;roomCode='';
+    if(roomChan){sbc.removeChannel(roomChan);roomChan=null;}refreshWel();syncChrome();go('rm-wel');toast('Signed out 🌙');}
+  function setUser(u){meState=u||null;refreshWel();syncChrome();}
+  function enterSeed(){mode='seed';roomId=null;roomCode=SEED_CODE;st.entered=true;go('rm-main');loadRoom();syncChrome();}
+  function enterLive(){if(!roomId){go('rm-wel');return;}mode='live';st.entered=true;go('rm-main');loadRoom();subscribeRoom();syncChrome();}
+  function backendMissing(err){return err&&(err.code==='PGRST202'||err.code==='PGRST205'||/schema cache|does not exist/i.test(err.message||''));}
+  function createRoom(){if(!meState){signIn();return;}
+    sbc.rpc('create_room',{}).then(function(r){var d=r&&r.data&&r.data[0];
+      if(r.error||!d){toast(backendMissing(r.error)?'后端还没建好：请在 Supabase 跑 supabase-setup.sql':('创建失败：'+((r.error&&r.error.message)||'unknown')));return;}
+      roomId=d.room_id;roomCode=d.room_code;mode='live';st.entered=true;showCode(roomCode);go('rm-create');
+    },function(e){toast('创建失败（网络）：'+e);});}
+  function joinRoom(code){if(!meState){signIn();return;}
+    sbc.rpc('join_room',{p_code:code}).then(function(r){
+      if(r.error||!r.data){toast(backendMissing(r.error)?'后端还没建好：请先跑 supabase-setup.sql':'没找到这个房间号 💔');return;}
+      roomId=r.data;roomCode=code;mode='live';st.entered=true;go('rm-main');loadRoom();subscribeRoom();syncChrome();
+      toast('You’re in — this room is now yours together 💗');
+    },function(e){toast('加入失败（网络）：'+e);});}
+  function joinFromInputs(){var box=$('#codein');var code=Array.prototype.map.call(box.children,function(c){return c.value||''}).join('');
+    if(code.length!==6)return;if(!meState){signIn();return;}joinRoom(code);}
+  function enterRoom(id,code){roomId=id;roomCode=code;mode='live';st.entered=true;go('rm-main');loadRoom();subscribeRoom();syncChrome();}
+  function loadHub(){if(!sbc||!meState){go('rm-wel');refreshWel();return;}
+    go('rm-hub');syncChrome();
+    var list=$('#rm-roomlist');if(list)list.innerHTML='<div class="hinttxt" style="margin:0 0 6px">Loading your spaces…</div>';
+    sbc.rpc('my_rooms',{}).then(function(r){var rows=(r&&r.data)||[];if(!list)return;
+      if(r.error){list.innerHTML='<div class="hinttxt" style="margin:0 0 6px">'+(backendMissing(r.error)?'后端还没建好：跑一下 supabase-setup.sql':'读取房间失败')+'</div>';return;}
+      if(!rows.length){list.innerHTML='<div class="hinttxt" style="margin:0 0 4px">还没有闺蜜空间——建一个，或输入她给你的码 ↓</div>';return;}
+      list.innerHTML='<div class="rl-title">你的闺蜜空间 · '+rows.length+'</div>';
+      rows.forEach(function(rm){var who=rm.members?('🌸 with '+rm.members):('⏳ 等她加入 · 把码 '+rm.room_code+' 发给她');
+        var b=document.createElement('button');b.className='roomcard'+(rm.room_id===roomId?' cur':'');
+        b.innerHTML='<span class="rc-bd"><b>'+(rm.name?String(rm.name).replace(/</g,'&lt;'):('Room '+rm.room_code))+'</b><span>'+who+'</span></span><span class="rc-go">→</span>';
+        b.onclick=function(){enterRoom(rm.room_id,rm.room_code);};list.appendChild(b);});
+    },function(){if(list)list.innerHTML='<div class="hinttxt" style="margin:0 0 6px">读取房间失败（网络）</div>';});}
+  function myRoomOrHub(){loadHub();}
+  function refreshWel(){var box=$('#wel-auth');if(!box)return;
+    if(meState){box.innerHTML='<button class="btn btn-primary" onclick="RM.loadHub()">'+t('auth_continue')+'</button>'+
+      '<button class="btn btn-ghost" onclick="RM.enterSeed()">'+t('auth_seed')+'</button>'+
+      '<div class="hinttxt">'+t('auth_signedin')+' '+myName()+' · <a href="#" onclick="RM.signOut();return false">'+t('auth_signout')+'</a></div>';}
+    else{box.innerHTML='<div class="authform">'+
+      '<input id="au-email" type="email" autocomplete="email" placeholder="'+t('auth_email')+'">'+
+      '<input id="au-pass" type="password" autocomplete="current-password" placeholder="'+t('auth_pass')+'">'+
+      '<input id="au-name" type="text" autocomplete="nickname" placeholder="'+t('auth_name')+'">'+
+      '</div>'+
+      '<button class="btn btn-primary" onclick="RM.signInEmail()">'+t('auth_signin')+'</button>'+
+      '<button class="btn btn-ghost" onclick="RM.signUpEmail()">'+t('auth_signup')+'</button>'+
+      '<button class="btn btn-ghost" onclick="RM.enterSeed()">'+t('auth_seed')+'</button>'+
+      '<div class="hinttxt">'+t('auth_hint')+'</div>';
+      var pw=$('#au-pass');if(pw)pw.addEventListener('keydown',function(ev){if(ev.key==='Enter')signInEmail();});}}
+  function syncChrome(){var live=(mode==='live');
+    $$('#roomov .addbtn').forEach(function(b){b.style.display=live?'':'none'});
+    var note=$('#rm-modenote');if(note)note.textContent=live?t('rm_note_live').replace('{code}',roomCode):t('rm_note_seed');
+    var sw=$('#rm-switch');if(sw)sw.style.display=(live&&meState)?'':'none';
+    var badge=$('#rm-userbadge');if(badge)badge.innerHTML=meState?('👤 '+myName()+' · <a href="#" onclick="RM.signOut();return false">'+t('auth_signout')+'</a>'):'';}
+  function showCode(code){var box=$('#codebox');if(!box)return;box.innerHTML='';
+    String(code).split('').forEach(function(d,i){var el=document.createElement('div');el.className='d';el.textContent=d;el.style.animationDelay=(i*.07)+'s';box.appendChild(el);});st.code=code;}
+
+  function open(){$('#roomov').classList.add('on');document.body.style.overflow='hidden';
+    if(st.entered&&mode==='live'){go('rm-main');}else{refreshWel();go('rm-wel');}}
+  function close(){$('#roomov').classList.remove('on');document.body.style.overflow='';closeModal();}
+  function go(id){$$('#roomov .rm-scr').forEach(function(s){s.classList.remove('on')});$('#'+id).classList.add('on');$('#roomov').scrollTop=0;}
+  function toast(t){var el=$('#toast');el.textContent=t;el.classList.add('on');setTimeout(function(){el.classList.remove('on')},2200);}
+  function tab(btn){$$('#roomov .rm-tab').forEach(function(t){t.classList.remove('on')});btn.classList.add('on');
+    $$('#roomov .rm-pg').forEach(function(p){p.classList.remove('on')});$('#rm-pg-'+btn.dataset.pg).classList.add('on');}
+  function copyCode(){try{navigator.clipboard.writeText(roomCode||st.code)}catch(e){}
+    $('#copytip').classList.add('show');setTimeout(function(){$('#copytip').classList.remove('show')},1800);}
+  function buildJoin(){var box=$('#codein');box.innerHTML='';
+    for(var i=0;i<6;i++){(function(i){
+      var inp=document.createElement('input');inp.maxLength=1;inp.inputMode='numeric';
+      inp.addEventListener('input',function(){if(inp.value&&i<5)box.children[i+1].focus();
+        var full=Array.prototype.every.call(box.children,function(c){return c.value});
+        if(full)setTimeout(joinFromInputs,250);});
+      inp.addEventListener('keydown',function(e){if(e.key==='Backspace'&&!inp.value&&i>0)box.children[i-1].focus()});
+      box.appendChild(inp);})(i);}}
+  function initAuth(){if(!sbc)return;
+    sbc.auth.getSession().then(function(r){setUser(r.data&&r.data.session&&r.data.session.user);});
+    sbc.auth.onAuthStateChange(function(ev,session){setUser(session&&session.user);
+      if(ev==='SIGNED_IN'){var pend=false;try{pend=localStorage.getItem('gp_open_room')==='1';localStorage.removeItem('gp_open_room')}catch(e){}
+        if(pend){open();myRoomOrHub();}}});}
+
+  var roomMeet=null; /* live 房间的起始日（rooms.meet_date 或 created_at），seed 模式为 null */
+  function calcDays(){var now=new Date();
+    /* 首页 teaser 的天数永远用 Catherine × Саша 的种子日期 */
+    var seedDays=Math.floor((now-new Date(MEET))/864e5);
+    var mk=document.getElementById('mk-days');if(mk)mk.textContent=seedDays.toLocaleString();
+    /* 房间侧栏：live 模式用真实房间日期，seed 用种子日期 */
+    var meet=new Date((mode==='live'&&roomMeet)?roomMeet:MEET);
+    var days=Math.max(0,Math.floor((now-meet)/864e5));
+    var rd=$('#rm-days');if(rd)rd.textContent=days.toLocaleString();
+    var ry=$('#rm-years');if(ry)ry.textContent=Math.floor(days/365)+1;
+    var anni=new Date(now.getFullYear(),meet.getMonth(),meet.getDate());
+    if(anni<=now)anni=new Date(now.getFullYear()+1,meet.getMonth(),meet.getDate());
+    var ra=$('#rm-anni');if(ra)ra.textContent=Math.ceil((anni-now)/864e5);}
+  /* 配对后小屋头部显示真实的两个人：名字、共同起始日、天数（修复写死 Catherine ✕ Oleksandra 的 bug） */
+  function updateRoomHeader(){
+    var nm=$('#rm-main .rm-hero .nm'),sub=$('#rm-main .rm-hero .sub2');
+    if(mode!=='live'||!sbc||!roomId){roomMeet=null;
+      if(nm)nm.textContent='Catherine ✕ Oleksandra';
+      if(sub)sub.textContent='🇨🇳 China — Ivano-Frankivsk 🇺🇦';
+      calcDays();return;}
+    Promise.all([
+      sbc.from('room_members').select('user_id,display_name').eq('room_id',roomId),
+      sbc.from('rooms').select('code,name,meet_date,created_at').eq('id',roomId).single()
+    ]).then(function(rs){
+      var mems=(rs[0]&&rs[0].data)||[],room=(rs[1]&&rs[1].data)||{};
+      var other=null,mineName=null;
+      mems.forEach(function(m){if(meState&&m.user_id===meState.id)mineName=m.display_name;else other=m;});
+      var my=mineName||myName();
+      roomMeet=String(room.meet_date||room.created_at||'').slice(0,10)||null;
+      if(nm)nm.textContent=other?(my+' ✕ '+(other.display_name||'her')):(my+' ✕ …');
+      if(sub)sub.textContent=other?t('rm_since').replace('{d}',roomMeet||''):t('rm_waiting').replace('{code}',room.code||roomCode);
+      calcDays();
+    }).catch(function(){calcDays();});}
+
+  function renderTL(){var list=$('#tl-list');list.innerHTML='';
+    st.timeline.slice().sort(function(a,b){return b.d<a.d?-1:1}).forEach(function(e,i){
+      var el=document.createElement('div');el.className='tle'+(e.type==='mile'?' mile':'');el.style.animationDelay=(i*.06)+'s';
+      el.innerHTML='<span class="dot"></span><div class="tlc">'+
+        '<div class="top"><span class="tag '+(TAGCLS[e.type]||'day')+'">'+e.tag+'</span><span class="who">'+e.who+'</span><span class="date">'+e.d+'</span></div>'+
+        '<p>'+e.tx+'</p><span class="stick">'+e.st+'</span></div>';
+      list.appendChild(el);});}
+
+  function renderAL(){var chips=$('#al-chips');chips.innerHTML='';
+    st.albums.forEach(function(a){var c=document.createElement('button');c.className='chip'+(st.alFilter===a?' on':'');c.textContent=a;
+      c.onclick=function(){st.alFilter=a;renderAL()};chips.appendChild(c);});
+    var grid=$('#al-grid');grid.innerHTML='';
+    st.photos.filter(function(p){return st.alFilter==='All'||p.cat===st.alFilter}).forEach(function(p,i){
+      var el=document.createElement('div');el.className='pcard';el.style.animationDelay=(i*.05)+'s';
+      var media;
+      if(p.src)media='<img class="pmedia" src="'+p.src+'" alt="'+p.c1.replace(/"/g,'&quot;')+'" loading="lazy" onerror="this.remove()">';
+      else if(p.vid)media='<video class="pmedia" src="'+p.vid+'" muted playsinline preload="metadata"></video><span class="playbadge">▶</span>';
+      else media=p.em||'';
+      el.innerHTML='<div class="img" style="background:linear-gradient(140deg,'+p.g[0]+','+p.g[1]+')"><span class="frame"></span>'+media+'</div>'+
+        '<div class="cap"><div class="c1">'+p.c1+'</div><div class="c2">'+p.cat+' · '+p.c2+'</div></div>';
+      if(p.src||p.vid)el.addEventListener('click',function(){openLightbox(p)});
+      grid.appendChild(el);});}
+  function openLightbox(p){
+    var lb=$('#lbox');
+    if(!lb){lb=document.createElement('div');lb.id='lbox';lb.className='lbox';
+      lb.innerHTML='<button class="lbx" aria-label="Close">✕</button><div class="lbin"><div class="lbmedia"></div><div class="lbcap"></div></div>';
+      document.body.appendChild(lb);
+      lb.querySelector('.lbx').onclick=closeLightbox;
+      lb.addEventListener('click',function(e){if(e.target===lb)closeLightbox();});}
+    var m=lb.querySelector('.lbmedia');
+    m.innerHTML=p.vid?'<video src="'+p.vid+'" controls autoplay playsinline></video>':'<img src="'+p.src+'" alt="">';
+    lb.querySelector('.lbcap').textContent=p.c1;
+    lb.classList.add('open');}
+  function closeLightbox(){var lb=$('#lbox');if(!lb)return;lb.classList.remove('open');var v=lb.querySelector('video');if(v)v.pause();}
+
+  function renderCK(){var wrap=$('#ck-groups');wrap.innerHTML='';
+    Object.keys(CKCAT).forEach(function(cat){
+      var items=st.checks.filter(function(c){return c.cat===cat});if(!items.length)return;
+      var done=items.filter(function(c){return c.done}).length;
+      var g=document.createElement('div');
+      g.innerHTML='<div class="ckhead"><span class="em">'+CKCAT[cat].em+'</span><b>'+CKCAT[cat].name+'</b><span class="ct">'+done+'/'+items.length+'</span></div>';
+      items.forEach(function(c){
+        var el=document.createElement('div');el.className='ck'+(c.done?' done':'');
+        el.innerHTML='<span class="box">'+(c.done?'✓':'')+'</span><span class="tx">'+c.tx+'</span>'+(c.by?'<span class="by">'+c.by+'</span>':'');
+        el.onclick=function(){c.done=!c.done;c.by=c.done?ME+' ✓':'';renderCK();roomPatch(c._id,{cat:c.cat,tx:c.tx,done:c.done,by:c.by});if(c.done)toast('Checked! Synced to '+HER+' 💗');};
+        g.appendChild(el);});
+      wrap.appendChild(g);});
+    var total=st.checks.length,dn=st.checks.filter(function(c){return c.done}).length;
+    var pct=Math.round(dn/total*100);
+    $('#prog-n').textContent=pct+'%';$('#prog-bar').style.width=pct+'%';}
+
+  function renderMO(){var grid=$('#cd-grid');grid.innerHTML='';
+    st.cds.forEach(function(c,i){var el=document.createElement('div');el.className='cd';el.style.background='linear-gradient(140deg,'+c.g[0]+','+c.g[1]+')';el.style.animationDelay=(i*.06)+'s';
+      el.innerHTML='<div class="big">'+(c.custom||c.days)+'</div><div class="u">'+(c.custom?'progress':'days to go')+'</div><div class="t">'+c.t+'</div><span class="bgico">'+c.em+'</span>';
+      grid.appendChild(el);});
+    var wl=$('#wish-list');wl.innerHTML='';
+    st.wishes.forEach(function(w){var el=document.createElement('div');el.className='wish';
+      el.innerHTML='<span class="em">'+w.em+'</span><div><div class="w1">'+w.w1+'</div><div class="w2">'+w.w2+'</div></div>';
+      wl.appendChild(el);});}
+
+  var mState={};
+  function openModal(kind){
+    mState={kind:kind,tag:'Daily',cat:'life',alcat:'Daily',st:'🌸'};
+    var s=$('#msheet');
+    if(kind==='tl'){
+      s.innerHTML='<h4>Add a memory 🧵</h4>'+
+        '<div class="fl">Type</div><div class="optrow" id="m-tags"></div>'+
+        '<div class="fl">Date</div><input class="fi" type="date" id="m-date" value="'+new Date().toISOString().slice(0,10)+'">'+
+        '<div class="fl">Write something</div><textarea class="fi" id="m-tx" placeholder="今天发生了什么想让她知道的事？"></textarea>'+
+        '<div class="fl">Pick a sticker</div><div class="strow" id="m-stk"></div>'+
+        '<button class="msave" onclick="RM.saveTL()">Pin to our timeline 💗</button><button class="mcancel" onclick="RM.closeModal()">Cancel</button>';
+      buildOpts('m-tags',['Daily','Trip','Little Words','Milestone'],'tag');
+      buildStk(['🌸','☕','✈️','💌','🎂','🐱','❄️','🌈']);}
+    if(kind==='al'){
+      s.innerHTML='<h4>Add a photo or video 📸</h4>'+
+        '<div class="fl">Album</div><div class="optrow" id="m-tags"></div>'+
+        '<div class="fl">Choose a photo or video from your device</div>'+
+        '<label class="updrop" id="m-drop"><input type="file" id="m-file" accept="image/*,video/*" hidden><span id="m-drop-t">📁 Tap to choose a file… (up to 25 MB)</span></label>'+
+        '<div class="fl">— or just pick a sticker instead —</div><div class="strow" id="m-stk"></div>'+
+        '<div class="fl">Caption</div><input class="fi" id="m-tx" placeholder="这张照片的小故事…">'+
+        '<button class="msave" onclick="RM.saveAL()">Put it in the album ✨</button><button class="mcancel" onclick="RM.closeModal()">Cancel</button>';
+      buildOpts('m-tags',['Us','Gifts','Ukraine','Everyday'],'alcat');
+      buildStk(['🌷','🍰','🏝️','🎡','📮','🧸','🌅','🍜']);
+      var fi=$('#m-file');if(fi)fi.onchange=function(){var f=fi.files[0];$('#m-drop-t').textContent=f?('✓ '+f.name):'📁 Tap to choose a file… (up to 25 MB)';$('#m-drop').classList.toggle('has',!!f);};}
+    if(kind==='ck'){
+      s.innerHTML='<h4>Make a new promise ✅</h4>'+
+        '<div class="fl">Category</div><div class="optrow" id="m-tags"></div>'+
+        '<div class="fl">The goal</div><input class="fi" id="m-tx" placeholder="e.g. 一起去看一次极光">'+
+        '<button class="msave" onclick="RM.saveCK()">Add — we\u2019ll do it together</button><button class="mcancel" onclick="RM.closeModal()">Cancel</button>';
+      buildOpts('m-tags',['🌏 Life','📚 Growth','🫧 Healing'],'ckname');}
+    $('#mmask').classList.add('on');}
+  function buildOpts(id,arr,key){var box=$('#'+id);box.innerHTML='';
+    arr.forEach(function(t,i){var b=document.createElement('button');b.className='opt'+(i===0?' on':'');b.textContent=t;
+      b.onclick=function(){$$('#'+id+' .opt').forEach(function(o){o.classList.remove('on')});b.classList.add('on');mState[key]=t;};
+      if(i===0)mState[key]=t;box.appendChild(b);});}
+  function buildStk(arr){var box=$('#m-stk');if(!box)return;box.innerHTML='';
+    arr.forEach(function(t,i){var b=document.createElement('button');b.className='stk'+(i===0?' on':'');b.textContent=t;
+      b.onclick=function(){$$('#m-stk .stk').forEach(function(o){o.classList.remove('on')});b.classList.add('on');mState.st=t;};
+      if(i===0)mState.st=t;box.appendChild(b);});}
+  function closeModal(){$('#mmask').classList.remove('on')}
+  function saveTL(){var tx=$('#m-tx').value.trim();if(!tx){toast('写一点点也好呀 ✍️');return;}
+    var map={'Daily':'day','Trip':'trip','Little Words':'word','Milestone':'mile'};
+    var o={d:$('#m-date').value,type:map[mState.tag]||'day',tag:mState.tag,who:ME,tx:tx,st:mState.st};
+    st.timeline.push(o);closeModal();renderTL();
+    roomPush('timeline',o,function(row){if(row)o._id=row.id;});
+    toast(supaOn()?'Pinned & saved to your room 💗':'Pinned 💗');}
+  function saveAL(){var tx=$('#m-tx').value.trim()||'Our little moment';
+    var gs=[['#ffe0ec','#ffb9d4'],['#e6dcfa','#c8b4ee'],['#dcecff','#aecdf0'],['#fff0dd','#ffd9ae']];
+    var g=gs[(Math.random()*4)|0],fi=$('#m-file'),f=fi&&fi.files&&fi.files[0];
+    var finish=function(o){st.photos.unshift(o);closeModal();renderAL();
+      roomPush('album',o,function(row){if(row)o._id=row.id;});
+      toast(o.path?'Uploaded to your album ✨':'Added to the album ✨');};
+    if(f){
+      if(mode!=='live'||!sbc||!roomId){toast('Sign in and open your room to upload real files');return;}
+      if(f.size>25*1024*1024){toast('Please choose a file under 25 MB');return;}
+      var btn=document.querySelector('#msheet .msave');if(btn){btn.disabled=true;btn.textContent='Uploading… ⏳';}
+      var isVid=f.type.indexOf('video')===0;
+      roomUpload(f,function(path){var o={cat:mState.alcat,g:g,c1:tx,c2:'by '+myName(),path:path,mtype:isVid?'video':'image'};
+        signedUrl(path,function(u){if(isVid)o.vid=u;else o.src=u;finish(o);});},
+        function(){if(btn){btn.disabled=false;btn.textContent='Put it in the album ✨';}toast('Upload failed — try again');});
+    }else{finish({cat:mState.alcat,g:g,c1:tx,c2:'by '+myName(),em:mState.st||'🌸'});}}
+  function saveCK(){var tx=$('#m-tx').value.trim();if(!tx){toast('The goal can\u2019t be empty');return;}
+    var map={'🌏 Life':'life','📚 Growth':'grow','🫧 Healing':'heal'};
+    var o={cat:map[mState.ckname]||'life',tx:tx,done:false,by:''};
+    st.checks.push(o);closeModal();renderCK();
+    roomPush('check',o,function(row){if(row)o._id=row.id;});
+    toast(supaOn()?'New promise saved to your room ✅':'New promise added ✅');}
+  function exportPreview(){var s=$('#msheet');
+    var items=st.timeline.slice().sort(function(a,b){return a.d<b.d?-1:1});
+    var html='<h4>Memoir preview 📜</h4><div class="expwrap"><div class="eh"><div class="et">Catherine ✕ Oleksandra</div><div class="s">FRIENDSHIP MEMOIR · SINCE 2018</div></div>';
+    items.forEach(function(e){html+='<div class="expitem"><b>'+e.d+' · '+e.tag+'</b><br>'+e.tx+' '+e.st+'</div>'});
+    html+='</div><button class="msave" onclick="RM.fakeExport()">Export as printable PDF (full version)</button><button class="mcancel" onclick="RM.closeModal()">Back</button>';
+    s.innerHTML=html;$('#mmask').classList.add('on');}
+  function fakeExport(){closeModal();toast('Full version exports a print-ready PDF memoir 📜');}
+  function importIG(input){
+    var file=input&&input.files&&input.files[0],status=$('#ig-status');if(!file)return;
+    status.textContent='Reading '+file.name+' privately in this browser…';
+    var reader=new FileReader();reader.onload=function(){try{
+      var data=JSON.parse(reader.result),msgs=Array.isArray(data.messages)?data.messages:[];
+      var clean=msgs.map(function(m){return {text:(m.content||'').trim(),date:m.timestamp_ms?new Date(m.timestamp_ms):null,who:m.sender_name||HER};}).filter(function(m){return m.text&&m.date&&!isNaN(m.date)}).sort(function(a,b){return a.date-b.date});
+      if(!clean.length)throw new Error('No readable text messages found');
+      clean.slice(-500).forEach(function(m){st.timeline.push({d:m.date.toISOString().slice(0,10),type:'word',tag:'Instagram chat',who:m.who,tx:m.text,st:'💬'});});
+      status.textContent='Imported '+clean.length.toLocaleString()+' text messages; the latest '+Math.min(500,clean.length)+' are now in this room’s timeline. Nothing was uploaded.';
+      renderTL();toast('Instagram chat archive added privately 💬');
+    }catch(e){status.textContent='This file could not be read. Please choose Instagram’s message_1.json from your downloaded messages folder.';}finally{input.value='';}};
+    reader.readAsText(file);
+  }
+
+  function renderAll(){calcDays();renderTL();renderAL();renderCK();renderMO();}
+  buildJoin();calcDays();refreshWel();initAuth();
+  document.getElementById('mmask').addEventListener('click',function(e){if(e.target.id==='mmask')closeModal()});
+
+  return {open:open,close:close,go:go,copyCode:copyCode,tab:tab,
+    signIn:signIn,signInEmail:signInEmail,signUpEmail:signUpEmail,signOut:signOut,enterSeed:enterSeed,enterLive:enterLive,
+    createRoom:createRoom,joinRoom:joinRoom,joinFromInputs:joinFromInputs,myRoomOrHub:myRoomOrHub,loadHub:loadHub,enterRoom:enterRoom,refreshWel:refreshWel,
+    openModal:openModal,closeModal:closeModal,saveTL:saveTL,saveAL:saveAL,saveCK:saveCK,
+    exportPreview:exportPreview,fakeExport:fakeExport,importIG:importIG};
+})();
+</script>
+</div>

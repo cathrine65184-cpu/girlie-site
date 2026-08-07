@@ -1,8 +1,14 @@
 .DS_Store
 .claude/
+node_modules/
+dist/
 
 # Personal media dropped in the project folder — never publish these.
-# (The curated showcase photos live in room-media/ and ARE published on purpose.)
+# The cinematic build deliberately does not bundle the private-room media.
+room-media/
+/public/avatars/elise.jpg
+/public/avatars/mia.jpg
+/public/avatars/soo.jpg
 *.mov
 /*.mp4
 /*.png
