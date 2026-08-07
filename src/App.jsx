@@ -37,6 +37,7 @@ export default function App() {
   const activeGirl = girls.find((girl) => girl.id === activeId) || null;
   const copy = copyFor(progress);
   const copyOpacity = progress < .08 ? 1 : progress < .2 ? 1 - ((progress - .08) / .12) : 0;
+  const myRoomUrl = `${import.meta.env.BASE_URL}legacy.html#room`;
   const openHall = (hall) => {
     if (hall === 'archive') {
       scrollToProgress(.35);
@@ -66,7 +67,7 @@ export default function App() {
       </Suspense>
     </Canvas>
 
-    <Navigation onJump={scrollToProgress} onOpenHall={openHall} />
+    <Navigation onJump={scrollToProgress} onOpenHall={openHall} studioHref={myRoomUrl} />
 
     <main className="scroll-track" aria-label="Girlie Project memory journey">
       <section className="journey-copy" style={{ opacity: copyOpacity, pointerEvents: copyOpacity > .04 ? 'auto' : 'none' }}>
@@ -75,7 +76,7 @@ export default function App() {
         <p>{copy.body}</p>
         <div className="hero-actions">
           <button className="journey-button" style={{ pointerEvents: copyOpacity > .04 ? 'auto' : 'none' }} onClick={() => scrollToProgress(copy.target)}>{copy.action} <span>↓</span></button>
-          <button className="journey-button secondary" style={{ pointerEvents: copyOpacity > .04 ? 'auto' : 'none' }} onClick={() => openHall('studio')}>Build a Secret House <span>↗</span></button>
+          <a className="journey-button secondary" style={{ pointerEvents: copyOpacity > .04 ? 'auto' : 'none' }} href={myRoomUrl}>Build a Secret House <span>↗</span></a>
         </div>
       </section>
       <section className="path-instruction" style={{ opacity: progress > .1 && progress < .76 ? 1 : 0 }}>
@@ -88,13 +89,13 @@ export default function App() {
           <button onClick={() => openHall('language')}>Language Gallery</button>
           <button onClick={() => openHall('stars')}>Star Observatory</button>
           <button onClick={() => openHall('listening')}>Listening Room</button>
-          <button className="studio-door" onClick={() => openHall('studio')}>Build a Secret House ↗</button>
+          <a className="studio-door" href={myRoomUrl}>Build a Secret House ↗</a>
         </div>
       </section>
     </main>
 
     <Suspense fallback={null}>
-      <StoryOverlay girl={activeGirl} onClose={closeStory} onContinue={openNextStory} onStudio={() => { closeStory(); openHall('studio'); }} />
+      <StoryOverlay girl={activeGirl} onClose={closeStory} onContinue={openNextStory} studioHref={myRoomUrl} />
       <GalleryExperience hall={activeHall} girls={girls} onClose={() => setActiveHall(null)} />
       {Object.entries(museumHalls).map(([id, hall]) => <RoomOverlay
         key={id}

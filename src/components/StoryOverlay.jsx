@@ -11,7 +11,7 @@ function VoiceButton({ girl }) {
 }
 
 /** An editorial story sheet replaces a disruptive route change. */
-export function StoryOverlay({ girl, onClose, onContinue, onStudio }) {
+export function StoryOverlay({ girl, onClose, onContinue, studioHref }) {
   const catalogue = girl ? `CAT. GP-${String(Math.round((1 - girl.position[2]) / 3) + 1).padStart(3, '0')}` : '';
   return <AnimatePresence>{girl && <motion.aside className="story-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
     <motion.div className="story-scrim" initial={{ backdropFilter: 'blur(0px)' }} animate={{ backdropFilter: 'blur(18px)' }} exit={{ backdropFilter: 'blur(0px)' }} onClick={onClose} />
@@ -26,7 +26,7 @@ export function StoryOverlay({ girl, onClose, onContinue, onStudio }) {
         <section><span>THE LOCAL MOMENT</span><strong>{girl.city} · {localTime(girl)}</strong><i>{girl.climate}</i></section>
         <section><span>HER DREAM</span><strong>{girl.dream}</strong><i>Friendship taught her: {girl.lesson}</i></section>
       </div>
-      <div className="story-footer"><p>An entry in the living collection.</p><div><button className="text-button" onClick={onStudio}>Build a Secret House ↗</button><button className="text-button" onClick={() => { onClose(); onContinue(); }}>Continue visiting →</button></div></div>
+      <div className="story-footer"><p>An entry in the living collection.</p><div><a className="text-button" href={studioHref}>Build a Secret House ↗</a><button className="text-button" onClick={() => { onClose(); onContinue(); }}>Continue visiting →</button></div></div>
     </motion.article>
   </motion.aside>}</AnimatePresence>;
 }

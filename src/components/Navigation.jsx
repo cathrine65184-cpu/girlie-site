@@ -8,7 +8,7 @@ const halls = [
 ];
 
 /** Museum navigation keeps every original interactive collection within reach. */
-export function Navigation({ onJump, onOpenHall }) {
+export function Navigation({ onJump, onOpenHall, studioHref }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const openHall = (hall) => { setMobileOpen(false); onOpenHall(hall); };
 
@@ -25,7 +25,7 @@ export function Navigation({ onJump, onOpenHall }) {
     </div>
     {mobileOpen && <div className="mobile-halls" aria-label="Museum collections">
       {halls.map(([number, label, hall]) => <button key={hall} onClick={() => openHall(hall)}><i>{number}</i>{label}</button>)}
-      <button className="mobile-studio" onClick={() => openHall('studio')}>Build a Secret House</button>
+      <a className="mobile-studio" href={studioHref}>Build a Secret House</a>
     </div>}
   </header>;
 }
