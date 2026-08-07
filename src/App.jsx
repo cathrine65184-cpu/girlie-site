@@ -6,6 +6,7 @@ import { Lighting } from './components/Lighting';
 import { MemoryBloom } from './components/MemoryBloom';
 import { Navigation } from './components/Navigation';
 import { girls } from './data/girls';
+import { GalleryExperience } from './components/GalleryExperience';
 import { useScrollProgress } from './hooks/useScrollProgress';
 import { useStoryTransition } from './hooks/useStoryTransition';
 import { Ending } from './scenes/Ending';
@@ -17,26 +18,6 @@ const StoryOverlay = lazy(() => import('./components/StoryOverlay').then((module
 const RoomOverlay = lazy(() => import('./components/RoomOverlay').then((module) => ({ default: module.RoomOverlay })));
 
 const museumHalls = {
-  archive: {
-    title: 'Friendship Archive',
-    source: 'legacy.html#archive',
-    note: 'The original friendship archive remains part of this living museum.',
-  },
-  language: {
-    title: 'Language Gallery',
-    source: 'legacy.html#lexicon',
-    note: 'Words for friendship, gathered from cities around the world.',
-  },
-  stars: {
-    title: 'Star Observatory',
-    source: 'legacy.html#tarot',
-    note: 'Draw a small constellation for you and your friend.',
-  },
-  listening: {
-    title: 'Listening Room',
-    source: 'legacy.html#radio',
-    note: 'Every friendship has a soundtrack.',
-  },
   studio: {
     title: 'Friendship Studio · Secret House',
     source: 'legacy.html#room',
@@ -56,7 +37,13 @@ export default function App() {
   const activeGirl = girls.find((girl) => girl.id === activeId) || null;
   const copy = copyFor(progress);
   const copyOpacity = progress < .08 ? 1 : progress < .2 ? 1 - ((progress - .08) / .12) : 0;
-  const openHall = (hall) => setActiveHall(hall);
+  const openHall = (hall) => {
+    if (hall === 'archive') {
+      scrollToProgress(.35);
+      return;
+    }
+    setActiveHall(hall);
+  };
   const openNextStory = useCallback(() => {
     const index = activeGirl ? girls.findIndex((girl) => girl.id === activeGirl.id) : -1;
     const next = girls[(index + 1) % girls.length];
@@ -108,6 +95,7 @@ export default function App() {
 
     <Suspense fallback={null}>
       <StoryOverlay girl={activeGirl} onClose={closeStory} onContinue={openNextStory} onStudio={() => { closeStory(); openHall('studio'); }} />
+      <GalleryExperience hall={activeHall} girls={girls} onClose={() => setActiveHall(null)} />
       {Object.entries(museumHalls).map(([id, hall]) => <RoomOverlay
         key={id}
         open={activeHall === id}

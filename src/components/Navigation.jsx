@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
 const halls = [
-  ['Friendship Archive', 'archive'],
-  ['Language Gallery', 'language'],
-  ['Star Observatory', 'stars'],
-  ['Listening Room', 'listening'],
+  ['01', 'Friendship Archive', 'archive'],
+  ['02', 'Language Gallery', 'language'],
+  ['03', 'Star Observatory', 'stars'],
+  ['04', 'Listening Room', 'listening'],
 ];
 
 /** Museum navigation keeps every original interactive collection within reach. */
@@ -16,7 +16,7 @@ export function Navigation({ onJump, onOpenHall }) {
     <button className="brand" onClick={() => onJump(0)}>✦ Girlie</button>
     <nav aria-label="Museum collections">
       <span>Collections</span>
-      {halls.map(([label, hall]) => <button key={hall} onClick={() => openHall(hall)}>{label}</button>)}
+      {halls.map(([number, label, hall]) => <button className="nav-gallery-door" key={hall} onClick={() => openHall(hall)}><i>{number}</i><span>{label}</span></button>)}
     </nav>
     <div className="nav-right">
       <span className="living-mark">A living museum</span>
@@ -24,7 +24,7 @@ export function Navigation({ onJump, onOpenHall }) {
       <button className="mobile-halls-button" aria-expanded={mobileOpen} onClick={() => setMobileOpen((open) => !open)}>Halls</button>
     </div>
     {mobileOpen && <div className="mobile-halls" aria-label="Museum collections">
-      {halls.map(([label, hall]) => <button key={hall} onClick={() => openHall(hall)}>{label}</button>)}
+      {halls.map(([number, label, hall]) => <button key={hall} onClick={() => openHall(hall)}><i>{number}</i>{label}</button>)}
       <button className="mobile-studio" onClick={() => openHall('studio')}>Build a Secret House</button>
     </div>}
   </header>;
