@@ -9,7 +9,6 @@ import { girls } from './data/girls';
 import { GalleryExperience } from './components/GalleryExperience';
 import { useScrollProgress } from './hooks/useScrollProgress';
 import { useStoryTransition } from './hooks/useStoryTransition';
-import { Ending } from './scenes/Ending';
 import { Journey } from './scenes/Journey';
 import { Landing } from './scenes/Landing';
 
@@ -36,7 +35,9 @@ export default function App() {
   const [activeHall, setActiveHall] = useState(null);
   const activeGirl = girls.find((girl) => girl.id === activeId) || null;
   const copy = copyFor(progress);
-  const copyOpacity = progress < .08 ? 1 : progress < .2 ? 1 - ((progress - .08) / .12) : 0;
+  // The entrance copy clears before the first exhibit becomes interactive.
+  // This keeps the opening invitation editorial without sitting over a flower label.
+  const copyOpacity = progress < .052 ? 1 : progress < .097 ? 1 - ((progress - .052) / .045) : 0;
   const myRoomUrl = `${import.meta.env.BASE_URL}legacy.html#room`;
   const openHall = (hall) => {
     if (hall === 'archive') {
@@ -62,7 +63,6 @@ export default function App() {
         <Journey girls={girls} activeId={activeId} onOpen={openStory} reducedMotion={reducedMotion} progress={progress} />
         <FloatingParticles reducedMotion={reducedMotion} />
         {progress > .62 && <MemoryBloom reducedMotion={reducedMotion} />}
-        {progress > .70 && <Ending />}
         <CameraController progress={progress} activeGirl={activeGirl} reducedMotion={reducedMotion} />
       </Suspense>
     </Canvas>

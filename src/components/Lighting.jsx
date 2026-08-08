@@ -8,8 +8,10 @@ export function Lighting({ reducedMotion }) {
     if (light.current && !reducedMotion) light.current.position.x = Math.sin(clock.elapsedTime * .07) * 4;
   });
   return <>
-    <ambientLight intensity={1.22} color="#fff3f3" />
-    <directionalLight ref={light} position={[3, 6, 5]} intensity={1.6} color="#ffd2c4" />
-    <pointLight position={[-4, 2.5, -12]} intensity={2.4} distance={15} color="#f3b6d2" />
+    <hemisphereLight intensity={1.48} color="#fff7ef" groundColor="#bd7686" />
+    <ambientLight intensity={.38} color="#fbe9ef" />
+    <directionalLight ref={light} position={[-7, 11, 7]} intensity={2.35} color="#ffe0ba" />
+    <pointLight position={[0, 5.2, -12]} intensity={1.8} distance={28} color="#fff0d2" />
+    <pointLight position={[-7, 2.5, -10]} intensity={.9} distance={14} color="#eeb0d0" />
   </>;
 }
