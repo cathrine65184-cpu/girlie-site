@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 const empty = (value) => value?.length ? value : [];
 
 function AuthPanel({ onClose, store }) {
-  const [mode, setMode] = useState('signin');
+  const [mode, setMode] = useState('signup');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -14,7 +14,7 @@ function AuthPanel({ onClose, store }) {
     const response = mode === 'signup' ? await store.signIn(email, password, name) : await store.signInExisting(email, password);
     setNotice(response.error ? response.error.message : mode === 'signup' ? 'Check your email to confirm your private room.' : 'Welcome back to your room.');
   };
-  return <section className="private-auth"><button className="private-x" onClick={onClose}>Close ×</button><p>Private room</p><h2>Keep the archive with you.</h2><span>Sign in to save this room across devices. Until then, it remains a private draft in this browser.</span><form onSubmit={submit}>{mode === 'signup' && <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Your name" />}<input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Email" /><input required minLength="6" type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Password (6+ characters)" /><button>{mode === 'signup' ? 'Create my private room' : 'Enter my private room'}</button></form><button className="auth-switch" onClick={() => setMode(mode === 'signup' ? 'signin' : 'signup')}>{mode === 'signup' ? 'I already have an account' : 'Create an account instead'}</button>{notice && <small>{notice}</small>}</section>;
+  return <section className="private-auth"><button className="private-x" onClick={onClose}>Close ×</button><p>Private room</p><h2>Begin by keeping it yours.</h2><span>Create an account to begin your private friendship interview. Your words, memories, and archive stay linked to you.</span><form onSubmit={submit}>{mode === 'signup' && <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Your name" />}<input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Email" /><input required minLength="6" type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Password (6+ characters)" /><button>{mode === 'signup' ? 'Create my private room' : 'Enter my private room'}</button></form><button className="auth-switch" onClick={() => setMode(mode === 'signup' ? 'signin' : 'signup')}>{mode === 'signup' ? 'I already have an account' : 'Create an account instead'}</button>{notice && <small>{notice}</small>}</section>;
 }
 
 function ArchiveEditor({ archive, onChange, onAddMemory, onBack }) {
@@ -38,11 +38,11 @@ function ArchiveEditor({ archive, onChange, onAddMemory, onBack }) {
 }
 
 /** A spatial, quiet home for personal archives — never a dashboard. */
-export function PrivateRoom({ open, onClose, store, onStartInterview }) {
+export function PrivateRoom({ open, onClose, store, onStartInterview, requireAuth = false }) {
   const [view, setView] = useState('room');
   const [activeId, setActiveId] = useState(null);
   const active = useMemo(() => store.archives.find((archive) => archive.id === activeId) || store.archives[0], [activeId, store.archives]);
-  useEffect(() => { if (open) { setView('room'); setActiveId(null); } }, [open]);
+  useEffect(() => { if (open) { setView(requireAuth && !store.session ? 'auth' : 'room'); setActiveId(null); } }, [open, requireAuth, store.session]);
   const update = async (next) => {
     const storyChanged = active?.story.content !== next.story.content;
     const versioned = storyChanged ? { ...next, story: { ...next.story, version: next.story.version + 1 }, versions: [...next.versions, { version: next.story.version + 1, createdAt: new Date().toISOString(), content: next.story.content }] } : next;
@@ -55,8 +55,8 @@ export function PrivateRoom({ open, onClose, store, onStartInterview }) {
       {!store.session && view === 'auth' ? <AuthPanel onClose={() => setView('room')} store={store} /> : view === 'archive' && active ? <ArchiveEditor archive={active} onChange={update} onBack={() => setView('room')} onAddMemory={addMemory} /> : <>
         <header className="private-room-head"><div><p>My friendship archives</p><h2>A shelf for the friendships that are yours.</h2></div><div>{store.session ? <button onClick={store.signOut}>Sign out</button> : <button onClick={() => setView('auth')}>Sign in to keep forever</button>}<button onClick={onClose}>Close ×</button></div></header>
         <div className="private-room-scene" aria-hidden="true"><div className="room-window" /><div className="room-desk"><i /><i /><i /></div><div className="room-drawer">✉</div></div>
-        <section className="private-room-intro"><p>{store.session ? 'Your room is encrypted by access rules and visible only to your account.' : 'Private draft · saved only on this device until you sign in.'}</p><button onClick={() => onStartInterview([])}>Create a friendship archive <span>↗</span></button></section>
-        <section className="private-bookcase"><div className="bookcase-head"><p>My friendships</p><span>{store.archives.length} archive{store.archives.length === 1 ? '' : 's'} · {store.syncState === 'synced' ? 'saved privately' : 'private draft'}</span></div>{store.archives.length ? <div className="archive-books">{store.archives.map((archive, index) => <button key={archive.id} className={`archive-book book-${index % 4}`} onClick={() => { setActiveId(archive.id); setView('archive'); }}><i>{String(index + 1).padStart(2, '0')}</i><b>{archive.title}</b><span>{archive.friendName || 'A friendship in progress'}</span><em>{archive.updatedAt.slice(0, 10)}</em></button>)}</div> : <div className="empty-room"><span>✦</span><h3>The first shelf is waiting.</h3><p>Begin with one person, one memory, or one ordinary thing that still reminds you of her.</p><button onClick={() => onStartInterview([])}>Start my friendship interview</button></div>}</section>
+        <section className="private-room-intro"><p>{store.session ? 'Your room is protected by access rules and visible only to your account.' : 'Create an account before beginning an interview, so every memory can remain safely yours.'}</p><button onClick={() => onStartInterview([])}>Tell us your story <span>↗</span></button></section>
+        <section className="private-bookcase"><div className="bookcase-head"><p>My friendships</p><span>{store.archives.length} archive{store.archives.length === 1 ? '' : 's'} · {store.syncState === 'synced' ? 'saved privately' : 'account required'}</span></div>{store.archives.length ? <div className="archive-books">{store.archives.map((archive, index) => <button key={archive.id} className={`archive-book book-${index % 4}`} onClick={() => { setActiveId(archive.id); setView('archive'); }}><i>{String(index + 1).padStart(2, '0')}</i><b>{archive.title}</b><span>{archive.friendName || 'A friendship in progress'}</span><em>{archive.updatedAt.slice(0, 10)}</em></button>)}</div> : <div className="empty-room"><span>✦</span><h3>The first shelf is waiting.</h3><p>Begin with one person, one memory, or one ordinary thing that still reminds you of her.</p><button onClick={() => onStartInterview([])}>Tell us your story</button></div>}</section>
       </>}
     </motion.section>
   </motion.aside>}</AnimatePresence>;

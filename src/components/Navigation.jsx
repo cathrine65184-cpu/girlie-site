@@ -20,13 +20,13 @@ export function Navigation({ onJump, onOpenHall, onCreate, onOpenPrivateRoom, st
     </nav>
     <div className="nav-right">
       <span className="living-mark">A living museum</span>
-      <button className="create-nav-button" onClick={onCreate}>Create archive</button>
+      <button className="create-nav-button" onClick={onCreate}>Tell us your story</button>
       <button className="studio-button" onClick={onOpenPrivateRoom}>My private room</button>
       <button className="mobile-halls-button" aria-expanded={mobileOpen} onClick={() => setMobileOpen((open) => !open)}>Halls</button>
     </div>
     {mobileOpen && <div className="mobile-halls" aria-label="Museum collections">
       {halls.map(([number, label, hall]) => <button key={hall} onClick={() => openHall(hall)}><i>{number}</i>{label}</button>)}
-      <button onClick={onCreate}>Create my archive</button>
+      <button onClick={onCreate}>Tell us your story</button>
       <button onClick={onOpenPrivateRoom}>My private room</button>
       <a className="mobile-studio" href={studioHref}>Build a Secret House</a>
     </div>}

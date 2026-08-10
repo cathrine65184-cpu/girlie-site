@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber';
-import { lazy, Suspense, useCallback, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { CameraController } from './components/CameraController';
 import { FloatingParticles } from './components/FloatingParticles';
 import { Lighting } from './components/Lighting';
@@ -38,6 +38,7 @@ export default function App() {
   const [activeHall, setActiveHall] = useState(null);
   const [interviewOpen, setInterviewOpen] = useState(false);
   const [privateRoomOpen, setPrivateRoomOpen] = useState(false);
+  const [authRequired, setAuthRequired] = useState(false);
   const [interviewSeed, setInterviewSeed] = useState([]);
   const privateArchive = usePrivateArchive();
   const activeGirl = girls.find((girl) => girl.id === activeId) || null;
@@ -47,6 +48,22 @@ export default function App() {
   const copyOpacity = progress < .052 ? 1 : progress < .097 ? 1 - ((progress - .052) / .045) : 0;
   const myRoomUrl = `${import.meta.env.BASE_URL}legacy.html#room`;
   const beginInterview = (seed = []) => { setInterviewSeed(seed); setPrivateRoomOpen(false); setInterviewOpen(true); };
+  // Interviews are account-only: a friendship is never left in an anonymous public state.
+  const requestInterview = (seed = []) => {
+    setInterviewSeed(seed);
+    if (privateArchive.session) {
+      beginInterview(seed);
+      return;
+    }
+    setAuthRequired(true);
+    setPrivateRoomOpen(true);
+  };
+  useEffect(() => {
+    if (authRequired && privateArchive.session) {
+      setAuthRequired(false);
+      beginInterview(interviewSeed);
+    }
+  }, [authRequired, interviewSeed, privateArchive.session]);
   const archiveInterview = async (archive) => { await privateArchive.save(archive); setPrivateRoomOpen(true); };
   const openHall = (hall) => {
     if (hall === 'archive') {
@@ -76,7 +93,7 @@ export default function App() {
       </Suspense>
     </Canvas>
 
-    <Navigation onJump={scrollToProgress} onOpenHall={openHall} onCreate={() => beginInterview()} onOpenPrivateRoom={() => openHall('studio')} studioHref={myRoomUrl} />
+    <Navigation onJump={scrollToProgress} onOpenHall={openHall} onCreate={() => requestInterview()} onOpenPrivateRoom={() => openHall('studio')} studioHref={myRoomUrl} />
 
     <main className="scroll-track" aria-label="Girlie Project memory journey">
       <section className="journey-copy" style={{ opacity: copyOpacity, pointerEvents: copyOpacity > .04 ? 'auto' : 'none' }}>
@@ -85,11 +102,11 @@ export default function App() {
         <p>{copy.body}</p>
         <div className="hero-actions">
           <button className="journey-button" style={{ pointerEvents: copyOpacity > .04 ? 'auto' : 'none' }} onClick={() => scrollToProgress(copy.target)}>{copy.action} <span>↓</span></button>
-          <button className="journey-button create-archive-button" style={{ pointerEvents: copyOpacity > .04 ? 'auto' : 'none' }} onClick={() => beginInterview()}><i>Create your friendship</i><strong>Start my friendship interview <span>↗</span></strong></button>
+          <button className="journey-button create-archive-button" style={{ pointerEvents: copyOpacity > .04 ? 'auto' : 'none' }} onClick={() => requestInterview()}><i>Tell us your story</i><strong>Begin your friendship story <span>↗</span></strong></button>
         </div>
       </section>
       <section className="path-instruction" style={{ opacity: progress > .1 && progress < .76 ? 1 : 0 }}>
-        <span>Friendship Archive · Gallery one</span><b>Pause by a flower to enter a story</b>
+        <span>Friendship Archive · Gallery one</span><b>Scroll gently to meet the girls, one story at a time</b>
       </section>
       <section className="ending-copy" style={{ opacity: progress > .76 ? 1 : 0, pointerEvents: progress > .76 ? 'auto' : 'none' }}>
         <p>A LIVING MUSEUM</p><h2>More friendship stories are always finding their way here.</h2>
@@ -98,7 +115,7 @@ export default function App() {
           <button onClick={() => openHall('language')}>Language Gallery</button>
           <button onClick={() => openHall('stars')}>Star Observatory</button>
           <button onClick={() => openHall('listening')}>Listening Room</button>
-          <button className="studio-door" onClick={() => beginInterview()}>Create my friendship archive ↗</button>
+          <button className="studio-door" onClick={() => requestInterview()}>Tell us your story ↗</button>
         </div>
       </section>
     </main>
@@ -107,7 +124,7 @@ export default function App() {
       <StoryOverlay girl={activeGirl} onClose={closeStory} onContinue={openNextStory} studioHref={myRoomUrl} />
       <GalleryExperience hall={activeHall} girls={girls} onClose={() => setActiveHall(null)} />
       <FriendshipInterview open={interviewOpen} onClose={() => setInterviewOpen(false)} onArchived={archiveInterview} seed={interviewSeed} />
-      <PrivateRoom open={privateRoomOpen} onClose={() => setPrivateRoomOpen(false)} store={privateArchive} onStartInterview={beginInterview} />
+      <PrivateRoom open={privateRoomOpen} onClose={() => { setPrivateRoomOpen(false); setAuthRequired(false); }} store={privateArchive} onStartInterview={requestInterview} requireAuth={authRequired} />
       {Object.entries(museumHalls).map(([id, hall]) => <RoomOverlay
         key={id}
         open={activeHall === id}
