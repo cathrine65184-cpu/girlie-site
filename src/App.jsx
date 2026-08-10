@@ -76,7 +76,7 @@ export default function App() {
       </Suspense>
     </Canvas>
 
-    <Navigation onJump={scrollToProgress} onOpenHall={openHall} onCreate={() => beginInterview()} onOpenPrivateRoom={() => setPrivateRoomOpen(true)} studioHref={myRoomUrl} />
+    <Navigation onJump={scrollToProgress} onOpenHall={openHall} onCreate={() => beginInterview()} onOpenPrivateRoom={() => openHall('studio')} studioHref={myRoomUrl} />
 
     <main className="scroll-track" aria-label="Girlie Project memory journey">
       <section className="journey-copy" style={{ opacity: copyOpacity, pointerEvents: copyOpacity > .04 ? 'auto' : 'none' }}>
@@ -115,6 +115,7 @@ export default function App() {
         title={hall.title}
         source={`${import.meta.env.BASE_URL}${hall.source}`}
         note={hall.note}
+        onOpenArchive={() => { setActiveHall(null); setPrivateRoomOpen(true); }}
       />)}
     </Suspense>
   </div>;
