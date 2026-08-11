@@ -21,9 +21,9 @@ const PrivateRoom = lazy(() => import('./components/PrivateRoom').then((module) 
 
 const museumHalls = {
   studio: {
-    title: 'Friendship Studio · Secret House',
-    source: 'legacy.html#room',
-    note: 'Private photos and video are intentionally not bundled into the public cinematic build.',
+    title: 'Girlie · Private House',
+    source: 'legacy.html#private-house',
+    note: '',
   },
 };
 
@@ -46,7 +46,7 @@ export default function App() {
   // The entrance copy clears before the first exhibit becomes interactive.
   // This keeps the opening invitation editorial without sitting over a flower label.
   const copyOpacity = progress < .052 ? 1 : progress < .097 ? 1 - ((progress - .052) / .045) : 0;
-  const myRoomUrl = `${import.meta.env.BASE_URL}legacy.html#room`;
+  const myRoomUrl = `${import.meta.env.BASE_URL}legacy.html#private-house`;
   const beginInterview = (seed = []) => { setInterviewSeed(seed); setPrivateRoomOpen(false); setInterviewOpen(true); };
   // Interviews are account-only: a friendship is never left in an anonymous public state.
   const requestInterview = (seed = []) => {

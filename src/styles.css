@@ -106,7 +106,7 @@ button:focus-visible { outline: 2px solid #ffe8bd; outline-offset: 4px; }
 .room-shell { position: relative; z-index: 1; width: min(1180px, 100%); height: min(850px, calc(100vh - 40px)); overflow: hidden; background: #fffaf4; border-radius: 24px; box-shadow: 0 30px 110px rgba(7, 4, 14, .48); }
 .room-bar { display: flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 18px; color: #fff8f1; background: #76465e; }
 .room-bar p { margin: 0; font: 500 10px 'DM Mono', monospace; letter-spacing: .1em; text-transform: uppercase; }
-.room-bar > div { display: flex; align-items: center; gap: 15px; }.room-bar button { color: #fff8f1; background: transparent; font-size: 11px; }.room-bar > div button:first-child { color: #ffd6e4; font: 500 8px 'DM Mono', monospace; letter-spacing: .07em; text-transform: uppercase; }
+.room-bar > div { display: flex; align-items: center; gap: 15px; }.room-bar button { color: #fff8f1; background: transparent; font-size: 11px; }.room-bar > div button:first-child { color: #ffd6e4; font: 500 8px 'DM Mono', monospace; letter-spacing: .07em; text-transform: uppercase; }.room-private-label { color: rgba(255,238,244,.66); font: 500 8px 'DM Mono', monospace; letter-spacing: .06em; text-transform: uppercase; }
 .room-shell iframe { display: block; width: 100%; height: calc(100% - 48px); border: 0; }
 .privacy-note { position: absolute; right: 14px; bottom: 10px; max-width: 320px; margin: 0; padding: 7px 10px; color: #6a5a6a; background: rgba(255,255,255,.86); border-radius: 10px; font-size: 9px; line-height: 1.4; }
 

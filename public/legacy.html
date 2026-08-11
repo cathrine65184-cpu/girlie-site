@@ -1,3 +1,4 @@
+<script>if(location.hash==='#private-house')document.documentElement.classList.add('private-house-route');</script>
 <div id="gp">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Cormorant+Garamond:wght@500;600&family=Inter:wght@300;400;500;600;700&display=swap');
@@ -517,6 +518,90 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
 .smodal .bd .grid2{display:grid; gap:13px}
 .smodal .bd .it b{font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--accent); display:block; margin-bottom:3px}
 .smodal .bd .it span{font-size:14px; color:var(--ink); line-height:1.55}
+
+/* ═══ PRIVATE HOUSE ROUTE ═══
+   The public archive remains available at legacy.html. Opening #private-house
+   turns this same data-backed room into a separate, quiet private world. */
+html.private-house-route,html.private-house-route body{background:#f7eaeb}
+html.private-house-route #gp{min-height:100vh;background:#f7eaeb}
+html.private-house-route .gp-cur,html.private-house-route .gp-ring,html.private-house-route .gp-nav,
+html.private-house-route .hero,html.private-house-route .sec,html.private-house-route .join,
+html.private-house-route .foot,html.private-house-route .smodal,html.private-house-route .langbar{display:none!important}
+html.private-house-route .roomov{position:relative;inset:auto;z-index:1;display:block!important;min-height:100vh;overflow:visible;
+  background:radial-gradient(90% 70% at 50% 0%,rgba(255,224,235,.88),transparent 58%),radial-gradient(42% 38% at 90% 86%,rgba(224,214,247,.68),transparent 70%),linear-gradient(160deg,#fffbf7 0%,#f9eaee 50%,#ede6f5 100%)}
+html.private-house-route .roomov:before,html.private-house-route .roomov:after{position:fixed;z-index:0;width:29vw;height:29vw;border:1px solid rgba(203,132,163,.13);border-radius:50%;content:'';pointer-events:none}
+html.private-house-route .roomov:before{top:-16vw;left:-7vw;box-shadow:0 0 0 34px rgba(255,255,255,.1),0 0 0 76px rgba(242,208,226,.14)}
+html.private-house-route .roomov:after{right:-11vw;bottom:-15vw;box-shadow:0 0 0 42px rgba(223,212,244,.16)}
+html.private-house-route .roomov .rm-close{display:none}
+html.private-house-route .rm-shell{position:relative;z-index:1;max-width:1220px;padding:clamp(46px,7vw,92px) clamp(20px,5vw,70px) 76px}
+html.private-house-route .rm-scr{animation:private-enter .82s cubic-bezier(.2,.78,.25,1) both}
+@keyframes private-enter{from{opacity:0;transform:translateY(16px) scale(.988);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
+html.private-house-route .rm-gate{min-height:calc(100vh - 190px);justify-content:center}
+html.private-house-route .rm-gate .lg{display:none}
+html.private-house-route .private-house-diorama{position:relative;width:158px;height:115px;margin:0 auto 16px;filter:drop-shadow(0 20px 21px rgba(157,100,125,.18))}
+html.private-house-route .private-house-diorama .ground{position:absolute;right:0;bottom:1px;left:0;height:35px;border-radius:50%;background:radial-gradient(ellipse,#d7b4c5 0%,#ead7dc 55%,transparent 70%)}
+html.private-house-route .private-house-diorama .house{position:absolute;bottom:20px;left:50%;width:82px;height:60px;border:5px solid #fff7f0;border-radius:8px 8px 13px 13px;background:linear-gradient(140deg,#e7a3b7,#d696aa 55%,#b88aab);box-shadow:inset -11px -8px 17px rgba(123,72,108,.13);transform:translateX(-50%)}
+html.private-house-route .private-house-diorama .house:before{position:absolute;top:-37px;left:-11px;width:90px;height:56px;border-radius:7px;background:linear-gradient(140deg,#ce7f9f,#af7291);clip-path:polygon(50% 0,100% 72%,88% 72%,88% 100%,12% 100%,12% 72%,0 72%);content:''}
+html.private-house-route .private-house-diorama .house:after{position:absolute;bottom:0;left:28px;width:19px;height:31px;border-radius:12px 12px 0 0;background:#805a72;box-shadow:inset 3px 0 rgba(255,255,255,.14);content:''}
+html.private-house-route .private-house-diorama .window{position:absolute;z-index:2;top:39px;left:50%;width:18px;height:22px;border:3px solid #fff5ca;border-radius:8px 8px 3px 3px;background:#ffd98d;box-shadow:0 0 22px rgba(255,218,145,.72);transform:translateX(-50%)}
+html.private-house-route .private-house-diorama .flower{position:absolute;z-index:2;bottom:22px;width:28px;height:39px;border-radius:60% 0 60% 0;background:#d686a8;transform:rotate(-28deg);box-shadow:42px 3px 0 -4px #e9b7cf,-18px 13px 0 -5px #c997c3}
+html.private-house-route .private-house-diorama .flower:after{position:absolute;bottom:-19px;left:8px;width:3px;height:26px;border-radius:3px;background:#779276;content:'';transform:rotate(25deg)}
+html.private-house-route .foyer-label{margin:0 0 9px;color:#bd7895;font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
+html.private-house-route .rm-gate h2{max-width:620px;margin:0;color:#573a4c;font-size:clamp(40px,5vw,68px);line-height:.96;letter-spacing:-.055em}
+html.private-house-route .rm-gate h2 em{display:inline-block;margin-left:.13em;background:linear-gradient(115deg,#c25e87,#8b70aa);-webkit-background-clip:text;background-clip:text}
+html.private-house-route .rm-gate .gs{max-width:480px;margin:17px 0 10px;color:#8c6b7d;font-size:14px;line-height:1.85}
+html.private-house-route .foyer-whisper{margin:0 0 24px;color:#9f7b8e;font:italic 18px/1.45 var(--serif)}
+html.private-house-route .rm-gate .gbtns{gap:10px}
+html.private-house-route .btn{min-height:47px;padding:13px 23px;border-radius:999px;font-size:12px;letter-spacing:.01em}
+html.private-house-route .btn-primary{background:linear-gradient(125deg,#c86991,#b685aa 95%);box-shadow:0 14px 32px -15px rgba(174,81,126,.65)}
+html.private-house-route .btn-ghost{background:rgba(255,251,248,.72);border-color:rgba(202,138,166,.38)}
+html.private-house-route .authform{max-width:500px;margin:6px auto 12px;padding:15px;background:rgba(255,255,255,.48);border:1px solid rgba(255,255,255,.72);border-radius:20px;box-shadow:0 18px 40px -34px rgba(115,65,92,.5)}
+html.private-house-route .authform input{width:min(390px,82vw);text-align:left;background:rgba(255,253,250,.86)}
+html.private-house-route #wel-auth{display:flex;width:min(500px,90vw);flex-wrap:wrap;justify-content:center}
+html.private-house-route #wel-auth .authform{flex:0 0 100%;width:100%}
+html.private-house-route #wel-auth>.btn{min-width:142px}
+html.private-house-route #wel-auth .seed-preview{display:none}
+html.private-house-route .rm-gate .hinttxt{margin-top:17px;color:#aa899a;letter-spacing:.08em;text-transform:none}
+html.private-house-route .roomlist{display:grid;width:min(880px,100%);margin:22px auto 18px;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+html.private-house-route .rl-title{grid-column:1/-1;padding:0 2px;color:#b27490;font-size:9px;letter-spacing:.18em}
+html.private-house-route .roomcard{position:relative;min-height:166px;align-items:flex-start;gap:12px;padding:20px 21px;overflow:hidden;border:1px solid rgba(255,255,255,.78);border-radius:21px;background:linear-gradient(145deg,rgba(255,254,251,.92),rgba(250,234,241,.84));box-shadow:0 20px 38px -29px rgba(138,77,107,.55)}
+html.private-house-route .roomcard:before{position:absolute;right:-14px;bottom:-21px;color:rgba(207,151,180,.18);font:68px var(--serif);content:'✦'}
+html.private-house-route .roomcard:hover{border-color:rgba(206,131,164,.6);box-shadow:0 25px 46px -27px rgba(138,77,107,.6);transform:translateY(-4px)}
+html.private-house-route .roomcard.cur{background:linear-gradient(135deg,#fff4f7,#eee5fa);border-color:rgba(196,117,151,.48)}
+html.private-house-route .roomcard .rc-house{display:grid;place-items:center;flex:0 0 35px;width:35px;height:35px;border-radius:13px;background:linear-gradient(145deg,#f0bdd1,#d4bbe6);font-size:17px;box-shadow:inset 0 1px rgba(255,255,255,.75)}
+html.private-house-route .roomcard .rc-bd{position:relative;z-index:1;gap:5px}
+html.private-house-route .roomcard .rc-bd small{color:#bb849b;font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+html.private-house-route .roomcard .rc-bd b{color:#603f52;font:600 21px/1.05 var(--serif);letter-spacing:-.025em}
+html.private-house-route .roomcard .rc-bd span{max-width:92%;color:#927183;font-size:11px;line-height:1.5;white-space:normal}
+html.private-house-route .roomcard .rc-go{position:absolute;right:17px;bottom:16px;color:#b45f83;font-size:14px}
+html.private-house-route .rm-main-grid{grid-template-columns:306px minmax(0,1fr);gap:32px}
+html.private-house-route .rm-side{top:25px;gap:15px}
+html.private-house-route .rm-hero{padding:27px 24px 23px;border:1px solid rgba(255,255,255,.78);border-radius:25px;background:linear-gradient(150deg,rgba(255,235,242,.96),rgba(235,225,249,.93));box-shadow:0 24px 50px -35px rgba(133,75,107,.6)}
+html.private-house-route .rm-hero .deco{right:-16px;top:-21px;opacity:.12}
+html.private-house-route .ava{width:48px;height:48px;border-width:3px;font-size:23px}
+html.private-house-route .rm-hero .nm{font-size:22px;letter-spacing:-.035em}.rm-hero .sub2{line-height:1.45}
+html.private-house-route .rm-hero .daysrow{margin-top:22px}.rm-hero .n{font-size:52px}
+html.private-house-route .room-sentence{margin:15px 0 0;color:#8c697d;font:italic 14px/1.55 var(--serif)}
+html.private-house-route .rm-tabs{gap:3px;padding:6px;border:1px solid rgba(255,255,255,.68);border-radius:18px;background:rgba(255,255,255,.34)}
+html.private-house-route .rm-tab{padding:11px 12px;border-radius:12px;background:transparent;color:#887080;font-size:12px}
+html.private-house-route .rm-tab.on{background:rgba(255,253,249,.92);color:#a24f76;box-shadow:0 7px 15px -13px rgba(123,71,95,.55)}
+html.private-house-route .rm-note{text-align:left;padding:0 8px;color:#a28796;letter-spacing:.02em;text-transform:none}
+html.private-house-route .switchbtn{margin-top:0;border:0;background:transparent;color:#a65c7d;text-align:left;padding:8px}
+html.private-house-route .rm-content{min-height:650px;padding:35px clamp(22px,4vw,52px) 50px;border:1px solid rgba(255,255,255,.76);border-radius:28px;background:rgba(255,252,249,.62);box-shadow:0 26px 60px -43px rgba(125,72,99,.52);backdrop-filter:blur(18px)}
+html.private-house-route .rm-secthead{padding-bottom:22px;margin-bottom:6px;border-bottom:1px solid rgba(193,133,158,.16)}
+html.private-house-route .rm-secthead h3{color:#593d4f;font-size:31px;letter-spacing:-.045em}.rm-secthead .mini{max-width:400px;line-height:1.55}
+html.private-house-route .addbtn{height:36px;background:#bb6688;box-shadow:none;font-size:10px}
+html.private-house-route .tl{max-width:740px;padding-left:35px}.tl:before{left:11px;top:10px;bottom:26px;width:1px;background:linear-gradient(#d587a8,#cdbbe8 82%,transparent)}
+html.private-house-route .tle{margin:0 0 4px;padding:13px 0 17px}.tle .dot{left:-30px;top:29px;width:13px;height:13px;border:2px solid #d385a4;box-shadow:0 0 0 5px rgba(234,192,211,.38)}
+html.private-house-route .tle.mile .dot{background:#c96f93;border-color:#fff9f6;box-shadow:0 0 0 5px rgba(210,150,179,.23)}
+html.private-house-route .tlc{padding:0 36px 0 0;background:transparent;box-shadow:none}.tle.mile .tlc{background:transparent}
+html.private-house-route .tlc .top{gap:7px;margin-bottom:7px}.tlc .tag{padding:0;background:transparent!important;color:#b66286!important;font-size:9px;letter-spacing:.1em}.tlc .who{font-size:10px}.tlc .date{margin-left:0;color:#b39aa7;font-size:10px}
+html.private-house-route .tlc p{max-width:610px;padding:0;color:#634c59;font:500 15px/1.72 var(--serif)}
+html.private-house-route .tlc .stick{right:3px;bottom:auto;top:8px;font-size:20px;opacity:.68}
+html.private-house-route .tle:hover .tlc p{color:#a54f78}.tle:hover .dot{transform:scale(1.14)}
+html.private-house-route .exportbar{margin:15px 0 0}.exportbar button{background:rgba(255,255,255,.48);border-color:rgba(199,133,159,.34);font-size:11px}
+html.private-house-route .pcard,.private-house-route .ck,.private-house-route .wish,.private-house-route .prog{background:rgba(255,254,252,.86);box-shadow:0 16px 30px -25px rgba(130,75,98,.5)}
+@media(max-width:820px){html.private-house-route .rm-shell{padding:37px 15px 50px}html.private-house-route .roomlist{grid-template-columns:1fr}html.private-house-route .rm-main-grid{grid-template-columns:1fr;gap:18px}html.private-house-route .rm-side{position:static}html.private-house-route .rm-content{min-height:auto;padding:26px 20px 34px}.room-private-label{display:none}html.private-house-route .rm-gate h2{font-size:45px}html.private-house-route .private-house-diorama{transform:scale(.9)}html.private-house-route .tl{padding-left:29px}.tlc p{font-size:14px}}
 </style>
 
 <div class="gp-cur"></div><div class="gp-ring"></div>
@@ -689,18 +774,22 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
 
     <div class="rm-scr on" id="rm-wel">
       <div class="rm-gate">
-        <div class="lg">🌷</div>
-        <h2>Welcome to <em>Girlie Room</em></h2>
+        <div class="private-house-diorama" aria-hidden="true"><i class="ground"></i><i class="flower"></i><i class="house"></i><i class="window"></i></div>
+        <p class="foyer-label">Girlie · Private House</p>
+        <h2>欢迎来到<em>闺蜜小屋</em></h2>
         <p class="gs">你们的私密小屋 — a space no visitor can see. Sign in with your bestie and keep your own history: photos, videos, milestones — all private to just the two of you.</p>
+        <p class="foyer-whisper">A private space for two. A place for everything that belongs to you.</p>
         <div class="gbtns" id="wel-auth"></div>
       </div>
     </div>
 
     <div class="rm-scr" id="rm-hub">
       <div class="rm-gate">
-        <div class="lg">🏠</div>
-        <h2>Your bestie spaces</h2>
+        <div class="private-house-diorama" aria-hidden="true"><i class="ground"></i><i class="flower"></i><i class="house"></i><i class="window"></i></div>
+        <p class="foyer-label">Private collection</p>
+        <h2>你的<em>闺蜜空间</em></h2>
         <p class="gs">Switch between your rooms — one for each friend. Or start a new one and invite her with a code.</p>
+        <p class="foyer-whisper">Every friendship deserves a room.</p>
         <div class="roomlist" id="rm-roomlist"></div>
         <div class="gbtns">
           <button class="btn btn-primary" onclick="RM.createRoom()">🏠 New room</button>
@@ -745,12 +834,13 @@ textarea.fi{resize:none; min-height:84px; line-height:1.6}
         </div>
         <div class="daysrow"><span class="n" id="rm-days">0</span><span class="l">days of friendship<br>year <b id="rm-years"></b> together</span></div>
         <div class="anni">🎂 <b id="rm-anni" style="margin:0 3px"></b> days to your anniversary</div>
+        <p class="room-sentence">Some friendships are measured in years. Others are measured in how often you choose each other.</p>
       </div>
 
       <div class="rm-tabs">
-        <button class="rm-tab on" data-pg="tl" onclick="RM.tab(this)">🧵 Timeline</button>
-        <button class="rm-tab" data-pg="al" onclick="RM.tab(this)">📸 Album</button>
-        <button class="rm-tab" data-pg="ck" onclick="RM.tab(this)">✅ Bucket List</button>
+        <button class="rm-tab on" data-pg="tl" onclick="RM.tab(this)">🧵 Our Story</button>
+        <button class="rm-tab" data-pg="al" onclick="RM.tab(this)">📸 Memories</button>
+        <button class="rm-tab" data-pg="ck" onclick="RM.tab(this)">🌱 Someday</button>
         <button class="rm-tab" data-pg="mo" onclick="RM.tab(this)">🎀 More</button>
       </div>
       <div class="rm-note" id="rm-modenote">🔒 Only the two of you can see this room</div>
@@ -1676,15 +1766,15 @@ var RM=(function(){
       if(r.error){list.innerHTML='<div class="hinttxt" style="margin:0 0 6px">'+(backendMissing(r.error)?'后端还没建好：跑一下 supabase-setup.sql':'读取房间失败')+'</div>';return;}
       if(!rows.length){list.innerHTML='<div class="hinttxt" style="margin:0 0 4px">还没有闺蜜空间——建一个，或输入她给你的码 ↓</div>';return;}
       list.innerHTML='<div class="rl-title">你的闺蜜空间 · '+rows.length+'</div>';
-      rows.forEach(function(rm){var who=rm.members?('🌸 with '+rm.members):('⏳ 等她加入 · 把码 '+rm.room_code+' 发给她');
+      rows.forEach(function(rm){var paired=!!rm.members,who=paired?('with '+rm.members):('Waiting for her · invite code '+rm.room_code),title=paired?(myName()+' × '+rm.members):'Your new little house';
         var b=document.createElement('button');b.className='roomcard'+(rm.room_id===roomId?' cur':'');
-        b.innerHTML='<span class="rc-bd"><b>'+(rm.name?String(rm.name).replace(/</g,'&lt;'):('Room '+rm.room_code))+'</b><span>'+who+'</span></span><span class="rc-go">→</span>';
+        b.innerHTML='<span class="rc-house">'+(paired?'🌷':'🏠')+'</span><span class="rc-bd"><small>'+(paired?'Friendship room':'Invite-only room')+' · '+rm.room_code+'</small><b>'+(rm.name?String(rm.name).replace(/</g,'&lt;'):title)+'</b><span>'+who+'</span></span><span class="rc-go">Enter →</span>';
         b.onclick=function(){enterRoom(rm.room_id,rm.room_code);};list.appendChild(b);});
     },function(){if(list)list.innerHTML='<div class="hinttxt" style="margin:0 0 6px">读取房间失败（网络）</div>';});}
   function myRoomOrHub(){loadHub();}
   function refreshWel(){var box=$('#wel-auth');if(!box)return;
     if(meState){box.innerHTML='<button class="btn btn-primary" onclick="RM.loadHub()">'+t('auth_continue')+'</button>'+
-      '<button class="btn btn-ghost" onclick="RM.enterSeed()">'+t('auth_seed')+'</button>'+
+      '<button class="btn btn-ghost seed-preview" onclick="RM.enterSeed()">'+t('auth_seed')+'</button>'+
       '<div class="hinttxt">'+t('auth_signedin')+' '+myName()+' · <a href="#" onclick="RM.signOut();return false">'+t('auth_signout')+'</a></div>';}
     else{box.innerHTML='<div class="authform">'+
       '<input id="au-email" type="email" autocomplete="email" placeholder="'+t('auth_email')+'">'+
@@ -1693,7 +1783,7 @@ var RM=(function(){
       '</div>'+
       '<button class="btn btn-primary" onclick="RM.signInEmail()">'+t('auth_signin')+'</button>'+
       '<button class="btn btn-ghost" onclick="RM.signUpEmail()">'+t('auth_signup')+'</button>'+
-      '<button class="btn btn-ghost" onclick="RM.enterSeed()">'+t('auth_seed')+'</button>'+
+      '<button class="btn btn-ghost seed-preview" onclick="RM.enterSeed()">'+t('auth_seed')+'</button>'+
       '<div class="hinttxt">'+t('auth_hint')+'</div>';
       var pw=$('#au-pass');if(pw)pw.addEventListener('keydown',function(ev){if(ev.key==='Enter')signInEmail();});}}
   function syncChrome(){var live=(mode==='live');
@@ -1704,10 +1794,10 @@ var RM=(function(){
   function showCode(code){var box=$('#codebox');if(!box)return;box.innerHTML='';
     String(code).split('').forEach(function(d,i){var el=document.createElement('div');el.className='d';el.textContent=d;el.style.animationDelay=(i*.07)+'s';box.appendChild(el);});st.code=code;}
 
-  function open(){$('#roomov').classList.add('on');document.body.style.overflow='hidden';
+  function open(){$('#roomov').classList.add('on');if(!document.documentElement.classList.contains('private-house-route'))document.body.style.overflow='hidden';
     if(st.entered&&mode==='live'){go('rm-main');}else{refreshWel();go('rm-wel');}}
   function close(){$('#roomov').classList.remove('on');document.body.style.overflow='';closeModal();}
-  function go(id){$$('#roomov .rm-scr').forEach(function(s){s.classList.remove('on')});$('#'+id).classList.add('on');$('#roomov').scrollTop=0;}
+  function go(id){$$('#roomov .rm-scr').forEach(function(s){s.classList.remove('on')});$('#'+id).classList.add('on');if(document.documentElement.classList.contains('private-house-route'))window.scrollTo({top:0,behavior:'smooth'});else $('#roomov').scrollTop=0;}
   function toast(t){var el=$('#toast');el.textContent=t;el.classList.add('on');setTimeout(function(){el.classList.remove('on')},2200);}
   function tab(btn){$$('#roomov .rm-tab').forEach(function(t){t.classList.remove('on')});btn.classList.add('on');
     $$('#roomov .rm-pg').forEach(function(p){p.classList.remove('on')});$('#rm-pg-'+btn.dataset.pg).classList.add('on');}
@@ -1762,7 +1852,7 @@ var RM=(function(){
     }).catch(function(){calcDays();});}
 
   function renderTL(){var list=$('#tl-list');list.innerHTML='';
-    st.timeline.slice().sort(function(a,b){return b.d<a.d?-1:1}).forEach(function(e,i){
+    st.timeline.slice().sort(function(a,b){return String(a.d).localeCompare(String(b.d));}).forEach(function(e,i){
       var el=document.createElement('div');el.className='tle'+(e.type==='mile'?' mile':'');el.style.animationDelay=(i*.06)+'s';
       el.innerHTML='<span class="dot"></span><div class="tlc">'+
         '<div class="top"><span class="tag '+(TAGCLS[e.type]||'day')+'">'+e.tag+'</span><span class="who">'+e.who+'</span><span class="date">'+e.d+'</span></div>'+
@@ -1919,5 +2009,7 @@ var RM=(function(){
     openModal:openModal,closeModal:closeModal,saveTL:saveTL,saveAL:saveAL,saveCK:saveCK,
     exportPreview:exportPreview,fakeExport:fakeExport,importIG:importIG};
 })();
+/* A direct private-house route deliberately bypasses the public legacy home. */
+if(document.documentElement.classList.contains('private-house-route'))RM.open();
 </script>
 </div>
