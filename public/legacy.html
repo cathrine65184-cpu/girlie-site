@@ -1189,11 +1189,12 @@ rm_days_l:'hari persahabatan<br>tahun ke-<b id="rm-years"></b> bersama',
 rm_anni_l:'🎂 <b id="rm-anni" style="margin:0 3px"></b> hari ke ulang tahun anda',
 rm_note_live:'🔒 Bilik peribadi · kongsi kod {code} dengan sahabat anda',rm_note_seed:'🌸 Pameran umum — log masuk untuk milik anda',
 rm_since:'🌸 Bersama di sini sejak {d}',rm_waiting:'💌 Menunggunya — kongsi kod {code}'}};
-var LANG=(function(){try{var s=localStorage.getItem('gp_lang');if(s&&I18N[s])return s}catch(e){}
-  var n=(navigator.language||'en').toLowerCase();
-  if(n.indexOf('zh')===0)return 'zh';if(n.indexOf('fr')===0)return 'fr';if(n.indexOf('uk')===0)return 'uk';if(n.indexOf('ms')===0)return 'ms';return 'en'})();
+var LANG=(function(){try{var s=localStorage.getItem('girlie_locale');if((s==='en'||s==='zh')&&I18N[s])return s}catch(e){}
+  return 'en'})();
 function t(k){var d=I18N[LANG]||{};return d[k]!==undefined?d[k]:(I18N.en[k]!==undefined?I18N.en[k]:k)}
-function setLang(l){try{localStorage.setItem('gp_lang',l)}catch(e){}location.reload()}
+function setLang(l){if(l!=='en'&&l!=='zh')return;try{localStorage.setItem('girlie_locale',l)}catch(e){}location.reload()}
+window.addEventListener('message',function(event){var data=event.data||{};if(data.type==='girlie:set-locale'&&data.locale!==LANG)setLang(data.locale);});
+window.addEventListener('storage',function(event){if(event.key==='girlie_locale'&&event.newValue!==LANG)setLang(event.newValue);});
 /* ═════════ MUSEUM (public site) ═════════ */
 (function(){
   var gp=document.getElementById('gp');
@@ -1236,7 +1237,7 @@ function setLang(l){try{localStorage.setItem('gp_lang',l)}catch(e){}location.rel
     Array.prototype.forEach.call(document.querySelectorAll('.gp-nav a,.gp-nav button'),function(a){
       if(/My Room/i.test(a.textContent))a.innerHTML=a.innerHTML.replace(/My Room/i,t('nav_room'));});
     var lb=document.createElement('div');lb.className='langbar';
-    [['zh','中'],['en','EN'],['fr','FR'],['uk','УКР'],['ms','BM']].forEach(function(L){
+    [['en','EN'],['zh','中文']].forEach(function(L){
       var b=document.createElement('button');b.textContent=L[1];if(L[0]===LANG)b.className='on';
       b.onclick=function(){setLang(L[0])};lb.appendChild(b);});
     document.body.appendChild(lb);

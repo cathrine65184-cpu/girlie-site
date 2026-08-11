@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
+.locale-menu{display:inline-flex;align-items:center;position:relative}.locale-menu select{appearance:none;border:1px solid rgba(84,47,73,.18);border-radius:999px;background:rgba(255,252,253,.72);color:#70445f;font:600 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.04em;padding:8px 24px 8px 11px;cursor:pointer;outline:none}.locale-menu:after{content:'⌄';position:absolute;right:9px;top:50%;transform:translateY(-55%);font-size:11px;color:#a16d88;pointer-events:none}.locale-menu select:focus{border-color:#c883a5;box-shadow:0 0 0 3px rgba(218,148,184,.16)}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
 :root { color: #5f3b53; background: #f6e1e5; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-synthesis: none; }
 * { box-sizing: border-box; }
 html { background: #f6e1e5; scroll-behavior: auto; }

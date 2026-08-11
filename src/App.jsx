@@ -12,6 +12,7 @@ import { useScrollProgress } from './hooks/useScrollProgress';
 import { useStoryTransition } from './hooks/useStoryTransition';
 import { Journey } from './scenes/Journey';
 import { Landing } from './scenes/Landing';
+import { useLocale } from './locales.jsx';
 
 // Editorial sheets are loaded only when a visitor chooses to enter a memory.
 const StoryOverlay = lazy(() => import('./components/StoryOverlay').then((module) => ({ default: module.StoryOverlay })));
@@ -27,12 +28,8 @@ const museumHalls = {
   },
 };
 
-function copyFor(progress) {
-  if (progress < .1) return { eyebrow: 'A LIVING COLLECTION', title: 'Girlie Friendship Museum.', body: 'A garden museum keeping girls’ friendship stories from around the world — and making room for your own.', action: 'Explore the girls', target: .12 };
-  return { eyebrow: 'FIRST GALLERY · FRIENDSHIP ARCHIVE', title: 'Every friendship leaves a trace.', body: 'Walk slowly. Each flower is an entry in the collection, holding a city, a word, and a story.', action: 'Begin visiting', target: .35 };
-}
-
 export default function App() {
+  const { t } = useLocale();
   const { progress, reducedMotion, scrollToProgress } = useScrollProgress();
   const { activeId, openStory, closeStory } = useStoryTransition();
   const [activeHall, setActiveHall] = useState(null);
@@ -42,7 +39,7 @@ export default function App() {
   const [interviewSeed, setInterviewSeed] = useState([]);
   const privateArchive = usePrivateArchive();
   const activeGirl = girls.find((girl) => girl.id === activeId) || null;
-  const copy = copyFor(progress);
+  const copy = progress < .1 ? { eyebrow: t('landingEyebrow'), title: t('landingTitle'), body: t('landingBody'), action: t('exploreGirls'), target: .12 } : { eyebrow: t('archiveEyebrow'), title: t('archiveTitle'), body: t('archiveBody'), action: t('beginVisiting'), target: .35 };
   // The entrance copy clears before the first exhibit becomes interactive.
   // This keeps the opening invitation editorial without sitting over a flower label.
   const copyOpacity = progress < .052 ? 1 : progress < .097 ? 1 - ((progress - .052) / .045) : 0;
@@ -102,20 +99,20 @@ export default function App() {
         <p>{copy.body}</p>
         <div className="hero-actions">
           <button className="journey-button" style={{ pointerEvents: copyOpacity > .04 ? 'auto' : 'none' }} onClick={() => scrollToProgress(copy.target)}>{copy.action} <span>↓</span></button>
-          <button className="journey-button create-archive-button" style={{ pointerEvents: copyOpacity > .04 ? 'auto' : 'none' }} onClick={() => requestInterview()}><i>Tell us your story</i><strong>Begin your friendship story <span>↗</span></strong></button>
+          <button className="journey-button create-archive-button" style={{ pointerEvents: copyOpacity > .04 ? 'auto' : 'none' }} onClick={() => requestInterview()}><i>{t('tellStory')}</i><strong>{t('beginStory')} <span>↗</span></strong></button>
         </div>
       </section>
       <section className="path-instruction" style={{ opacity: progress > .1 && progress < .76 ? 1 : 0 }}>
-        <span>Friendship Archive · Gallery one</span><b>Scroll gently to meet the girls, one story at a time</b>
+        <span>{t('scrollArchive')}</span><b>{t('scrollPrompt')}</b>
       </section>
       <section className="ending-copy" style={{ opacity: progress > .76 ? 1 : 0, pointerEvents: progress > .76 ? 'auto' : 'none' }}>
-        <p>A LIVING MUSEUM</p><h2>More friendship stories are always finding their way here.</h2>
-        <p className="ending-body">What will you remember? Every girl has a story; every friendship has a memory that deserves a place to stay.</p>
+        <p>{t('endingEyebrow')}</p><h2>{t('endingTitle')}</h2>
+        <p className="ending-body">{t('endingBody')}</p>
         <div className="gallery-doors">
-          <button onClick={() => openHall('language')}>Language Gallery</button>
-          <button onClick={() => openHall('stars')}>Star Observatory</button>
-          <button onClick={() => openHall('listening')}>Listening Room</button>
-          <button className="studio-door" onClick={() => requestInterview()}>Tell us your story ↗</button>
+          <button onClick={() => openHall('language')}>{t('languageGallery')}</button>
+          <button onClick={() => openHall('stars')}>{t('starObservatory')}</button>
+          <button onClick={() => openHall('listening')}>{t('listeningRoom')}</button>
+          <button className="studio-door" onClick={() => requestInterview()}>{t('tellStory')} ↗</button>
         </div>
       </section>
     </main>
