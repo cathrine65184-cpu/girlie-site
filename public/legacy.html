@@ -384,6 +384,7 @@ body.daytime .garden-sprig{opacity:.8;filter:brightness(1.9) saturate(.85) drop-
 }
 .rm-pg{display:none}
 .rm-pg.on{display:block; animation:rmup .4s ease both}
+.coming-soon{min-height:330px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#9d7790;background:linear-gradient(135deg,rgba(255,244,249,.92),rgba(242,235,251,.88));border:1px solid rgba(238,201,220,.8);border-radius:24px}.coming-soon span{font-size:32px;color:#d99ac0}.coming-soon h3{font-family:var(--serif);font-size:30px;color:#75485f;margin:12px 0 7px}.coming-soon p{font-size:12px;margin:0;color:#a98298}
 .rm-secthead{display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:16px; gap:12px; flex-wrap:wrap}
 .rm-secthead h3{font-size:21px; color:#4a3a44}
 .rm-secthead .mini{font-size:12px; color:var(--ink-soft); margin-top:3px; font-weight:300}
@@ -862,7 +863,7 @@ html.private-house-route .pcard,.private-house-route .ck,.private-house-route .w
       <div class="rm-pg" id="rm-pg-al">
         <div class="rm-secthead">
           <div><h3>Shared Album</h3><div class="mini">Journal-style frames · sorted into the little drawers of your life.</div></div>
-          <button class="addbtn" onclick="RM.openModal('al')">＋ Add a photo</button>
+          <div style="display:flex;gap:8px"><button class="addbtn" style="background:#fff;color:var(--accent-deep);border:1px solid #f0c4d6;box-shadow:none" onclick="RM.openModal('albums')">Manage albums</button><button class="addbtn" onclick="RM.openModal('al')">＋ Add a photo</button></div>
         </div>
         <div class="chips" id="al-chips"></div>
         <div class="rm-grid" id="al-grid"></div>
@@ -878,11 +879,7 @@ html.private-house-route .pcard,.private-house-route .ck,.private-house-route .w
       </div>
 
       <div class="rm-pg" id="rm-pg-mo">
-        <div class="rm-secthead"><div><h3>Countdowns</h3><div class="mini">Every reunion is worth counting the days for.</div></div></div>
-        <div class="cdgrid" id="cd-grid"></div>
-        <div class="rm-secthead"><div><h3>Her Wish List 🎁</h3><div class="mini">Gifts, tastes and little notes — birthday reminders included.</div></div></div>
-        <div class="wishgrid" id="wish-list"></div>
-        <div class="ig-import"><h4>📥 Instagram chat archive</h4><p>Choose Instagram’s exported <b>message_1.json</b>. It is read only in this browser and turns your messages into private timeline notes — nothing is uploaded.</p><label class="ig-action">Choose exported chat file<input type="file" id="rm-ig-file" accept="application/json,.json" onchange="RM.importIG(this)"></label><div class="ig-status" id="ig-status">No chat archive imported yet.</div></div>
+        <div class="coming-soon"><span>✦</span><h3>敬请期待</h3><p>我们正在为这个房间准备新的小惊喜。</p></div>
       </div>
     </div>
   </div>
@@ -1711,6 +1708,7 @@ var RM=(function(){
           else if(row.kind==='check')st.checks.push(p);
           else if(row.kind==='album'){st.photos.unshift(p);
             if(p.path){pend++;signedUrl(p.path,function(u){if(p.mtype==='video')p.vid=u;else p.src=u;if(--pend===0)renderAL();});}}
+          else if(row.kind==='album_config'&&Array.isArray(p.albums)){st.albums=p.albums;}
         });renderAll();});}
   function subscribeRoom(){
     if(roomChan){sbc.removeChannel(roomChan);roomChan=null;}
@@ -1722,6 +1720,7 @@ var RM=(function(){
         if(row.kind==='timeline'){st.timeline.push(p);renderTL();}
         else if(row.kind==='check'){st.checks.push(p);renderCK();}
         else if(row.kind==='album'){st.photos.unshift(p);if(p.path)signedUrl(p.path,function(u){if(p.mtype==='video')p.vid=u;else p.src=u;renderAL();});else renderAL();}
+        else if(row.kind==='album_config'&&Array.isArray(p.albums)){st.albums=p.albums;renderAL();}
         toast('✨ Your friend just added something');
       }).subscribe();}
 
@@ -1903,14 +1902,7 @@ var RM=(function(){
     var pct=Math.round(dn/total*100);
     $('#prog-n').textContent=pct+'%';$('#prog-bar').style.width=pct+'%';}
 
-  function renderMO(){var grid=$('#cd-grid');grid.innerHTML='';
-    st.cds.forEach(function(c,i){var el=document.createElement('div');el.className='cd';el.style.background='linear-gradient(140deg,'+c.g[0]+','+c.g[1]+')';el.style.animationDelay=(i*.06)+'s';
-      el.innerHTML='<div class="big">'+(c.custom||c.days)+'</div><div class="u">'+(c.custom?'progress':'days to go')+'</div><div class="t">'+c.t+'</div><span class="bgico">'+c.em+'</span>';
-      grid.appendChild(el);});
-    var wl=$('#wish-list');wl.innerHTML='';
-    st.wishes.forEach(function(w){var el=document.createElement('div');el.className='wish';
-      el.innerHTML='<span class="em">'+w.em+'</span><div><div class="w1">'+w.w1+'</div><div class="w2">'+w.w2+'</div></div>';
-      wl.appendChild(el);});}
+  function renderMO(){}
 
   var mState={};
   function openModal(kind){
@@ -1933,9 +1925,12 @@ var RM=(function(){
         '<div class="fl">— or just pick a sticker instead —</div><div class="strow" id="m-stk"></div>'+
         '<div class="fl">Caption</div><input class="fi" id="m-tx" placeholder="这张照片的小故事…">'+
         '<button class="msave" onclick="RM.saveAL()">Put it in the album ✨</button><button class="mcancel" onclick="RM.closeModal()">Cancel</button>';
-      buildOpts('m-tags',['Us','Gifts','Ukraine','Everyday'],'alcat');
+      buildOpts('m-tags',st.albums.filter(function(a){return a!=='All'}),'alcat');
       buildStk(['🌷','🍰','🏝️','🎡','📮','🧸','🌅','🍜']);
       var fi=$('#m-file');if(fi)fi.onchange=function(){var f=fi.files[0];$('#m-drop-t').textContent=f?('✓ '+f.name):'📁 Tap to choose a file… (up to 25 MB)';$('#m-drop').classList.toggle('has',!!f);};}
+    if(kind==='albums'){
+      s.innerHTML='<h4>Manage shared albums</h4><p class="fl" style="margin-top:0">Create, rename, or remove the little drawers that hold your memories.</p><div id="album-manager"></div><button class="msave" onclick="RM.addAlbum()">＋ Create a new album</button><button class="mcancel" onclick="RM.closeModal()">Done</button>';
+      renderAlbumManager();}
     if(kind==='ck'){
       s.innerHTML='<h4>Make a new promise ✅</h4>'+
         '<div class="fl">Category</div><div class="optrow" id="m-tags"></div>'+
@@ -1952,6 +1947,11 @@ var RM=(function(){
       b.onclick=function(){$$('#m-stk .stk').forEach(function(o){o.classList.remove('on')});b.classList.add('on');mState.st=t;};
       if(i===0)mState.st=t;box.appendChild(b);});}
   function closeModal(){$('#mmask').classList.remove('on')}
+  function persistAlbums(){try{localStorage.setItem('girlie_albums_'+(roomId||'seed'),JSON.stringify(st.albums));}catch(e){}roomPush('album_config',{albums:st.albums});}
+  function renderAlbumManager(){var box=$('#album-manager');if(!box)return;box.innerHTML='';st.albums.filter(function(a){return a!=='All'}).forEach(function(name){var row=document.createElement('div');row.className='wish';row.style.marginBottom='8px';row.innerHTML='<span class="em">📁</span><div class="w1" style="flex:1">'+name+'</div><button class="opt" style="margin:0" type="button">Rename</button><button class="opt" style="margin:0;color:#b25a78" type="button">Delete</button>';var btns=row.querySelectorAll('button');btns[0].onclick=function(){RM.renameAlbum(name)};btns[1].onclick=function(){RM.deleteAlbum(name)};box.appendChild(row);});}
+  function addAlbum(){var name=window.prompt('Name this shared album');if(!name)return;name=name.trim();if(!name||st.albums.indexOf(name)>-1)return;st.albums.push(name);persistAlbums();renderAL();renderAlbumManager();}
+  function renameAlbum(oldName){var name=window.prompt('Rename album',oldName);if(!name)return;name=name.trim();if(!name||name===oldName||st.albums.indexOf(name)>-1)return;st.albums=st.albums.map(function(a){return a===oldName?name:a});st.photos.forEach(function(p){if(p.cat===oldName)p.cat=name});if(st.alFilter===oldName)st.alFilter=name;persistAlbums();renderAL();renderAlbumManager();}
+  function deleteAlbum(name){if(!window.confirm('Delete “'+name+'”? Photos stay in All.'))return;st.albums=st.albums.filter(function(a){return a!==name});if(st.alFilter===name)st.alFilter='All';persistAlbums();renderAL();renderAlbumManager();}
   function saveTL(){var tx=$('#m-tx').value.trim();if(!tx){toast('写一点点也好呀 ✍️');return;}
     var map={'Daily':'day','Trip':'trip','Little Words':'word','Milestone':'mile'};
     var o={d:$('#m-date').value,type:map[mState.tag]||'day',tag:mState.tag,who:ME,tx:tx,st:mState.st};
@@ -2007,7 +2007,7 @@ var RM=(function(){
   return {open:open,close:close,go:go,copyCode:copyCode,tab:tab,
     signIn:signIn,signInEmail:signInEmail,signUpEmail:signUpEmail,signOut:signOut,enterSeed:enterSeed,enterLive:enterLive,
     createRoom:createRoom,joinRoom:joinRoom,joinFromInputs:joinFromInputs,myRoomOrHub:myRoomOrHub,loadHub:loadHub,enterRoom:enterRoom,refreshWel:refreshWel,
-    openModal:openModal,closeModal:closeModal,saveTL:saveTL,saveAL:saveAL,saveCK:saveCK,
+    openModal:openModal,closeModal:closeModal,saveTL:saveTL,saveAL:saveAL,saveCK:saveCK,addAlbum:addAlbum,renameAlbum:renameAlbum,deleteAlbum:deleteAlbum,
     exportPreview:exportPreview,fakeExport:fakeExport,importIG:importIG};
 })();
 /* A direct private-house route deliberately bypasses the public legacy home. */
