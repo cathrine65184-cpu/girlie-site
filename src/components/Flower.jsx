@@ -1,6 +1,7 @@
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import { useMemo, useRef, useState } from 'react';
+import * as THREE from 'three';
 import { isAwake } from '../data/girls';
 import { tripoFlowerAssets } from '../data/tripoFlowerAssets';
 
@@ -19,19 +20,40 @@ const botanicalCollection = {
   soo: { number: '11', name: 'Bonsai Tree', meaning: 'Grace', glow: '#fff2dd' },
 };
 
-function MuseumSpecimen({ specimen }) {
+function rotationProfile(id) {
+  // A deterministic offset keeps the collection from moving in mechanical unison.
+  const seed = [...id].reduce((total, character) => total * 31 + character.charCodeAt(0), 7) >>> 0;
+  return { offset: (seed % 360) * THREE.MathUtils.DEG2RAD, duration: 20 + (seed % 11) };
+}
+
+function MuseumSpecimen({ specimen, flowerId }) {
   const { scene } = useGLTF(specimen.url, true, true);
-  const model = useMemo(() => {
+  const { model, pivot } = useMemo(() => {
     const clone = scene.clone(true);
     clone.traverse((node) => {
       if (!node.isMesh) return;
       node.castShadow = true;
       node.receiveShadow = true;
     });
-    return clone;
+    // GLB roots are inconsistent: some pivots are at a stem, others are offset.
+    // We keep the asset untouched and derive only the horizontal visual centre.
+    clone.updateWorldMatrix(true, true);
+    const centre = new THREE.Box3().setFromObject(clone).getCenter(new THREE.Vector3());
+    return { model: clone, pivot: centre };
   }, [scene]);
+  const rotor = useRef();
+  const { offset, duration } = useMemo(() => rotationProfile(flowerId), [flowerId]);
 
-  return <primitive object={model} scale={specimen.scale} position={[0, specimen.lift, 0]} rotation={[0, Math.PI * .08, 0]} />;
+  // One R3F render loop drives every mounted exhibit — no per-flower timers.
+  // The parent sits on the model's own horizontal centre; Y rotation therefore
+  // reveals the full specimen in place while its base stays at the same height.
+  useFrame(({ clock }) => {
+    if (rotor.current) rotor.current.rotation.y = offset + clock.elapsedTime * (Math.PI * 2 / duration);
+  });
+
+  return <group ref={rotor} position={[pivot.x * specimen.scale, specimen.lift, pivot.z * specimen.scale]}>
+    <primitive object={model} scale={specimen.scale} position={[-pivot.x, 0, -pivot.z]} />
+  </group>;
 }
 
 /** A physical botanical exhibit. Its bloom, label, and story-opening interaction remain unchanged. */
@@ -56,7 +78,7 @@ export function Flower({ girl, opened, onOpen, reducedMotion }) {
     scale={hovered || opened ? 1.07 : 1}
     userData={{ flower: flower.name, meaning: flower.meaning, catalogue: flower.number }}
   >
-    <MuseumSpecimen specimen={specimen} />
+    <MuseumSpecimen specimen={specimen} flowerId={girl.id} />
     <mesh
       position={[0, specimen.hitY, .08]}
       onClick={(event) => { event.stopPropagation(); onOpen(girl.id); }}
