@@ -1,12 +1,6 @@
 import { archivistEndpoint, supabase } from './supabase';
 
-const start = {
-  id: 'welcome',
-  role: 'assistant',
-  content: "Let's start somewhere easy. When did you first meet her?",
-};
-
-const gentleQuestions = [
+const questions = [
   'Do you remember the first thing you noticed about her?',
   'Was she someone you liked immediately, or did you grow into the friendship?',
   'Where were you when you realised she was becoming important to you?',
@@ -16,13 +10,24 @@ const gentleQuestions = [
   'Imagine ten years from now. What do you hope the two of you will still remember?',
 ];
 
-export const initialInterview = [start];
+const chineseQuestions = [
+  '你还记得第一次注意到她时，是什么样子吗？',
+  '你们是一开始就投缘，还是慢慢长成了朋友？',
+  '你在哪里意识到，她正在变得很重要？',
+  '有什么再普通不过的小事，至今仍让你想起她？',
+  '你们有过疏远、沉默或重新找到彼此的阶段吗？',
+  '有什么物件、地点或小习惯，只属于你们两个人？',
+  '想象十年以后：你希望你们还会记得什么？',
+];
 
-function localReply(messages) {
+export const initialInterview = (locale = 'en') => [{ id: 'welcome', role: 'assistant', content: locale === 'zh' ? '我们从一个简单的地方开始吧。你们第一次见面是什么时候？' : "Let's start somewhere easy. When did you first meet her?" }];
+
+function localReply(messages, locale = 'en') {
   const answers = messages.filter((message) => message.role === 'user');
-  const next = gentleQuestions[Math.min(Math.max(answers.length - 1, 0), gentleQuestions.length - 1)];
-  if (answers.length >= gentleQuestions.length) {
-    return "I can already feel the shape of this friendship. When you're ready, we can turn these memories into your private archive — nothing is public unless you decide it should be.";
+  const bank = locale === 'zh' ? chineseQuestions : questions;
+  const next = bank[Math.min(Math.max(answers.length - 1, 0), bank.length - 1)];
+  if (answers.length >= bank.length) {
+    return locale === 'zh' ? '我已经能感到这段友谊的轮廓了。准备好时，我们可以把这些记忆整理进你的私密档案——除非你决定分享，否则没有任何内容会公开。' : "I can already feel the shape of this friendship. When you're ready, we can turn these memories into your private archive — nothing is public unless you decide it should be.";
   }
   return next;
 }
@@ -32,9 +37,9 @@ function localReply(messages) {
  * The local path deliberately stays private to the current browser and never
  * invents facts; it makes the first use of the product possible before login.
  */
-export async function askArchivist(messages, draft) {
+export async function askArchivist(messages, draft, locale = 'en') {
   const { data: { session } } = await supabase.auth.getSession();
-  if (!session) return { reply: localReply(messages), extraction: null, source: 'local' };
+  if (!session) return { reply: localReply(messages, locale), extraction: null, source: 'local' };
 
   try {
     const response = await fetch(archivistEndpoint, {
@@ -43,14 +48,14 @@ export async function askArchivist(messages, draft) {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${session.access_token}`,
       },
-      body: JSON.stringify({ mode: 'interview', messages, archive: draft }),
+      body: JSON.stringify({ mode: 'interview', messages, archive: draft, locale }),
     });
     if (!response.ok) throw new Error('Archivist is not connected yet.');
     const body = await response.json();
     if (!body.reply) throw new Error('No archivist reply received.');
     return { ...body, source: 'ai' };
   } catch {
-    return { reply: localReply(messages), extraction: null, source: 'local' };
+    return { reply: localReply(messages, locale), extraction: null, source: 'local' };
   }
 }
 

@@ -1,12 +1,12 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { askArchivist, createLocalArchive, initialInterview } from '../lib/friendshipArchivist';
-
-const skipMessage = "I'd rather leave that part unwritten.";
+import { useLocale } from '../locales.jsx';
 
 /** A listening room, not a chatbot: each answer becomes material for a private archive. */
 export function FriendshipInterview({ open, onClose, onArchived, seed = [] }) {
-  const [messages, setMessages] = useState(() => seed.length ? seed : initialInterview);
+  const { locale, t } = useLocale();
+  const [messages, setMessages] = useState(() => seed.length ? seed : initialInterview(locale));
   const [draft, setDraft] = useState(null);
   const [value, setValue] = useState('');
   const [thinking, setThinking] = useState(false);
@@ -15,11 +15,11 @@ export function FriendshipInterview({ open, onClose, onArchived, seed = [] }) {
 
   useEffect(() => {
     if (open) {
-      setMessages(seed.length ? seed : initialInterview);
+      setMessages(seed.length ? seed : initialInterview(locale));
       setDraft(null);
       setValue('');
     }
-  }, [open, seed]);
+  }, [open, seed, locale]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
@@ -32,7 +32,7 @@ export function FriendshipInterview({ open, onClose, onArchived, seed = [] }) {
     setMessages(next);
     setValue('');
     setThinking(true);
-    const response = await askArchivist(next, draft);
+    const response = await askArchivist(next, draft, locale);
     setDraft((current) => ({ ...current, ...(response.extraction || {}) }));
     setMessages((current) => [...current, { id: crypto.randomUUID(), role: 'assistant', content: response.reply }]);
     setThinking(false);
@@ -48,26 +48,26 @@ export function FriendshipInterview({ open, onClose, onArchived, seed = [] }) {
     <button className="interview-backdrop" aria-label="Close interview" onClick={onClose} />
     <motion.section className="interview-room" initial={{ y: 34, opacity: 0, scale: .985 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ y: 22, opacity: 0 }} transition={{ type: 'spring', stiffness: 180, damping: 23 }}>
       <header className="interview-header">
-        <div><p>Private collection · 01</p><h2>Friendship Interview</h2></div>
-        <button onClick={onClose}>Save & close <span>×</span></button>
+        <div><p>{t('interviewCollection')}</p><h2>{t('friendshipInterview')}</h2></div>
+        <button onClick={onClose}>{t('saveClose')} <span>×</span></button>
       </header>
       <div className="interview-scene" aria-hidden="true"><i /><i /><i /><span>✦</span></div>
       <div className="interview-intro">
-        <p className="room-kicker">A conversation with the friendship archivist</p>
-        <h1>Tell us about someone who changed your life.</h1>
-        <p>There is no form to complete. Share only what feels right; the unwritten parts can stay yours.</p>
+        <p className="room-kicker">{t('archivistConversation')}</p>
+        <h1>{t('interviewTitle')}</h1>
+        <p>{t('interviewBody')}</p>
       </div>
       <div className="interview-ledger" ref={scrollRef} aria-live="polite">
         {messages.map((message) => <article className={`interview-note ${message.role}`} key={message.id}>
-          <p>{message.role === 'assistant' ? 'The archivist' : 'You'}</p>
+          <p>{message.role === 'assistant' ? t('archivist') : t('you')}</p>
           <div>{message.content}</div>
         </article>)}
-        {thinking && <article className="interview-note assistant thinking"><p>The archivist</p><div><i /> <i /> <i /></div></article>}
+        {thinking && <article className="interview-note assistant thinking"><p>{t('archivist')}</p><div><i /> <i /> <i /></div></article>}
       </div>
       <footer className="interview-compose">
-        <div className="interview-tools"><span>{userAnswers} {userAnswers === 1 ? 'memory' : 'memories'} gathered</span>{userAnswers > 0 && <button type="button" onClick={archive}>She's becoming part of your archive →</button>}</div>
-        <textarea value={value} onChange={(event) => setValue(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); respond(value); } }} placeholder="Write as much or as little as you want…" rows="3" />
-        <div className="interview-actions"><button type="button" className="leave-unwritten" onClick={() => respond(skipMessage)}>Leave this part unwritten</button><button type="button" className="send-memory" disabled={!value.trim() || thinking} onClick={() => respond(value)}>Continue <span>↗</span></button></div>
+        <div className="interview-tools"><span>{t('memoriesGathered', { count: userAnswers, unit: t(userAnswers === 1 ? 'memory' : 'memories') })}</span>{userAnswers > 0 && <button type="button" onClick={archive}>{t('becomingArchive')}</button>}</div>
+        <textarea value={value} onChange={(event) => setValue(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); respond(value); } }} placeholder={t('writeAnything')} rows="3" />
+        <div className="interview-actions"><button type="button" className="leave-unwritten" onClick={() => respond(t('skip'))}>{t('leaveUnwritten')}</button><button type="button" className="send-memory" disabled={!value.trim() || thinking} onClick={() => respond(value)}>{t('continue')} <span>↗</span></button></div>
       </footer>
     </motion.section>
   </motion.aside>}</AnimatePresence>;

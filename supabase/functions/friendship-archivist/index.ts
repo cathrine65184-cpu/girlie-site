@@ -38,7 +38,7 @@ Deno.serve(async (request) => {
   if (!apiKey) return new Response(JSON.stringify({ error: 'The archivist is not connected yet.' }), { status: 503, headers: jsonHeaders(origin) });
 
   try {
-    const { mode = 'interview', messages = [], archive = {} } = await request.json();
+    const { mode = 'interview', messages = [], archive = {}, locale = 'en' } = await request.json();
     const safeMessages = Array.isArray(messages) ? messages.slice(-28).map(({ role, content }) => ({
       role: role === 'assistant' ? 'assistant' : 'user', content: String(content || '').slice(0, 5000),
     })) : [];
@@ -51,7 +51,7 @@ Deno.serve(async (request) => {
         max_tokens: mode === 'finalize' ? 1800 : 520,
         response_format: { type: 'json_object' },
         messages: [
-          { role: 'system', content: archivistSystem },
+          { role: 'system', content: `${archivistSystem}\nThe selected interface language is ${locale === 'zh' ? 'Simplified Chinese' : 'English'}. Write the interviewer reply in that language. Never translate, rewrite, or alter the user’s original words when quoting or extracting memories.` },
           { role: 'user', content: `Mode: ${mode}. Produce JSON. Conversation: ${JSON.stringify(safeMessages)}. Existing private archive facts: ${JSON.stringify(archive)}` },
         ],
       }),
