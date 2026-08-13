@@ -7,7 +7,7 @@ import { MemoryBloom } from './components/MemoryBloom';
 import { Navigation } from './components/Navigation';
 import { girls } from './data/girls';
 import { GalleryExperience } from './components/GalleryExperience';
-import { usePrivateArchive } from './hooks/usePrivateArchive';
+import { RoomOverlay } from './components/RoomOverlay';
 import { useScrollProgress } from './hooks/useScrollProgress';
 import { useStoryTransition } from './hooks/useStoryTransition';
 import { Journey } from './scenes/Journey';
@@ -17,31 +17,42 @@ import { useLocale } from './locales.jsx';
 // Editorial sheets are loaded only when a visitor chooses to enter a memory.
 const StoryOverlay = lazy(() => import('./components/StoryOverlay').then((module) => ({ default: module.StoryOverlay })));
 const FriendshipInterview = lazy(() => import('./components/FriendshipInterview').then((module) => ({ default: module.FriendshipInterview })));
-const PrivateRoom = lazy(() => import('./components/PrivateRoom').then((module) => ({ default: module.PrivateRoom })));
+
+const museumHalls = {
+  studio: { title: 'Private Girlie', source: 'legacy.html#private-house' },
+};
 
 export default function App() {
   const { t } = useLocale();
   const { progress, reducedMotion, scrollToProgress } = useScrollProgress();
   const { activeId, openStory, closeStory } = useStoryTransition();
-  const [activeHall, setActiveHall] = useState(null);
+  const [activeHall, setActiveHall] = useState(() => window.location.hash === '#private-house' ? 'studio' : null);
   const [interviewOpen, setInterviewOpen] = useState(false);
-  // Retain the former deep link while rendering the current Private Girlie,
-  // rather than sending visitors to a second, competing private-room UI.
-  const [privateRoomOpen, setPrivateRoomOpen] = useState(() => window.location.hash === '#private-house');
+  const [interviewIntent, setInterviewIntent] = useState(false);
   const [interviewSeed, setInterviewSeed] = useState([]);
-  const privateArchive = usePrivateArchive();
+  const [pendingArchive, setPendingArchive] = useState(null);
   const activeGirl = girls.find((girl) => girl.id === activeId) || null;
   const copy = progress < .1 ? { eyebrow: t('landingEyebrow'), title: t('landingTitle'), body: t('landingBody'), action: t('exploreMuseum'), target: .12 } : { eyebrow: t('archiveEyebrow'), title: t('archiveTitle'), body: t('archiveBody'), action: t('beginVisiting'), target: .35 };
   // The entrance copy clears before the first exhibit becomes interactive.
   // This keeps the opening invitation editorial without sitting over a flower label.
   const copyOpacity = progress < .052 ? 1 : progress < .097 ? 1 - ((progress - .052) / .045) : 0;
-  const beginInterview = (seed = []) => { setInterviewSeed(seed); setPrivateRoomOpen(false); setInterviewOpen(true); };
-  // A first story can begin immediately. Until an account is connected it stays
-  // in this browser; it is never made public or added to the museum.
+  const beginInterview = (seed = []) => { setInterviewSeed(seed); setInterviewIntent(false); setInterviewOpen(true); };
+  // A private room is the source of truth for an interview. Its existing
+  // login and shared-room backend keep the resulting memories private.
   const requestInterview = (seed = []) => {
-    beginInterview(seed);
+    setInterviewSeed(seed);
+    setInterviewIntent(true);
+    setActiveHall('studio');
   };
-  const archiveInterview = async (archive) => { await privateArchive.save(archive); setInterviewOpen(false); setPrivateRoomOpen(true); };
+  const archiveInterview = async (archive) => {
+    setPendingArchive(archive);
+    setInterviewOpen(false);
+    setActiveHall('studio');
+  };
+  const handleRoomMessage = (message) => {
+    if (message?.type === 'girlie:open-interview') beginInterview(message.seed || []);
+    if (message?.type === 'girlie:interview-synced' && message.archiveId === pendingArchive?.id) setPendingArchive(null);
+  };
   const openHall = (hall) => {
     if (hall === 'archive') {
       scrollToProgress(.35);
@@ -70,7 +81,7 @@ export default function App() {
       </Suspense>
     </Canvas>
 
-    <Navigation onJump={scrollToProgress} onOpenHall={openHall} onCreate={() => requestInterview()} onOpenPrivateRoom={() => setPrivateRoomOpen(true)} />
+    <Navigation onJump={scrollToProgress} onOpenHall={openHall} onCreate={() => requestInterview()} onOpenPrivateRoom={() => setActiveHall('studio')} />
 
     <main className="scroll-track" aria-label={t('storyJourney')}>
       <section className="journey-copy" style={{ opacity: copyOpacity, pointerEvents: copyOpacity > .04 ? 'auto' : 'none' }}>
@@ -87,7 +98,7 @@ export default function App() {
         <div className="how-girlie-steps">
           <article><p>{t('howExploreNumber')}</p><h3>{t('howExploreTitle')}</h3><span>{t('howExploreBody')}</span><button onClick={() => scrollToProgress(.12)}>{t('exploreMuseum')} <b>↓</b></button></article>
           <article><p>{t('howTalkNumber')}</p><h3>{t('howTalkTitle')}</h3><span>{t('howTalkBody')}</span><button onClick={() => requestInterview()}>{t('startInterview')} <b>↗</b></button></article>
-          <article><p>{t('howRememberNumber')}</p><h3>{t('howRememberTitle')}</h3><span>{t('howRememberBody')}</span><button onClick={() => setPrivateRoomOpen(true)}>{t('enterPrivateGirlie')} <b>→</b></button></article>
+          <article><p>{t('howRememberNumber')}</p><h3>{t('howRememberTitle')}</h3><span>{t('howRememberBody')}</span><button onClick={() => setActiveHall('studio')}>{t('enterPrivateGirlie')} <b>→</b></button></article>
         </div>
         <div className="public-private-clarity">
           <article><i>🌎</i><p>{t('publicGirlie')}</p><h3>{t('publicMuseumTitle')}</h3><span>{t('publicMuseumBody')}</span></article>
@@ -114,7 +125,15 @@ export default function App() {
       <StoryOverlay girl={activeGirl} onClose={closeStory} onContinue={openNextStory} onStartInterview={() => requestInterview()} />
       <GalleryExperience hall={activeHall} girls={girls} onClose={() => setActiveHall(null)} />
       <FriendshipInterview open={interviewOpen} onClose={() => setInterviewOpen(false)} onArchived={archiveInterview} seed={interviewSeed} />
-      <PrivateRoom open={privateRoomOpen} onClose={() => { setPrivateRoomOpen(false); if (window.location.hash === '#private-house') window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`); }} store={privateArchive} onStartInterview={requestInterview} />
+      <RoomOverlay
+        open={activeHall === 'studio'}
+        title={museumHalls.studio.title}
+        source={museumHalls.studio.source}
+        startInterview={interviewIntent}
+        incomingArchive={pendingArchive}
+        onMessage={handleRoomMessage}
+        onClose={() => { setActiveHall(null); if (window.location.hash === '#private-house') window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`); }}
+      />
     </Suspense>
   </div>;
 }

@@ -1,4 +1,4 @@
-<script>if(location.hash==='#private-house')location.replace('./#private-house');</script>
+<script>if(location.hash==='#private-house'){if(window.top===window)location.replace('./#private-house');else document.documentElement.classList.add('private-house-route');}</script>
 <div id="gp">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Cormorant+Garamond:wght@500;600&family=Inter:wght@300;400;500;600;700&display=swap');
@@ -854,7 +854,7 @@ html.private-house-route .pcard,.private-house-route .ck,.private-house-route .w
       <div class="rm-pg on" id="rm-pg-tl">
         <div class="rm-secthead">
           <div><h3>Friendship Timeline</h3><div class="mini">Photos, words and milestones — woven into one scroll of memory.</div></div>
-          <button class="addbtn" onclick="RM.openModal('tl')">＋ Add a memory</button>
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="addbtn" style="background:#fff;color:var(--accent-deep);border:1px solid #f0c4d6;box-shadow:none" onclick="RM.startInterview()">✦ AI Friendship Interview</button><button class="addbtn" onclick="RM.openModal('tl')">＋ Add a memory</button></div>
         </div>
         <div class="tl" id="tl-list"></div>
         <div class="exportbar"><button onclick="RM.exportPreview()">📜 Generate our memoir (export as PDF)</button></div>
@@ -1190,7 +1190,13 @@ var LANG=(function(){try{var s=localStorage.getItem('girlie_locale');if((s==='en
   return 'en'})();
 function t(k){var d=I18N[LANG]||{};return d[k]!==undefined?d[k]:(I18N.en[k]!==undefined?I18N.en[k]:k)}
 function setLang(l){if(l!=='en'&&l!=='zh')return;try{localStorage.setItem('girlie_locale',l)}catch(e){}location.reload()}
-window.addEventListener('message',function(event){var data=event.data||{};if(data.type==='girlie:set-locale'&&data.locale!==LANG)setLang(data.locale);});
+window.addEventListener('message',function(event){
+  if(event.origin!==window.location.origin)return;
+  var data=event.data||{};
+  if(data.type==='girlie:set-locale'&&data.locale!==LANG)setLang(data.locale);
+  if(data.type==='girlie:start-interview'&&window.RM)RM.startInterview();
+  if(data.type==='girlie:interview-complete'&&window.RM)RM.applyInterviewArchive(data.archive);
+});
 window.addEventListener('storage',function(event){if(event.key==='girlie_locale'&&event.newValue!==LANG)setLang(event.newValue);});
 /* ═════════ MUSEUM (public site) ═════════ */
 (function(){
@@ -1679,12 +1685,61 @@ var RM=(function(){
   /* ═══ BACKEND: Google auth + shared private rooms + real uploads ═══ */
   var SEED_CODE='180901';
   var mode='seed';        /* 'seed' = public showcase (read-only) · 'live' = your private room */
-  var roomId=null, roomCode='', meState=null, roomChan=null;
+  var roomId=null, roomCode='', meState=null, roomChan=null, pendingInterview=false, appliedInterviewIds={};
   function ckClone(c){return {cat:c.cat,tx:c.tx,done:c.done,by:c.by}}
   var SEED={timeline:st.timeline.slice(),photos:st.photos.slice(),checks:st.checks.map(ckClone)};
   function isSeed(){return mode==='seed'}
   function myName(){return meState&&((meState.user_metadata&&meState.user_metadata.name)||meState.email)||ME}
   function resetRoom(){st.timeline=isSeed()?SEED.timeline.slice():[];st.photos=isSeed()?SEED.photos.slice():[];st.checks=isSeed()?SEED.checks.map(ckClone):[];}
+  function postToGirlie(data){if(window.parent!==window)window.parent.postMessage(data,window.location.origin);}
+  function startInterview(){
+    pendingInterview=true;
+    if(!meState){signIn();return;}
+    if(mode!=='live'||!roomId){loadHub();toast('Choose or create a private room first 🌷');return;}
+    pendingInterview=false;
+    postToGirlie({type:'girlie:open-interview',roomId:roomId,roomCode:roomCode});
+  }
+  function maybeStartInterview(){if(pendingInterview)startInterview();}
+  function normaliseInterviewDate(value){
+    if(typeof value==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(value))return value;
+    var parsed=value?new Date(value):null;
+    return parsed&&!isNaN(parsed.getTime())?parsed.toISOString().slice(0,10):new Date().toISOString().slice(0,10);
+  }
+  function applyInterviewArchive(archive){
+    if(!archive||!archive.id||mode!=='live'||!roomId)return;
+    if(appliedInterviewIds[archive.id]){postToGirlie({type:'girlie:interview-synced',archiveId:archive.id,count:0});return;}
+    appliedInterviewIds[archive.id]=true;
+    var entries=Array.isArray(archive.timeline)?archive.timeline:[];
+    if(!entries.length){
+      entries=(archive.interview||[]).filter(function(m){return m&&m.role==='user'&&m.content;}).map(function(m,i){return {title:i===0?'First memory':'A memory from our interview',note:m.content};});
+    }
+    entries=entries.slice(0,24).map(function(item,index){
+      var text=String(item.note||item.memory||item.title||'A memory from our AI Friendship Interview').trim();
+      return {d:normaliseInterviewDate(item.date||item.period),type:index===0?'mile':'word',tag:'AI Friendship Interview',who:myName(),tx:text,st:index===0?'🌷':'💬',source:'ai-interview',archive_id:archive.id};
+    }).filter(function(item){return item.tx;});
+    if(!entries.length){delete appliedInterviewIds[archive.id];return;}
+    var remaining=entries.length;
+    entries.forEach(function(entry){
+      st.timeline.push(entry);
+      roomPush('timeline',entry,function(row){
+        if(row)entry._id=row.id;
+        else entry._syncFailed=true;
+        remaining--;
+        if(remaining===0){
+          renderTL();
+          if(entries.some(function(item){return item._syncFailed;})){
+            delete appliedInterviewIds[archive.id];
+            postToGirlie({type:'girlie:interview-sync-failed',archiveId:archive.id});
+            toast('Your interview is still open — please try saving it again');
+          }else{
+            postToGirlie({type:'girlie:interview-synced',archiveId:archive.id,count:entries.length});
+            toast('Your interview memories are now in your timeline 🌷');
+          }
+        }
+      });
+    });
+    renderTL();
+  }
 
   function signedUrl(path,cb){if(!sbc||!path){cb('');return;}
     sbc.storage.from('room-uploads').createSignedUrl(path,604800).then(function(r){cb((r.data&&r.data.signedUrl)||'')}).catch(function(){cb('')});}
@@ -1707,7 +1762,7 @@ var RM=(function(){
           if(row.kind==='timeline')st.timeline.push(p);
           else if(row.kind==='check')st.checks.push(p);
           else if(row.kind==='album'){st.photos.unshift(p);
-            if(p.path){pend++;signedUrl(p.path,function(u){if(p.mtype==='video')p.vid=u;else p.src=u;if(--pend===0)renderAL();});}}
+            if(p.path){pend++;signedUrl(p.path,function(u){if(p.mtype==='video')p.vid=u;else if(p.mtype==='audio')p.audio=u;else p.src=u;if(--pend===0)renderAL();});}}
           else if(row.kind==='album_config'&&Array.isArray(p.albums)){st.albums=p.albums;}
         });renderAll();});}
   function subscribeRoom(){
@@ -1719,7 +1774,7 @@ var RM=(function(){
         var p=row.payload||{};p._id=row.id;
         if(row.kind==='timeline'){st.timeline.push(p);renderTL();}
         else if(row.kind==='check'){st.checks.push(p);renderCK();}
-        else if(row.kind==='album'){st.photos.unshift(p);if(p.path)signedUrl(p.path,function(u){if(p.mtype==='video')p.vid=u;else p.src=u;renderAL();});else renderAL();}
+        else if(row.kind==='album'){st.photos.unshift(p);if(p.path)signedUrl(p.path,function(u){if(p.mtype==='video')p.vid=u;else if(p.mtype==='audio')p.audio=u;else p.src=u;renderAL();});else renderAL();}
         else if(row.kind==='album_config'&&Array.isArray(p.albums)){st.albums=p.albums;renderAL();}
         toast('✨ Your friend just added something');
       }).subscribe();}
@@ -1743,7 +1798,7 @@ var RM=(function(){
     if(roomChan){sbc.removeChannel(roomChan);roomChan=null;}refreshWel();syncChrome();go('rm-wel');toast('Signed out 🌙');}
   function setUser(u){meState=u||null;refreshWel();syncChrome();}
   function enterSeed(){mode='seed';roomId=null;roomCode=SEED_CODE;st.entered=true;go('rm-main');loadRoom();syncChrome();}
-  function enterLive(){if(!roomId){go('rm-wel');return;}mode='live';st.entered=true;go('rm-main');loadRoom();subscribeRoom();syncChrome();}
+  function enterLive(){if(!roomId){go('rm-wel');return;}mode='live';st.entered=true;go('rm-main');loadRoom();subscribeRoom();syncChrome();maybeStartInterview();}
   function backendMissing(err){return err&&(err.code==='PGRST202'||err.code==='PGRST205'||/schema cache|does not exist/i.test(err.message||''));}
   function createRoom(){if(!meState){signIn();return;}
     sbc.rpc('create_room',{}).then(function(r){var d=r&&r.data&&r.data[0];
@@ -1753,12 +1808,12 @@ var RM=(function(){
   function joinRoom(code){if(!meState){signIn();return;}
     sbc.rpc('join_room',{p_code:code}).then(function(r){
       if(r.error||!r.data){toast(backendMissing(r.error)?'后端还没建好：请先跑 supabase-setup.sql':'没找到这个房间号 💔');return;}
-      roomId=r.data;roomCode=code;mode='live';st.entered=true;go('rm-main');loadRoom();subscribeRoom();syncChrome();
+      roomId=r.data;roomCode=code;mode='live';st.entered=true;go('rm-main');loadRoom();subscribeRoom();syncChrome();maybeStartInterview();
       toast('You’re in — this room is now yours together 💗');
     },function(e){toast('加入失败（网络）：'+e);});}
   function joinFromInputs(){var box=$('#codein');var code=Array.prototype.map.call(box.children,function(c){return c.value||''}).join('');
     if(code.length!==6)return;if(!meState){signIn();return;}joinRoom(code);}
-  function enterRoom(id,code){roomId=id;roomCode=code;mode='live';st.entered=true;go('rm-main');loadRoom();subscribeRoom();syncChrome();}
+  function enterRoom(id,code){roomId=id;roomCode=code;mode='live';st.entered=true;go('rm-main');loadRoom();subscribeRoom();syncChrome();maybeStartInterview();}
   function loadHub(){if(!sbc||!meState){go('rm-wel');refreshWel();return;}
     go('rm-hub');syncChrome();
     var list=$('#rm-roomlist');if(list)list.innerHTML='<div class="hinttxt" style="margin:0 0 6px">Loading your spaces…</div>';
@@ -1868,10 +1923,11 @@ var RM=(function(){
       var media;
       if(p.src)media='<img class="pmedia" src="'+p.src+'" alt="'+p.c1.replace(/"/g,'&quot;')+'" loading="lazy" onerror="this.remove()">';
       else if(p.vid)media='<video class="pmedia" src="'+p.vid+'" muted playsinline preload="metadata"></video><span class="playbadge">▶</span>';
+      else if(p.audio)media='<audio class="pmedia" src="'+p.audio+'" controls preload="metadata"></audio>';
       else media=p.em||'';
       el.innerHTML='<div class="img" style="background:linear-gradient(140deg,'+p.g[0]+','+p.g[1]+')"><span class="frame"></span>'+media+'</div>'+
         '<div class="cap"><div class="c1">'+p.c1+'</div><div class="c2">'+p.cat+' · '+p.c2+'</div></div>';
-      if(p.src||p.vid)el.addEventListener('click',function(){openLightbox(p)});
+      if(p.src||p.vid||p.audio)el.addEventListener('click',function(){openLightbox(p)});
       grid.appendChild(el);});}
   function openLightbox(p){
     var lb=$('#lbox');
@@ -1881,10 +1937,10 @@ var RM=(function(){
       lb.querySelector('.lbx').onclick=closeLightbox;
       lb.addEventListener('click',function(e){if(e.target===lb)closeLightbox();});}
     var m=lb.querySelector('.lbmedia');
-    m.innerHTML=p.vid?'<video src="'+p.vid+'" controls autoplay playsinline></video>':'<img src="'+p.src+'" alt="">';
+    m.innerHTML=p.vid?'<video src="'+p.vid+'" controls autoplay playsinline></video>':p.audio?'<audio src="'+p.audio+'" controls autoplay></audio>':'<img src="'+p.src+'" alt="">';
     lb.querySelector('.lbcap').textContent=p.c1;
     lb.classList.add('open');}
-  function closeLightbox(){var lb=$('#lbox');if(!lb)return;lb.classList.remove('open');var v=lb.querySelector('video');if(v)v.pause();}
+  function closeLightbox(){var lb=$('#lbox');if(!lb)return;lb.classList.remove('open');var v=lb.querySelector('video, audio');if(v)v.pause();}
 
   function renderCK(){var wrap=$('#ck-groups');wrap.innerHTML='';
     Object.keys(CKCAT).forEach(function(cat){
@@ -1918,10 +1974,10 @@ var RM=(function(){
       buildOpts('m-tags',['Daily','Trip','Little Words','Milestone'],'tag');
       buildStk(['🌸','☕','✈️','💌','🎂','🐱','❄️','🌈']);}
     if(kind==='al'){
-      s.innerHTML='<h4>Add a photo or video 📸</h4>'+
+      s.innerHTML='<h4>Add a photo, video or voice note 📸</h4>'+
         '<div class="fl">Album</div><div class="optrow" id="m-tags"></div>'+
-        '<div class="fl">Choose a photo or video from your device</div>'+
-        '<label class="updrop" id="m-drop"><input type="file" id="m-file" accept="image/*,video/*" hidden><span id="m-drop-t">📁 Tap to choose a file… (up to 25 MB)</span></label>'+
+        '<div class="fl">Choose a photo, video or voice note from your device</div>'+
+        '<label class="updrop" id="m-drop"><input type="file" id="m-file" accept="image/*,video/*,audio/*" hidden><span id="m-drop-t">📁 Tap to choose a file… (up to 25 MB)</span></label>'+
         '<div class="fl">— or just pick a sticker instead —</div><div class="strow" id="m-stk"></div>'+
         '<div class="fl">Caption</div><input class="fi" id="m-tx" placeholder="这张照片的小故事…">'+
         '<button class="msave" onclick="RM.saveAL()">Put it in the album ✨</button><button class="mcancel" onclick="RM.closeModal()">Cancel</button>';
@@ -1968,9 +2024,9 @@ var RM=(function(){
       if(mode!=='live'||!sbc||!roomId){toast('Sign in and open your room to upload real files');return;}
       if(f.size>25*1024*1024){toast('Please choose a file under 25 MB');return;}
       var btn=document.querySelector('#msheet .msave');if(btn){btn.disabled=true;btn.textContent='Uploading… ⏳';}
-      var isVid=f.type.indexOf('video')===0;
-      roomUpload(f,function(path){var o={cat:mState.alcat,g:g,c1:tx,c2:'by '+myName(),path:path,mtype:isVid?'video':'image'};
-        signedUrl(path,function(u){if(isVid)o.vid=u;else o.src=u;finish(o);});},
+      var mediaType=f.type.indexOf('video')===0?'video':f.type.indexOf('audio')===0?'audio':'image';
+      roomUpload(f,function(path){var o={cat:mState.alcat,g:g,c1:tx,c2:'by '+myName(),path:path,mtype:mediaType};
+        signedUrl(path,function(u){if(mediaType==='video')o.vid=u;else if(mediaType==='audio')o.audio=u;else o.src=u;finish(o);});},
         function(){if(btn){btn.disabled=false;btn.textContent='Put it in the album ✨';}toast('Upload failed — try again');});
     }else{finish({cat:mState.alcat,g:g,c1:tx,c2:'by '+myName(),em:mState.st||'🌸'});}}
   function saveCK(){var tx=$('#m-tx').value.trim();if(!tx){toast('The goal can\u2019t be empty');return;}
@@ -2008,7 +2064,7 @@ var RM=(function(){
     signIn:signIn,signInEmail:signInEmail,signUpEmail:signUpEmail,signOut:signOut,enterSeed:enterSeed,enterLive:enterLive,
     createRoom:createRoom,joinRoom:joinRoom,joinFromInputs:joinFromInputs,myRoomOrHub:myRoomOrHub,loadHub:loadHub,enterRoom:enterRoom,refreshWel:refreshWel,
     openModal:openModal,closeModal:closeModal,saveTL:saveTL,saveAL:saveAL,saveCK:saveCK,addAlbum:addAlbum,renameAlbum:renameAlbum,deleteAlbum:deleteAlbum,
-    exportPreview:exportPreview,fakeExport:fakeExport,importIG:importIG};
+    exportPreview:exportPreview,fakeExport:fakeExport,importIG:importIG,startInterview:startInterview,applyInterviewArchive:applyInterviewArchive};
 })();
 /* A direct private-house route deliberately bypasses the public legacy home. */
 if(document.documentElement.classList.contains('private-house-route'))RM.open();

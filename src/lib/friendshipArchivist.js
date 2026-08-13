@@ -98,7 +98,10 @@ export function createLocalArchive(messages, extraction = null, locale = 'en') {
   const now = new Date().toISOString();
   const answers = messages.filter((message) => message.role === 'user').map((message) => message.content.trim()).filter(Boolean);
   const objects = extraction?.objects || [];
-  const timeline = extraction?.timeline || answers.slice(0, 4).map((memory, index) => ({
+  // Keep every answer in the private handoff. The room turns these into
+  // timeline entries, so the user's own wording is never reduced to a
+  // generic generated summary when the AI service is unavailable.
+  const timeline = extraction?.timeline || answers.map((memory, index) => ({
     id: crypto.randomUUID(),
     date: '',
     title: index === 0 ? 'The first memory' : `Memory ${index + 1}`,
