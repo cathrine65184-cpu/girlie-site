@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import { LocaleMenu, useLocale } from '../locales.jsx';
 
 /** Embeds the established, authenticated private room and bridges its interview. */
-export function RoomOverlay({ open, onClose, onMessage, title = 'Girlie Room', source, note, startInterview = false, incomingArchive = null }) {
+export function RoomOverlay({ open, onClose, onMessage, title = 'Girlie Room', source, note, startInterview = false, incomingArchive = null, incomingFriendshipDate = null }) {
   const { locale, t } = useLocale();
   const frameRef = useRef(null);
   const post = (message, frame = frameRef.current) => frame?.contentWindow?.postMessage(message, window.location.origin);
@@ -11,8 +11,9 @@ export function RoomOverlay({ open, onClose, onMessage, title = 'Girlie Room', s
     post({ type: 'girlie:set-locale', locale }, frame);
     if (startInterview) post({ type: 'girlie:start-interview' }, frame);
     if (incomingArchive) post({ type: 'girlie:interview-complete', archive: incomingArchive }, frame);
+    if (incomingFriendshipDate) post({ type: 'girlie:friendship-date-confirmed', date: incomingFriendshipDate }, frame);
   };
-  useEffect(() => { if (open) syncFrame(frameRef.current); }, [locale, open, startInterview, incomingArchive]);
+  useEffect(() => { if (open) syncFrame(frameRef.current); }, [locale, open, startInterview, incomingArchive, incomingFriendshipDate]);
   useEffect(() => {
     const receive = (event) => {
       if (event.origin !== window.location.origin || event.source !== frameRef.current?.contentWindow) return;

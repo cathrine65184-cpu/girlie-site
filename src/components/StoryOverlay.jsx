@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { localTime } from '../data/girls';
 import { getStoryExhibit, storyExhibits } from '../data/storyExhibits';
 import { getStoryExhibitZh } from '../data/storyExhibitsZh';
+import { useWeather } from '../hooks/useWeather';
 import { useLocale } from '../locales.jsx';
 
 function VoiceButton({ girl, chinese }) {
@@ -15,6 +16,11 @@ function VoiceButton({ girl, chinese }) {
 
 function Fact({ icon, label, children }) {
   return <div className="story-fact"><span aria-hidden="true">{icon}</span><div><small>{label}</small><strong>{children}</strong></div></div>;
+}
+
+function WeatherFact({ girl, chinese }) {
+  const weather = useWeather(girl);
+  return <Fact icon="☁" label={chinese ? '当地天气' : 'Local weather'}>{weather.label}{weather.live && <em className="weather-live"> · {chinese ? '实时' : 'live'}</em>}</Fact>;
 }
 
 /** A slow, long-form archival reading room for each friendship. */
@@ -52,7 +58,7 @@ export function StoryOverlay({ girl, onClose, onContinue, onStartInterview }) {
 
         <section className="story-facts" aria-label={chinese ? '档案信息' : 'Archive details'}>
           <Fact icon="⌖" label={chinese ? '城市' : 'City'}>{girl.city}</Fact>
-          <Fact icon="☁" label={chinese ? '当地气候' : 'Local climate'}>{girl.climate}</Fact>
+          <WeatherFact girl={girl} chinese={chinese} />
           <Fact icon="✦" label={chinese ? '她的词语' : 'Her word'}><em>{girl.word}</em> <VoiceButton girl={girl} chinese={chinese} /></Fact>
           <Fact icon="◷" label={chinese ? '当地时间' : 'Local time'}>{localTime(girl)}</Fact>
         </section>

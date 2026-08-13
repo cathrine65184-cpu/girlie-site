@@ -4,13 +4,21 @@ import { askArchivist, finalizeArchive, initialInterview } from '../lib/friendsh
 import { useLocale } from '../locales.jsx';
 
 /** A listening room, not a chatbot: every answer becomes material for a private archive. */
-export function FriendshipInterview({ open, onClose, onArchived, seed = [] }) {
+function inferredStartDate(answer) {
+  const text = String(answer || '');
+  const year = text.match(/\b(?:19|20)\d{2}\b/)?.[0];
+  if (!/(met|meet|friendship|freshman|school|认识|相遇|遇到|高中|大学)/i.test(text)) return null;
+  return year ? `${year}-01-01` : null;
+}
+
+export function FriendshipInterview({ open, onClose, onArchived, onConfirmFriendshipStart, seed = [] }) {
   const { locale, t } = useLocale();
   const [messages, setMessages] = useState(() => seed.length ? seed : initialInterview(locale));
   const [draft, setDraft] = useState(null);
   const [value, setValue] = useState('');
   const [thinking, setThinking] = useState(false);
   const [completionOpen, setCompletionOpen] = useState(false);
+  const [startDateSuggestion, setStartDateSuggestion] = useState(null);
   const scrollRef = useRef(null);
   const openedRef = useRef(false);
   const seedRef = useRef(seed);
@@ -25,6 +33,7 @@ export function FriendshipInterview({ open, onClose, onArchived, seed = [] }) {
       setDraft(null);
       setValue('');
       setCompletionOpen(false);
+      setStartDateSuggestion(null);
       openedRef.current = true;
     }
     seedRef.current = seed;
@@ -45,6 +54,8 @@ export function FriendshipInterview({ open, onClose, onArchived, seed = [] }) {
     const response = await askArchivist(next, draft, locale);
     setDraft((current) => ({ ...current, ...(response.extraction || {}) }));
     setMessages((current) => [...current, { id: crypto.randomUUID(), role: 'assistant', content: response.reply }]);
+    const suggested = response.extraction?.friendship_start_date || inferredStartDate(content);
+    if (suggested) setStartDateSuggestion(String(suggested).slice(0, 10));
     setThinking(false);
   };
 
@@ -80,6 +91,7 @@ export function FriendshipInterview({ open, onClose, onArchived, seed = [] }) {
       </div>
       <footer className="interview-compose">
         <div className="interview-tools"><span>{t('memoriesGathered', { count: userAnswers, unit: t(userAnswers === 1 ? 'memory' : 'memories') })}</span>{userAnswers > 0 && <button type="button" onClick={() => setCompletionOpen(true)}>{t('readyToRemember')}</button>}</div>
+        {startDateSuggestion && <div className="start-date-suggestion"><p>{t('friendshipDateSuggestion', { year: startDateSuggestion.slice(0, 4) })}</p><div><button type="button" onClick={() => { onConfirmFriendshipStart?.(startDateSuggestion); setStartDateSuggestion(null); }}>{t('useYear', { year: startDateSuggestion.slice(0, 4) })}</button><button type="button" onClick={() => setStartDateSuggestion(null)}>{t('chooseAnotherDate')}</button></div></div>}
         <textarea value={value} onChange={(event) => setValue(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); respond(value); } }} placeholder={t('writeAnything')} rows="3" />
         <div className="interview-actions"><button type="button" className="leave-unwritten" onClick={() => respond(t('skip'))}>{t('leaveUnwritten')}</button><button type="button" className="send-memory" disabled={!value.trim() || thinking} onClick={() => respond(value)}>{t('continue')} <span>↗</span></button></div>
       </footer>

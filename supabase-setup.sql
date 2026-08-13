@@ -30,12 +30,14 @@ create table if not exists room_members (
 create table if not exists room_entries (
   id bigint generated always as identity primary key,
   room_id uuid references rooms(id) on delete cascade,
-  kind text not null check (kind in ('timeline','album','check')),
+  kind text not null check (kind in ('timeline','album','check','album_config','bucket_config')),
   payload jsonb not null,
   author uuid references auth.users(id),
   created_at timestamptz default now()
 );
 create index if not exists room_entries_lookup on room_entries(room_id, kind, id);
+alter table room_entries drop constraint if exists room_entries_kind_check;
+alter table room_entries add constraint room_entries_kind_check check (kind in ('timeline','album','check','album_config','bucket_config'));
 
 -- membership check (security definer → bypasses RLS, no recursion)
 create or replace function is_member(rid uuid)
@@ -48,6 +50,7 @@ alter table room_members  enable row level security;
 alter table room_entries  enable row level security;
 
 drop policy if exists "rooms read"    on rooms;
+drop policy if exists "rooms update"  on rooms;
 drop policy if exists "members read"  on room_members;
 drop policy if exists "members join"  on room_members;
 drop policy if exists "entries read"  on room_entries;
@@ -55,6 +58,7 @@ drop policy if exists "entries write" on room_entries;
 drop policy if exists "entries edit"  on room_entries;
 drop policy if exists "entries del"   on room_entries;
 create policy "rooms read"    on rooms        for select using (is_member(id));
+create policy "rooms update"  on rooms        for update using (is_member(id)) with check (is_member(id));
 create policy "members read"  on room_members for select using (is_member(room_id));
 create policy "entries read"  on room_entries for select using (is_member(room_id));
 create policy "entries write" on room_entries for insert with check (is_member(room_id) and author = auth.uid());
@@ -123,6 +127,17 @@ grant execute on function create_room(text,date) to authenticated;
 grant execute on function join_room(text)         to authenticated;
 grant execute on function my_room()               to authenticated;
 grant execute on function my_rooms()              to authenticated;
+
+-- Friendship duration starts on this deliberately chosen date, not the
+-- Private Girlie creation timestamp. A member may edit only their own room.
+create or replace function update_room_friendship_start(p_room_id uuid, p_meet date)
+returns void language plpgsql security definer as $$
+begin
+  if auth.uid() is null or not is_member(p_room_id) then raise exception 'not allowed'; end if;
+  if p_meet is null or p_meet > current_date then raise exception 'invalid friendship start date'; end if;
+  update rooms set meet_date = p_meet where id = p_room_id;
+end; $$;
+grant execute on function update_room_friendship_start(uuid,date) to authenticated;
 
 -- ── visitor "plant a flower" wall (public) ─────────────────────
 create table if not exists planted_flowers (

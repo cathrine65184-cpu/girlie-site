@@ -31,6 +31,7 @@ export default function App() {
   const [interviewIntent, setInterviewIntent] = useState(false);
   const [interviewSeed, setInterviewSeed] = useState([]);
   const [pendingArchive, setPendingArchive] = useState(null);
+  const [pendingFriendshipDate, setPendingFriendshipDate] = useState(null);
   const activeGirl = girls.find((girl) => girl.id === activeId) || null;
   const copy = progress < .1 ? { eyebrow: t('landingEyebrow'), title: t('landingTitle'), body: t('landingBody'), action: t('exploreMuseum'), target: .12 } : { eyebrow: t('archiveEyebrow'), title: t('archiveTitle'), body: t('archiveBody'), action: t('beginVisiting'), target: .35 };
   // The entrance copy clears before the first exhibit becomes interactive.
@@ -52,6 +53,7 @@ export default function App() {
   const handleRoomMessage = (message) => {
     if (message?.type === 'girlie:open-interview') beginInterview(message.seed || []);
     if (message?.type === 'girlie:interview-synced' && message.archiveId === pendingArchive?.id) setPendingArchive(null);
+    if (message?.type === 'girlie:friendship-date-saved' && message.date === pendingFriendshipDate) setPendingFriendshipDate(null);
   };
   const openHall = (hall) => {
     if (hall === 'archive') {
@@ -125,13 +127,14 @@ export default function App() {
     <Suspense fallback={null}>
       <StoryOverlay girl={activeGirl} onClose={closeStory} onContinue={openNextStory} onStartInterview={() => requestInterview()} />
       <GalleryExperience hall={activeHall} girls={girls} onClose={() => setActiveHall(null)} />
-      <FriendshipInterview open={interviewOpen} onClose={() => setInterviewOpen(false)} onArchived={archiveInterview} seed={interviewSeed} />
+      <FriendshipInterview open={interviewOpen} onClose={() => setInterviewOpen(false)} onArchived={archiveInterview} onConfirmFriendshipStart={setPendingFriendshipDate} seed={interviewSeed} />
       <RoomOverlay
         open={activeHall === 'studio'}
         title={museumHalls.studio.title}
         source={museumHalls.studio.source}
         startInterview={interviewIntent}
         incomingArchive={pendingArchive}
+        incomingFriendshipDate={pendingFriendshipDate}
         onMessage={handleRoomMessage}
         onClose={() => { setActiveHall(null); if (window.location.hash === '#private-house') window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`); }}
       />
