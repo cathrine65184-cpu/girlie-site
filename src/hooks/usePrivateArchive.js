@@ -19,7 +19,7 @@ export function usePrivateArchive() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(localKey, JSON.stringify(archives));
+    try { localStorage.setItem(localKey, JSON.stringify(archives)); } catch {}
   }, [archives]);
 
   const save = async (archive) => {

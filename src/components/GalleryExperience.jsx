@@ -20,6 +20,8 @@ const constellationTitles = [
   'The Mirror Constellation', 'Keepers of the Peach Garden', 'The Red Thread Astronomers', 'Moonlight Co-Conspirators',
 ];
 const elements = ['Moonlight', 'Rose Gold', 'Sea Glass', 'First Snow', 'Peach Blossom', 'Northern Star', 'Morning Fog', 'Candlelight'];
+const constellationTitlesZh = ['秋月下的双生火焰', '两条河，一片海', '平行的彗星', '同一颗星的姐妹', '镜像星座', '桃花园的守护者', '红线天文学家', '月光同谋者'];
+const elementsZh = ['月光', '玫瑰金', '海玻璃', '初雪', '桃花', '北极星', '晨雾', '烛光'];
 
 function hashText(value) {
   return [...value].reduce((hash, character) => ((hash * 131) + character.charCodeAt(0)) >>> 0, 9);
@@ -43,8 +45,8 @@ function makeConstellation(first, second) {
   }));
   return {
     id: hash,
-    title: constellationTitles[hash % constellationTitles.length],
-    element: elements[(hash >>> 5) % elements.length],
+    titleIndex: hash % constellationTitles.length,
+    elementIndex: (hash >>> 5) % elements.length,
     score: 82 + (hash % 18),
     points,
   };
@@ -167,9 +169,9 @@ function StarObservatory({ onClose }) {
       </div>
       <motion.article className="star-reading" key={chart.id} initial={{ opacity: 0, scale: .96, y: 18 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: .7 }}>
         <p>{chinese ? '星座编号' : 'CONSTELLATION NO.'} {100 + (chart.id % 900)}</p>
-        <h2>{chart.title}</h2>
+        <h2>{(chinese ? constellationTitlesZh : constellationTitles)[chart.titleIndex]}</h2>
         <div><b>{firstName || (chinese ? '你' : 'You')} <span>✦</span> {secondName || (chinese ? '她' : 'Her')}</b><em>{chart.score}% {chinese ? '写在星空里' : 'written in the stars'}</em></div>
-        <small>{chinese ? '共同元素：' : 'Shared element: '}{chart.element}</small>
+        <small>{chinese ? '共同元素：' : 'Shared element: '}{(chinese ? elementsZh : elements)[chart.elementIndex]}</small>
       </motion.article>
       <p className="gallery-prompt observatory-prompt">{hasRead ? (chinese ? '一幅新星图加入了今晚的天空。' : 'A new constellation has joined tonight’s sky.') : (chinese ? '穹顶缓缓移动，慢一点就好。' : 'The dome moves slowly — take your time.')}</p>
     </div>

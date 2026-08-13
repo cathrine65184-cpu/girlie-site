@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber';
-import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
+import { lazy, Suspense, useCallback, useState } from 'react';
 import { CameraController } from './components/CameraController';
 import { FloatingParticles } from './components/FloatingParticles';
 import { Lighting } from './components/Lighting';
@@ -16,17 +16,8 @@ import { useLocale } from './locales.jsx';
 
 // Editorial sheets are loaded only when a visitor chooses to enter a memory.
 const StoryOverlay = lazy(() => import('./components/StoryOverlay').then((module) => ({ default: module.StoryOverlay })));
-const RoomOverlay = lazy(() => import('./components/RoomOverlay').then((module) => ({ default: module.RoomOverlay })));
 const FriendshipInterview = lazy(() => import('./components/FriendshipInterview').then((module) => ({ default: module.FriendshipInterview })));
 const PrivateRoom = lazy(() => import('./components/PrivateRoom').then((module) => ({ default: module.PrivateRoom })));
-
-const museumHalls = {
-  studio: {
-    title: 'Girlie · Private House',
-    source: 'legacy.html#private-house',
-    note: '',
-  },
-};
 
 export default function App() {
   const { t } = useLocale();
@@ -34,34 +25,23 @@ export default function App() {
   const { activeId, openStory, closeStory } = useStoryTransition();
   const [activeHall, setActiveHall] = useState(null);
   const [interviewOpen, setInterviewOpen] = useState(false);
-  const [privateRoomOpen, setPrivateRoomOpen] = useState(false);
-  const [authRequired, setAuthRequired] = useState(false);
+  // Retain the former deep link while rendering the current Private Girlie,
+  // rather than sending visitors to a second, competing private-room UI.
+  const [privateRoomOpen, setPrivateRoomOpen] = useState(() => window.location.hash === '#private-house');
   const [interviewSeed, setInterviewSeed] = useState([]);
   const privateArchive = usePrivateArchive();
   const activeGirl = girls.find((girl) => girl.id === activeId) || null;
-  const copy = progress < .1 ? { eyebrow: t('landingEyebrow'), title: t('landingTitle'), body: t('landingBody'), action: t('exploreGirls'), target: .12 } : { eyebrow: t('archiveEyebrow'), title: t('archiveTitle'), body: t('archiveBody'), action: t('beginVisiting'), target: .35 };
+  const copy = progress < .1 ? { eyebrow: t('landingEyebrow'), title: t('landingTitle'), body: t('landingBody'), action: t('exploreMuseum'), target: .12 } : { eyebrow: t('archiveEyebrow'), title: t('archiveTitle'), body: t('archiveBody'), action: t('beginVisiting'), target: .35 };
   // The entrance copy clears before the first exhibit becomes interactive.
   // This keeps the opening invitation editorial without sitting over a flower label.
   const copyOpacity = progress < .052 ? 1 : progress < .097 ? 1 - ((progress - .052) / .045) : 0;
-  const myRoomUrl = `${import.meta.env.BASE_URL}legacy.html#private-house`;
   const beginInterview = (seed = []) => { setInterviewSeed(seed); setPrivateRoomOpen(false); setInterviewOpen(true); };
-  // Interviews are account-only: a friendship is never left in an anonymous public state.
+  // A first story can begin immediately. Until an account is connected it stays
+  // in this browser; it is never made public or added to the museum.
   const requestInterview = (seed = []) => {
-    setInterviewSeed(seed);
-    if (privateArchive.session) {
-      beginInterview(seed);
-      return;
-    }
-    setAuthRequired(true);
-    setPrivateRoomOpen(true);
+    beginInterview(seed);
   };
-  useEffect(() => {
-    if (authRequired && privateArchive.session) {
-      setAuthRequired(false);
-      beginInterview(interviewSeed);
-    }
-  }, [authRequired, interviewSeed, privateArchive.session]);
-  const archiveInterview = async (archive) => { await privateArchive.save(archive); setPrivateRoomOpen(true); };
+  const archiveInterview = async (archive) => { await privateArchive.save(archive); setInterviewOpen(false); setPrivateRoomOpen(true); };
   const openHall = (hall) => {
     if (hall === 'archive') {
       scrollToProgress(.35);
@@ -90,16 +70,29 @@ export default function App() {
       </Suspense>
     </Canvas>
 
-    <Navigation onJump={scrollToProgress} onOpenHall={openHall} onCreate={() => requestInterview()} onOpenPrivateRoom={() => openHall('studio')} studioHref={myRoomUrl} />
+    <Navigation onJump={scrollToProgress} onOpenHall={openHall} onCreate={() => requestInterview()} onOpenPrivateRoom={() => setPrivateRoomOpen(true)} />
 
-    <main className="scroll-track" aria-label="Girlie Project memory journey">
+    <main className="scroll-track" aria-label={t('storyJourney')}>
       <section className="journey-copy" style={{ opacity: copyOpacity, pointerEvents: copyOpacity > .04 ? 'auto' : 'none' }}>
         <p className="eyebrow">{copy.eyebrow}</p>
         <h1>{copy.title}</h1>
         <p>{copy.body}</p>
         <div className="hero-actions">
-          <button className="journey-button" style={{ pointerEvents: copyOpacity > .04 ? 'auto' : 'none' }} onClick={() => scrollToProgress(copy.target)}>{copy.action} <span>↓</span></button>
-          <button className="journey-button create-archive-button" style={{ pointerEvents: copyOpacity > .04 ? 'auto' : 'none' }} onClick={() => requestInterview()}><i>{t('tellStory')}</i><strong>{t('beginStory')} <span>↗</span></strong></button>
+          <button className="journey-button hero-museum-button" style={{ pointerEvents: copyOpacity > .04 ? 'auto' : 'none' }} onClick={() => scrollToProgress(copy.target)}><strong>{copy.action} <span>↓</span></strong>{progress < .1 && <small>{t('exploreMuseumDesc')}</small>}</button>
+          <button className="journey-button create-archive-button" style={{ pointerEvents: copyOpacity > .04 ? 'auto' : 'none' }} onClick={() => requestInterview()}><i>{t('tellStory')}</i><strong>{t('tellFriendship')} <span>↗</span></strong>{progress < .1 && <small>{t('tellFriendshipDesc')}</small>}</button>
+        </div>
+      </section>
+      <section className="how-girlie-works" aria-label={t('howWorksTitle')}>
+        <div className="how-girlie-heading"><p>{t('storyBridge')}</p><h2>{t('howWorksTitle')}</h2></div>
+        <div className="how-girlie-steps">
+          <article><p>{t('howExploreNumber')}</p><h3>{t('howExploreTitle')}</h3><span>{t('howExploreBody')}</span><button onClick={() => scrollToProgress(.12)}>{t('exploreMuseum')} <b>↓</b></button></article>
+          <article><p>{t('howTalkNumber')}</p><h3>{t('howTalkTitle')}</h3><span>{t('howTalkBody')}</span><button onClick={() => requestInterview()}>{t('startInterview')} <b>↗</b></button></article>
+          <article><p>{t('howRememberNumber')}</p><h3>{t('howRememberTitle')}</h3><span>{t('howRememberBody')}</span><button onClick={() => setPrivateRoomOpen(true)}>{t('enterPrivateGirlie')} <b>→</b></button></article>
+        </div>
+        <div className="public-private-clarity">
+          <article><i>🌎</i><p>{t('publicGirlie')}</p><h3>{t('publicMuseumTitle')}</h3><span>{t('publicMuseumBody')}</span></article>
+          <b aria-hidden="true">→</b>
+          <article><i>🏠</i><p>{t('privateGirlieLabel')}</p><h3>{t('privateHomeTitle')}</h3><span>{t('privateHomeBody')}</span></article>
         </div>
       </section>
       <section className="path-instruction" style={{ opacity: progress > .1 && progress < .76 ? 1 : 0 }}>
@@ -118,19 +111,10 @@ export default function App() {
     </main>
 
     <Suspense fallback={null}>
-      <StoryOverlay girl={activeGirl} onClose={closeStory} onContinue={openNextStory} studioHref={myRoomUrl} />
+      <StoryOverlay girl={activeGirl} onClose={closeStory} onContinue={openNextStory} onStartInterview={() => requestInterview()} />
       <GalleryExperience hall={activeHall} girls={girls} onClose={() => setActiveHall(null)} />
       <FriendshipInterview open={interviewOpen} onClose={() => setInterviewOpen(false)} onArchived={archiveInterview} seed={interviewSeed} />
-      <PrivateRoom open={privateRoomOpen} onClose={() => { setPrivateRoomOpen(false); setAuthRequired(false); }} store={privateArchive} onStartInterview={requestInterview} requireAuth={authRequired} />
-      {Object.entries(museumHalls).map(([id, hall]) => <RoomOverlay
-        key={id}
-        open={activeHall === id}
-        onClose={() => setActiveHall(null)}
-        title={hall.title}
-        source={`${import.meta.env.BASE_URL}${hall.source}`}
-        note={hall.note}
-        onOpenArchive={() => { setActiveHall(null); setPrivateRoomOpen(true); }}
-      />)}
+      <PrivateRoom open={privateRoomOpen} onClose={() => { setPrivateRoomOpen(false); if (window.location.hash === '#private-house') window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`); }} store={privateArchive} onStartInterview={requestInterview} />
     </Suspense>
   </div>;
 }

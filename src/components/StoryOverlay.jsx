@@ -18,8 +18,8 @@ function Fact({ icon, label, children }) {
 }
 
 /** A slow, long-form archival reading room for each friendship. */
-export function StoryOverlay({ girl, onClose, onContinue, studioHref }) {
-  const { locale } = useLocale();
+export function StoryOverlay({ girl, onClose, onContinue, onStartInterview }) {
+  const { locale, t } = useLocale();
   const chinese = locale === 'zh';
   const exhibit = girl ? (chinese ? getStoryExhibitZh(girl) : getStoryExhibit(girl)) : null;
   const order = girl ? Math.max(0, Object.keys(storyExhibits).indexOf(girl.id)) + 1 : 0;
@@ -28,7 +28,7 @@ export function StoryOverlay({ girl, onClose, onContinue, studioHref }) {
   return <AnimatePresence>{girl && exhibit && <motion.aside className="story-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} aria-label={`${girl.n}'s friendship archive`}>
     <motion.div className="story-scrim" initial={{ backdropFilter: 'blur(0px)' }} animate={{ backdropFilter: 'blur(18px)' }} exit={{ backdropFilter: 'blur(0px)' }} onClick={onClose} />
     <motion.article className="story-sheet" initial={{ y: '8%', opacity: 0, scale: .985 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ y: '8%', opacity: 0, scale: .985 }} transition={{ type: 'spring', stiffness: 125, damping: 22 }}>
-      <button className="story-close" onClick={onClose} aria-label={chinese ? '关闭故事' : 'Close story'}>{chinese ? '关闭 ×' : 'Close ×'}</button>
+      <button className="story-close" onClick={onClose} aria-label={t('close')}>{t('close')}</button>
 
       <aside className="story-profile-panel">
         <figure className="story-portrait">
@@ -81,13 +81,13 @@ export function StoryOverlay({ girl, onClose, onContinue, studioHref }) {
           <div><p>{chinese ? '写给世界女孩' : 'For girls everywhere'}</p><blockquote>{exhibit.message}</blockquote></div>
         </section>
 
-        <section className="story-promise" aria-label="A promise preserved in the archive">
+        <section className="story-promise" aria-label={t('promisePreserved')}>
           <p>{chinese ? '我们守护的约定' : 'The promise we keep'}</p><b>{exhibit.promise}</b><span>♡</span>
         </section>
 
         <footer className="story-footer">
           <p>{chinese ? '会生长的馆藏中的一则条目。' : 'An entry in the living collection.'}</p>
-          <div><a className="text-button" href={studioHref}>{chinese ? '建造一间秘密小屋 ↗' : 'Build a Secret House ↗'}</a><button className="text-button" onClick={() => { onClose(); onContinue(); }}>{chinese ? '继续参观 →' : 'Continue visiting →'}</button></div>
+          <div><button className="text-button" onClick={() => { onClose(); onStartInterview(); }}>{t('tellFriendship')} ↗</button><button className="text-button" onClick={() => { onClose(); onContinue(); }}>{chinese ? '继续参观 →' : 'Continue visiting →'}</button></div>
         </footer>
       </div>
     </motion.article>
