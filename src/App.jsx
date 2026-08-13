@@ -97,8 +97,9 @@ export default function App() {
         <div className="how-girlie-heading"><p>{t('storyBridge')}</p><h2>{t('howWorksTitle')}</h2></div>
         <div className="how-girlie-steps">
           <article><p>{t('howExploreNumber')}</p><h3>{t('howExploreTitle')}</h3><span>{t('howExploreBody')}</span><button onClick={() => scrollToProgress(.12)}>{t('exploreMuseum')} <b>↓</b></button></article>
-          <article><p>{t('howTalkNumber')}</p><h3>{t('howTalkTitle')}</h3><span>{t('howTalkBody')}</span><button onClick={() => requestInterview()}>{t('startInterview')} <b>↗</b></button></article>
-          <article><p>{t('howRememberNumber')}</p><h3>{t('howRememberTitle')}</h3><span>{t('howRememberBody')}</span><button onClick={() => setActiveHall('studio')}>{t('enterPrivateGirlie')} <b>→</b></button></article>
+          <article><p>{t('howCreateNumber')}</p><h3>{t('howCreateTitle')}</h3><span>{t('howCreateBody')}</span><button onClick={() => setActiveHall('studio')}>{t('createPrivateGirlie')} <b>→</b></button></article>
+          <article><p>{t('howTalkNumber')}</p><h3>{t('howTalkTitle')}</h3><span>{t('howTalkBody')}</span><button onClick={() => requestInterview()}>{t('startInterview')} <b>→</b></button></article>
+          <article><p>{t('howGrowNumber')}</p><h3>{t('howGrowTitle')}</h3><span>{t('howGrowBody')}</span><button onClick={() => setActiveHall('studio')}>{t('exploreTimeline')} <b>→</b></button></article>
         </div>
         <div className="public-private-clarity">
           <article><i>🌎</i><p>{t('publicGirlie')}</p><h3>{t('publicMuseumTitle')}</h3><span>{t('publicMuseumBody')}</span></article>
