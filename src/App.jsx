@@ -5,6 +5,8 @@ import { FloatingParticles } from './components/FloatingParticles';
 import { Lighting } from './components/Lighting';
 import { MemoryBloom } from './components/MemoryBloom';
 import { Navigation } from './components/Navigation';
+import { DepthStoriesGallery } from './components/DepthStoriesGallery';
+import { MuseumCanvasBoundary } from './components/MuseumCanvasBoundary';
 import { girls } from './data/girls';
 import { GalleryExperience } from './components/GalleryExperience';
 import { RoomOverlay } from './components/RoomOverlay';
@@ -24,9 +26,12 @@ const museumHalls = {
 
 export default function App() {
   const { t } = useLocale();
-  const { progress, reducedMotion, scrollToProgress } = useScrollProgress();
   const { activeId, openStory, closeStory } = useStoryTransition();
   const [activeHall, setActiveHall] = useState(() => window.location.hash === '#private-house' ? 'studio' : null);
+  const galleryOpen = activeHall === 'archive';
+  const { progress, reducedMotion, scrollToProgress } = useScrollProgress(galleryOpen || Boolean(activeId));
+  const [galleryIndex, setGalleryIndex] = useState(0);
+  const [galleryDestination, setGalleryDestination] = useState(null);
   const [interviewOpen, setInterviewOpen] = useState(false);
   const [interviewIntent, setInterviewIntent] = useState(false);
   const [interviewSeed, setInterviewSeed] = useState([]);
@@ -56,21 +61,24 @@ export default function App() {
     if (message?.type === 'girlie:friendship-date-saved' && message.date === pendingFriendshipDate) setPendingFriendshipDate(null);
   };
   const openHall = (hall) => {
-    if (hall === 'archive') {
-      scrollToProgress(.35);
-      return;
-    }
+    if (hall === 'archive') setGalleryDestination(null);
     setActiveHall(hall);
   };
   const openNextStory = useCallback(() => {
     const index = activeGirl ? girls.findIndex((girl) => girl.id === activeGirl.id) : -1;
+    if (galleryOpen) {
+      setGalleryDestination({ index: (index + 1) % girls.length });
+      return;
+    }
     const next = girls[(index + 1) % girls.length];
     scrollToProgress(Math.min(.72, .12 + ((index + 2) / girls.length) * .58));
     window.setTimeout(() => openStory(next.id), reducedMotion ? 0 : 550);
-  }, [activeGirl, openStory, reducedMotion]);
+  }, [activeGirl, galleryOpen, openStory, reducedMotion, scrollToProgress]);
 
   return <div className="app-shell">
-    <Canvas className="world-canvas" dpr={[1, 1.5]} shadows={!reducedMotion} camera={{ fov: 42, position: [0, 2.1, 14] }} gl={{ antialias: true, powerPreference: 'high-performance' }}>
+    <div className="museum-surface" inert={galleryOpen || activeGirl ? '' : undefined} aria-hidden={galleryOpen || Boolean(activeGirl) || undefined}>
+    <MuseumCanvasBoundary>
+    <Canvas className="world-canvas" frameloop={galleryOpen ? 'never' : 'always'} dpr={[1, 1.5]} shadows={!reducedMotion} camera={{ fov: 42, position: [0, 2.1, 14] }} gl={{ antialias: true, powerPreference: 'high-performance' }}>
       <color attach="background" args={['#f8e5e8']} />
       <fog attach="fog" args={['#f8e5e8', 8, 47]} />
       <Suspense fallback={null}>
@@ -79,9 +87,10 @@ export default function App() {
         <Journey girls={girls} activeId={activeId} onOpen={openStory} reducedMotion={reducedMotion} progress={progress} />
         <FloatingParticles reducedMotion={reducedMotion} />
         {progress > .62 && <MemoryBloom reducedMotion={reducedMotion} />}
-        <CameraController progress={progress} activeGirl={activeGirl} reducedMotion={reducedMotion} />
+        <CameraController progress={progress} activeGirl={galleryOpen ? null : activeGirl} reducedMotion={reducedMotion} />
       </Suspense>
     </Canvas>
+    </MuseumCanvasBoundary>
 
     <Navigation onJump={scrollToProgress} onOpenHall={openHall} onCreate={() => requestInterview()} onOpenPrivateRoom={() => setActiveHall('studio')} />
 
@@ -98,7 +107,7 @@ export default function App() {
       <section className="how-girlie-works" aria-label={t('howWorksTitle')}>
         <div className="how-girlie-heading"><p>{t('storyBridge')}</p><h2>{t('howWorksTitle')}</h2></div>
         <div className="how-girlie-steps">
-          <article><p>{t('howExploreNumber')}</p><h3>{t('howExploreTitle')}</h3><span>{t('howExploreBody')}</span><button onClick={() => scrollToProgress(.12)}>{t('exploreMuseum')} <b>↓</b></button></article>
+          <article><p>{t('howExploreNumber')}</p><h3>{t('howExploreTitle')}</h3><span>{t('howExploreBody')}</span><button onClick={() => scrollToProgress(.12)}>{t('exploreMuseum')} <b>↓</b></button><button onClick={() => openHall('archive')}>{t('depthEntry')} <b>↗</b></button></article>
           <article><p>{t('howCreateNumber')}</p><h3>{t('howCreateTitle')}</h3><span>{t('howCreateBody')}</span><button onClick={() => setActiveHall('studio')}>{t('createPrivateGirlie')} <b>→</b></button></article>
           <article><p>{t('howTalkNumber')}</p><h3>{t('howTalkTitle')}</h3><span>{t('howTalkBody')}</span><button onClick={() => requestInterview()}>{t('startInterview')} <b>→</b></button></article>
           <article><p>{t('howGrowNumber')}</p><h3>{t('howGrowTitle')}</h3><span>{t('howGrowBody')}</span><button onClick={() => setActiveHall('studio')}>{t('exploreTimeline')} <b>→</b></button></article>
@@ -111,11 +120,13 @@ export default function App() {
       </section>
       <section className="path-instruction" style={{ opacity: progress > .1 && progress < .76 ? 1 : 0 }}>
         <span>{t('scrollArchive')}</span><b>{t('scrollPrompt')}</b>
+        <button className="depth-entry-button" tabIndex={progress > .1 && progress < .76 ? 0 : -1} style={{ pointerEvents: progress > .1 && progress < .76 ? 'auto' : 'none' }} onClick={() => openHall('archive')}>{t('depthEntry')} ↗</button>
       </section>
       <section className="ending-copy" style={{ opacity: progress > .76 ? 1 : 0, pointerEvents: progress > .76 ? 'auto' : 'none' }}>
         <p>{t('endingEyebrow')}</p><h2>{t('endingTitle')}</h2>
         <p className="ending-body">{t('endingBody')}</p>
         <div className="gallery-doors">
+          <button onClick={() => openHall('archive')}>{t('depthEntry')} ↗</button>
           <button onClick={() => openHall('language')}>{t('languageGallery')}</button>
           <button onClick={() => openHall('stars')}>{t('starObservatory')}</button>
           <button onClick={() => openHall('listening')}>{t('listeningRoom')}</button>
@@ -123,6 +134,9 @@ export default function App() {
         </div>
       </section>
     </main>
+    </div>
+
+    {galleryOpen && <DepthStoriesGallery girls={girls} initialIndex={galleryIndex} destination={galleryDestination} paused={Boolean(activeGirl)} reducedMotion={reducedMotion} onOpenStory={openStory} onActiveChange={setGalleryIndex} onClose={() => setActiveHall(null)} />}
 
     <Suspense fallback={null}>
       <StoryOverlay girl={activeGirl} onClose={closeStory} onContinue={openNextStory} onStartInterview={() => requestInterview()} />

@@ -1,4 +1,6 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import { useDialogFocus } from '../hooks/useDialogFocus';
 import { localTime } from '../data/girls';
 import { getStoryExhibit, storyExhibits } from '../data/storyExhibits';
 import { getStoryExhibitZh } from '../data/storyExhibitsZh';
@@ -26,19 +28,24 @@ function WeatherFact({ girl, chinese }) {
 /** A slow, long-form archival reading room for each friendship. */
 export function StoryOverlay({ girl, onClose, onContinue, onStartInterview }) {
   const { locale, t } = useLocale();
+  const rootRef = useRef(null);
+  const sheetRef = useRef(null);
+  const reducedMotion = useReducedMotion();
+  useDialogFocus(rootRef, Boolean(girl), onClose);
+  useEffect(() => { if (sheetRef.current) sheetRef.current.scrollTop = 0; }, [girl?.id]);
   const chinese = locale === 'zh';
   const exhibit = girl ? (chinese ? getStoryExhibitZh(girl) : getStoryExhibit(girl)) : null;
   const order = girl ? Math.max(0, Object.keys(storyExhibits).indexOf(girl.id)) + 1 : 0;
   const catalogue = `CAT. GP-${String(order).padStart(3, '0')}`;
 
-  return <AnimatePresence>{girl && exhibit && <motion.aside className="story-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} aria-label={`${girl.n}'s friendship archive`}>
+  return <AnimatePresence>{girl && exhibit && <motion.aside ref={rootRef} className="story-overlay" data-lenis-prevent role="dialog" aria-modal="true" tabIndex={-1} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={reducedMotion ? { duration: 0 } : undefined} aria-label={t('storyDialogLabel', { name: girl.n })}>
     <motion.div className="story-scrim" initial={{ backdropFilter: 'blur(0px)' }} animate={{ backdropFilter: 'blur(18px)' }} exit={{ backdropFilter: 'blur(0px)' }} onClick={onClose} />
-    <motion.article className="story-sheet" initial={{ y: '8%', opacity: 0, scale: .985 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ y: '8%', opacity: 0, scale: .985 }} transition={{ type: 'spring', stiffness: 125, damping: 22 }}>
+    <motion.article ref={sheetRef} className="story-sheet" style={{ overscrollBehavior: 'contain' }} initial={reducedMotion ? false : { y: '8%', opacity: 0, scale: .985 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={reducedMotion ? { opacity: 0 } : { y: '8%', opacity: 0, scale: .985 }} transition={reducedMotion ? { duration: 0 } : { type: 'spring', stiffness: 125, damping: 22 }}>
       <button className="story-close" onClick={onClose} aria-label={t('close')}>{t('close')}</button>
 
       <aside className="story-profile-panel">
         <figure className="story-portrait">
-          <img src={girl.img} alt={`Portrait of ${girl.n}`} />
+          <img src={girl.img} alt={t('storyPortraitAlt', { name: girl.n })} />
           <span>{girl.f}</span>
         </figure>
         <div className="story-profile-copy">

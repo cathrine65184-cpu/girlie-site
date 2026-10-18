@@ -6,6 +6,11 @@ export const localeOptions = [['en', 'EN'], ['zh', '中文']];
 
 const copy = {
   en: {
+    depthEntry: 'Explore Their Stories', depthBack: 'Back to the flower garden', depthCollection: 'Eleven windows into friendship',
+    depthArchive: 'Archive {number}', depthRead: 'Read Her Story', depthPrevious: 'Previous story', depthNext: 'Next story',
+    depthHint: 'Scroll or swipe slowly · eleven lives to discover', depthStillHint: 'Scroll, swipe or use the arrows to explore',
+    depthWebglFallback: 'The flower garden needs 3D support. You can still explore all eleven stories in Museum Stories.',
+    storyDialogLabel: '{name} — friendship archive', storyPortraitAlt: 'Portrait of {name}',
     language: 'Language', collections: 'Museum', museumCollections: 'Museum collections', livingMuseum: 'A living friendship museum', halls: 'Menu',
     friendshipArchive: 'Museum Stories', languageGallery: 'Language Gallery', starObservatory: 'Friendship Atlas', listeningRoom: 'Listening Room',
     privateHouse: 'Private Girlie', privateGirlie: 'Private Girlie', friendshipArchives: 'My Private Girlie',
@@ -49,6 +54,11 @@ const copy = {
     originalWords: 'your original words', aiAssisted: 'AI-assisted organization', versionsPreserved: 'Story v{version} · {count} {label} preserved', version: 'version', versions: 'versions',
   },
   zh: {
+    depthEntry: '走进她们的故事', depthBack: '返回花园', depthCollection: '十一扇通往友谊的窗',
+    depthArchive: '馆藏 {number}', depthRead: '阅读她的故事', depthPrevious: '上一个故事', depthNext: '下一个故事',
+    depthHint: '轻轻滚动或滑动，走进十一段人生', depthStillHint: '滚动、滑动或使用箭头浏览',
+    depthWebglFallback: '花园需要设备支持 3D。你仍可在「博物馆故事」中阅读全部十一段故事。',
+    storyDialogLabel: '{name} 的友谊档案', storyPortraitAlt: '{name} 的肖像',
     language: '语言', collections: '博物馆', museumCollections: '博物馆馆藏', livingMuseum: '会生长的友谊博物馆', halls: '菜单',
     friendshipArchive: '博物馆故事', languageGallery: '语言展厅', starObservatory: '友谊星图', listeningRoom: '聆听室',
     privateHouse: '私密 Girlie', privateGirlie: '私密 Girlie', friendshipArchives: '我的私密 Girlie',

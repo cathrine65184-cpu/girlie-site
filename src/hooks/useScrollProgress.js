@@ -5,7 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function useScrollProgress() {
+export function useScrollProgress(suspended = false) {
   const [progress, setProgress] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(false);
   const lenisRef = useRef(null);
@@ -57,6 +57,17 @@ export function useScrollProgress() {
       motion.removeEventListener('change', updateMotion);
     };
   }, []);
+
+  useEffect(() => {
+    if (!suspended) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    lenisRef.current?.stop();
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      lenisRef.current?.start();
+    };
+  }, [suspended]);
 
   return { progress, reducedMotion, scrollToProgress };
 }
