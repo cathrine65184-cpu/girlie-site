@@ -26,7 +26,7 @@ function rotationProfile(id) {
   return { offset: (seed % 360) * THREE.MathUtils.DEG2RAD, duration: 20 + (seed % 11) };
 }
 
-function MuseumSpecimen({ specimen, flowerId }) {
+function MuseumSpecimen({ specimen, flowerId, reducedMotion }) {
   const { scene } = useGLTF(specimen.url, true, true);
   const { model, pivot } = useMemo(() => {
     const clone = scene.clone(true);
@@ -48,7 +48,7 @@ function MuseumSpecimen({ specimen, flowerId }) {
   // The parent sits on the model's own horizontal centre; Y rotation therefore
   // reveals the full specimen in place while its base stays at the same height.
   useFrame(({ clock }) => {
-    if (rotor.current) rotor.current.rotation.y = offset + clock.elapsedTime * (Math.PI * 2 / duration);
+    if (rotor.current) rotor.current.rotation.y = offset + (reducedMotion ? 0 : clock.elapsedTime * (Math.PI * 2 / duration));
   });
 
   return <group ref={rotor} position={[pivot.x * specimen.scale, specimen.lift, pivot.z * specimen.scale]}>
@@ -57,7 +57,7 @@ function MuseumSpecimen({ specimen, flowerId }) {
 }
 
 /** A physical botanical exhibit. Its bloom, label, and story-opening interaction remain unchanged. */
-export function Flower({ girl, opened, onOpen, reducedMotion }) {
+export function Flower({ girl, opened, onOpen, reducedMotion, position = girl.position, displayScale = 1 }) {
   const group = useRef();
   const [hovered, setHovered] = useState(false);
   const flower = botanicalCollection[girl.id] || botanicalCollection.mei;
@@ -67,18 +67,18 @@ export function Flower({ girl, opened, onOpen, reducedMotion }) {
   useFrame(({ clock }) => {
     if (!group.current || reducedMotion) return;
     group.current.rotation.z = Math.sin(clock.elapsedTime * .34 + girl.position[2]) * .026;
-    group.current.position.y = girl.position[1] + Math.sin(clock.elapsedTime * .46 + girl.position[0]) * .032;
+    group.current.position.y = position[1] + Math.sin(clock.elapsedTime * .46 + position[0]) * .032;
   });
 
   if (!specimen) return null;
 
   return <group
     ref={group}
-    position={girl.position}
-    scale={hovered || opened ? 1.07 : 1}
+    position={position}
+    scale={displayScale * (hovered || opened ? 1.07 : 1)}
     userData={{ flower: flower.name, meaning: flower.meaning, catalogue: flower.number }}
   >
-    <MuseumSpecimen specimen={specimen} flowerId={girl.id} />
+    <MuseumSpecimen specimen={specimen} flowerId={girl.id} reducedMotion={reducedMotion} />
     <mesh
       position={[0, specimen.hitY, .08]}
       onClick={(event) => { event.stopPropagation(); onOpen(girl.id); }}

@@ -1,0 +1,143 @@
+import assert from 'node:assert/strict';
+import { mkdir, readFile } from 'node:fs/promises';
+import { memoryPacks } from '../src/data/memoryPacks.js';
+const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const baseURL = process.env.GIRLIE_TEST_URL || 'http://127.0.0.1:5174/';
+const output = process.env.GIRLIE_TEST_OUTPUT || '/private/tmp/girlie-photo-first-qa';
+await mkdir(output, { recursive: true });
+const browser = await chromium.launch({ headless: true, executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE });
+const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, acceptDownloads: true });
+const errors = []; const missing = []; const consoleErrors = [];
+page.on('pageerror', (error) => errors.push(error.message));
+page.on('console', (message) => { if (message.type() === 'error') consoleErrors.push(message.text()); });
+page.on('response', (response) => { if (response.url().startsWith(baseURL) && response.status() >= 400) missing.push(`${response.status()} ${response.url()}`); });
+try {
+  for (const pack of memoryPacks) {
+    assert.ok(pack.photos.length >= 3 && pack.photos.length <= 5);
+    for (const photo of pack.photos) {
+      assert.equal(photo.storyId, null); assert.equal(photo.date, null); assert.equal(photo.location, null);
+      assert.equal(photo.permissionStatus, 'confirmed'); assert.equal(photo.publicationStatus, 'approved');
+      assert.ok(photo.alt.en && photo.alt.zh);
+    }
+  }
+  await page.goto(baseURL);
+  await page.locator('.girlhood-hero img').evaluate((image) => image.decode());
+  await page.evaluate(() => document.fonts.ready);
+  assert.equal(await page.locator('canvas').count(), 0, 'No WebGL on photo homepage');
+  assert.equal(await page.locator('.girlhood-nav-garden').isVisible(), true, '3D garden has a visible primary entry');
+  assert.equal(await page.locator('.girlhood-brand-logo img').getAttribute('src'), 'images/brand/girlie-fairy-logo.jpg');
+  assert.equal(await page.locator('.girlhood-flower-invitation .girlie-fairy-logo').getAttribute('alt'), 'Girlie');
+  await page.screenshot({ path: `${output}/desktop-home.png` });
+  await page.getByRole('link', { name: 'Explore Their Stories' }).click();
+  await page.waitForTimeout(900);
+  assert.ok(await page.evaluate(() => window.scrollY > 500));
+  for (let i = 0; i < memoryPacks.length; i++) {
+    const chapter = page.locator('.memory-chapter').nth(i);
+    const entry = chapter.locator('.memory-chapter-after button');
+    await entry.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(200);
+    const before = await page.evaluate(() => window.scrollY);
+    await entry.click();
+    await page.locator('.memory-reader').waitFor();
+    assert.equal(await page.evaluate(() => document.body.style.overflow), 'hidden');
+    for (let n = 0; n < memoryPacks[i].photos.length; n++) {
+      await page.getByRole('button', { name: `Photograph ${n + 1}`, exact: true }).click();
+      await page.locator('.memory-sequence img').evaluate((image) => image.decode());
+      assert.ok((await page.locator('.memory-sequence img').getAttribute('src')).includes(memoryPacks[i].photos[n].id));
+    }
+    await page.locator('.memory-reader select').selectOption('zh');
+    assert.equal(await page.locator('.memory-sequence-controls [aria-current]').textContent(), String(memoryPacks[i].photos.length).padStart(2, '0'));
+    await page.locator('.memory-reader select').selectOption('en');
+    if (i === 0) await page.screenshot({ path: `${output}/desktop-pack.png` });
+    await page.keyboard.press('Escape');
+    await page.locator('.memory-reader').waitFor({ state: 'detached' });
+    const after = await page.evaluate(() => window.scrollY);
+    assert.ok(Math.abs(after - before) < 2, `Exact chapter scroll return: before ${before}, after ${after}`);
+    assert.ok(await entry.evaluate((el) => el === document.activeElement), 'Focus returns to the pack trigger');
+  }
+  console.log('PASS four packs, all 19 photos, accurate associations, locale retains position, scroll/focus return');
+  assert.deepEqual(consoleErrors, [], 'Photo exhibition console is clean');
+  await page.locator('.memory-chapter').first().scrollIntoViewIfNeeded();
+  await page.waitForTimeout(200);
+  await page.screenshot({ path: `${output}/desktop-chapter.png` });
+  await page.getByRole('button', { name: 'Discover Our Flower', exact: false }).click();
+  await page.getByRole('radio', { name: 'A little more sunshine' }).check();
+  await page.getByRole('button', { name: 'Continue →', exact: true }).click();
+  await page.locator('.flower-reflection textarea').fill('我们第一次一起看海。<keep my words>');
+  await page.locator('.flower-reader select').selectOption('zh');
+  assert.equal(await page.locator('textarea').inputValue(), '我们第一次一起看海。<keep my words>');
+  await page.getByRole('button', { name: '继续 →', exact: true }).click();
+  await page.locator('textarea').fill('谢谢你陪我长大。 <script>alert(1)</script> & forever');
+  await page.getByRole('button', { name: '让它开花吧 →' }).click();
+  assert.equal(await page.locator('.flower-result h1').textContent(), '你们向阳的小雏菊');
+  await page.screenshot({ path: `${output}/flower-result-zh.png` });
+  await page.getByRole('button', { name: '为她做点什么', exact: false }).click();
+  await page.locator('.flower-reader select').selectOption('en');
+  assert.equal(await page.locator('textarea').inputValue(), '谢谢你陪我长大。 <script>alert(1)</script> & forever');
+  const downloadEvent = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download our card', exact: false }).click();
+  const download = await downloadEvent;
+  await download.saveAs(`${output}/our-girlie-flower.svg`);
+  const svg = await readFile(`${output}/our-girlie-flower.svg`, 'utf8');
+  assert.ok(!svg.includes('<script>')); assert.ok(svg.includes('&lt;script&gt;'));
+  await page.screenshot({ path: `${output}/studio-card.png` });
+  await page.getByRole('button', { name: 'Back to our flower', exact: false }).click();
+  await page.getByRole('button', { name: 'Create Our Private Space', exact: false }).click();
+  await page.locator('.room-shell iframe').waitFor();
+  assert.ok((await page.locator('.room-shell iframe').getAttribute('src')).includes('legacy.html#private-house'));
+  await page.frameLocator('.room-shell iframe').locator('#au-email').waitFor({ state: 'visible' });
+  await page.locator('.room-bar button').click();
+  await page.locator('.room-overlay').waitFor({ state: 'detached' });
+  await page.getByRole('button', { name: 'Discover Our Flower', exact: false }).click();
+  assert.ok((await page.locator('.flower-result blockquote').textContent()).includes('我们第一次一起看海'));
+  await page.getByRole('button', { name: 'Start Your Interview', exact: false }).click();
+  await page.frameLocator('.room-shell iframe').locator('#au-email').waitFor({ state: 'visible' });
+  await page.locator('.room-bar button').click();
+  await page.locator('.room-overlay').waitFor({ state: 'detached' });
+  console.log('PASS flower, original multilingual words, safe SVG download, private room and authenticated interview entry');
+  await page.getByRole('button', { name: 'Meet the selected stories', exact: false }).click();
+  await page.locator('.depth-read').click();
+  await page.locator('.story-header h2').waitFor();
+  assert.equal(await page.locator('.story-header h2').textContent(), 'Emma');
+  await page.keyboard.press('Escape');
+  await page.locator('.story-overlay').waitFor({ state: 'detached' });
+  await page.keyboard.press('Escape');
+  await page.locator('.depth-gallery').waitFor({ state: 'detached' });
+  console.log('PASS original girl story reader and layered return');
+  for (const [width, height] of [[390, 844], [320, 568], [844, 390]]) {
+    await page.setViewportSize({ width, height });
+    await page.getByRole('button', { name: 'Girlie', exact: true }).click();
+    await page.waitForFunction(() => window.scrollY < 2);
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `No overflow at ${width}`);
+    await page.screenshot({ path: `${output}/home-${width}.png` });
+    await page.locator('.memory-photo-button').first().click();
+    assert.ok(await page.locator('.memory-reader').evaluate((el) => el.scrollWidth <= innerWidth), 'No reader overflow');
+    for (let n = 0; n < 12; n++) { await page.keyboard.press('Tab'); assert.ok(await page.evaluate(() => document.querySelector('.memory-reader').contains(document.activeElement))); }
+    if (width === 390) await page.screenshot({ path: `${output}/mobile-pack.png` });
+    await page.keyboard.press('Escape');
+  }
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.locator('.memory-chapter').first().scrollIntoViewIfNeeded();
+  await page.waitForTimeout(150);
+  assert.equal(await page.locator('.memory-print-main').first().evaluate((el) => el.style.transform), 'none');
+  console.log('PASS mobile and landscape layout, focus trapping, reduced motion');
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  const mobile = await context.newPage(); await mobile.goto(baseURL);
+  await mobile.locator('.memory-photo-button').first().tap();
+  const cdp = await context.newCDPSession(mobile);
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: 320, y: 210 }] });
+  for (let x = 300; x >= 70; x -= 25) await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: 210 }] });
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  await mobile.waitForTimeout(150);
+  assert.equal(await mobile.locator('.memory-sequence-controls [aria-current]').textContent(), '02');
+  await context.close();
+  const fallback = await browser.newPage();
+  await fallback.route('**/images/girlie-memories/memory-2-*.webp', (route) => route.fulfill({ status: 404, body: '' }));
+  await fallback.goto(baseURL); await fallback.locator('.girlhood-hero .memory-image-fallback').waitFor();
+  await fallback.locator('.memory-photo-button').first().click();
+  await fallback.getByRole('button', { name: 'Next photograph', exact: true }).click();
+  await fallback.locator('.memory-sequence img').evaluate((img) => img.decode());
+  await fallback.close();
+  assert.deepEqual(errors, []); assert.deepEqual(missing, []);
+  console.log('PASS touch swipe, image failure fallback, no missing assets or uncaught errors');
+} finally { await browser.close(); }

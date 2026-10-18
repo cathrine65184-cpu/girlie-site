@@ -2,15 +2,17 @@ import { useEffect, useRef } from 'react';
 
 // Only the topmost dialog owns keyboard focus. Suspended dialogs stay mounted
 // so opening a story never loses the gallery's scroll position.
-export function useDialogFocus(ref, active, onClose) {
+export function useDialogFocus(ref, active, onClose, returnFocus) {
   const closeRef = useRef(onClose);
   const lastFocus = useRef(null);
   closeRef.current = onClose;
   useEffect(() => {
     if (!active || !ref.current) return undefined;
     const root = ref.current;
-    const previous = document.activeElement;
-    const controls = () => [...root.querySelectorAll('button:not(:disabled), select, a[href], [tabindex="0"]')]
+    // A parent may become inert in the same commit, clearing activeElement.
+    // Photo readers capture their opener before that commit.
+    const previous = returnFocus || document.activeElement;
+    const controls = () => [...root.querySelectorAll('button:not(:disabled), input:not(:disabled), textarea:not(:disabled), select:not(:disabled), a[href], [tabindex="0"]')]
       .filter((element) => element.getClientRects().length && !element.closest('[inert]'));
     const focusTarget = root.contains(lastFocus.current) ? lastFocus.current : controls()[0] || root;
     focusTarget.focus({ preventScroll: true });
@@ -38,5 +40,5 @@ export function useDialogFocus(ref, active, onClose) {
       root.removeEventListener('focusin', rememberFocus);
       if (previous?.isConnected && !previous.closest('[inert]')) previous.focus({ preventScroll: true });
     };
-  }, [active, ref]);
+  }, [active, ref, returnFocus]);
 }

@@ -2,6 +2,7 @@
 .claude/
 node_modules/
 dist/
+.private/
 
 # Personal media dropped in the project folder — never publish these.
 # The cinematic build deliberately does not bundle the private-room media.

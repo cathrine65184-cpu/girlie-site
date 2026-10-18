@@ -61,10 +61,16 @@ export function useScrollProgress(suspended = false) {
   useEffect(() => {
     if (!suspended) return undefined;
     const previousOverflow = document.body.style.overflow;
+    const previousScroll = window.scrollY;
     lenisRef.current?.stop();
     document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = previousOverflow;
+      // Locale changes can reflow the inert page behind an open reading sheet.
+      // Restore the actual entry position, not the browser's new scroll anchor.
+      lenisRef.current?.resize();
+      lenisRef.current?.scrollTo(previousScroll, { immediate: true, force: true });
+      window.scrollTo(0, previousScroll);
       lenisRef.current?.start();
     };
   }, [suspended]);

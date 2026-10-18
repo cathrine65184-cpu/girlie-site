@@ -7,7 +7,7 @@ import { clamp, depthAtmospheres, galleryStep, mixColor, portraitPose } from '..
 import './DepthStoriesGallery.css';
 
 /** A native-scroll, CSS-perspective gallery: no extra canvas or WebGL loop. */
-export function DepthStoriesGallery({ girls, initialIndex = 0, destination, paused, reducedMotion, onOpenStory, onActiveChange, onClose }) {
+export function DepthStoriesGallery({ girls, initialIndex = 0, destination, paused, reducedMotion, onOpenStory, onActiveChange, onClose, backLabel }) {
   const { locale, t } = useLocale();
   const rootRef = useRef(null);
   const scrollRef = useRef(null);
@@ -113,7 +113,7 @@ export function DepthStoriesGallery({ girls, initialIndex = 0, destination, paus
   };
   return <section ref={rootRef} className={`depth-gallery${reducedMotion ? ' depth-gallery--still' : ''}`} role="dialog" aria-modal={!paused || undefined} aria-labelledby="depth-title" aria-hidden={paused || undefined} inert={paused ? '' : undefined} tabIndex={-1} data-lenis-prevent onKeyDown={onKeyDown} onPointerMove={parallax}>
     <header className="depth-header">
-      <button className="depth-back" onClick={onClose}>← {t('depthBack')}</button>
+      <button className="depth-back" onClick={onClose}>← {backLabel || t('depthBack')}</button>
       <h1 id="depth-title">{t('friendshipArchive')}</h1>
       <LocaleMenu />
     </header>

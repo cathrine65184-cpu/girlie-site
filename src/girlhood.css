@@ -1,0 +1,153 @@
+/* Photo exhibition: isolated from the original museum and private room. */
+.girlhood-world, .memory-reader { --ink: #624057; --muted: #805c70; --paper: #fff9f5; color: var(--ink); background: var(--paper); }
+.girlhood-world h1, .girlhood-world h2, .memory-reader h1, .memory-reader h2 { font-family: 'Playfair Display', Georgia, serif; font-weight: 500; letter-spacing: -.045em; text-wrap: balance; }
+.girlhood-world :is(button,a):focus-visible, .girlhood-nav :is(button,a,select):focus-visible, .memory-reader :is(button,a,input,textarea,select):focus-visible, .garden-back-link:focus-visible { outline: 2px solid #84365d; outline-offset: 5px; }
+.memory-reader [tabindex="-1"]:focus { outline: none; }
+.girlhood-world button, .memory-reader button { color: inherit; background: transparent; }
+.memory-meta { font: 400 10px/1.6 'DM Mono', monospace; letter-spacing: .12em; text-transform: uppercase; }
+.memory-link { display: inline-flex; justify-content: space-between; align-items: center; gap: 28px; min-height: 44px; padding: 8px 0; color: #624057; border-bottom: 1px solid #ac7b90; background: none; font-size: 13px; line-height: 1.5; text-align: left; }
+.memory-link span { font-size: 20px; }
+.memory-link:hover { border-color: #624057; }
+.girlhood-nav { position: fixed; inset: 0 0 auto; z-index: 15; display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 86px; padding: 0 5vw; color: #624057; background: rgba(255,249,245,.92); backdrop-filter: blur(12px); border-bottom: 1px solid #6240570c; }
+.girlhood-nav button { background: transparent; color: inherit; min-height: 44px; }
+.girlhood-brand-logo { display: grid; place-items: center; width: 76px; height: 76px; padding: 0; overflow: hidden; }
+.girlhood-brand-logo img { display: block; width: 76px; height: 76px; object-fit: contain; mix-blend-mode: multiply; }
+.girlhood-wordmark { color: #624057; font: italic 500 35px/1 'Playfair Display', Georgia, serif; letter-spacing: -.06em; }
+.girlhood-nav nav { display: flex; gap: clamp(15px, 3vw, 42px); align-items: center; }
+.girlhood-nav nav > button { font-size: 12px; padding: 0; }
+.girlhood-nav-garden { color: #a14f73 !important; font-weight: 600; }
+.girlhood-nav-garden > span { margin-right: 4px; font-size: 15px; }
+.girlhood-nav-private span { margin-left: 8px; }
+.girlhood-nav .locale-menu select { border: 0; background: none; font-size: 11px; min-height: 44px; }
+.girlhood-menu { position: absolute; top: 75px; right: 5vw; width: 270px; padding: 18px 24px; display: flex; flex-direction: column; background: #fff9f5; border: 1px solid #dec6d0; box-shadow: 0 15px 35px #62405710; }
+.girlhood-menu button { text-align: left; font-size: 12px; border-bottom: 1px solid #62405710; }
+.girlhood-menu button:last-child { border: 0; }
+.girlhood-hero { position: relative; min-height: min(900px, 100svh); display: grid; grid-template-columns: 1fr 1fr; gap: 5vw; align-items: center; padding: 150px 7vw 110px; }
+.girlhood-hero-copy { max-width: 580px; }
+.girlhood-hero h1 { font-size: clamp(48px, 5.4vw, 86px); line-height: 1.07; white-space: pre-line; margin: 28px 0 24px; }
+.girlhood-intro { max-width: 310px; font-size: 13px; line-height: 1.9; color: var(--muted); margin: 0 0 28px; }
+.girlhood-hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; }
+.garden-text-link { min-height: 44px; padding: 8px 0; color: #8e5871 !important; background: transparent; border-bottom: 1px solid #d0abba; font-size: 12px; }
+.garden-text-link span { margin-left: 13px; font-size: 16px; }
+.girlhood-hero-print { margin: 35px 0 0; transform: rotate(1.5deg); padding: 10px 10px 0; background: #fffdf9; box-shadow: 0 10px 24px #6240570a; }
+.memory-photo { display: block; width: 100%; height: auto; object-fit: contain; }
+.girlhood-hero-print figcaption, .memory-print figcaption { display: flex; justify-content: space-between; gap: 20px; padding: 15px 3px; color: #805c70; font: 10px/1.6 'DM Mono', monospace; }
+.girlhood-hero-print figcaption span:last-child { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 13px; }
+.girlhood-hero-bottom { position: absolute; bottom: 32px; left: 7vw; right: 7vw; display: flex; align-items: center; justify-content: space-between; padding-top: 18px; border-top: 1px solid #62405720; }
+.girlhood-exhibition-intro { text-align: center; padding: clamp(100px, 16vh, 180px) 24px; background: linear-gradient(#fff9f5, #f7e8ed); scroll-margin-top: 86px; }
+.girlhood-exhibition-intro h2 { white-space: pre-line; font-size: clamp(38px, 4.6vw, 68px); line-height: 1.15; margin: 30px 0; }
+.girlhood-exhibition-intro > p:last-child { font-size: 13px; color: var(--muted); line-height: 1.8; }
+.memory-chapter { padding: 30px 7vw 100px; background: var(--chapter-tone); }
+.memory-chapter-heading { display: grid; grid-template-columns: 1fr 3fr 1fr; align-items: center; gap: 20px; padding: 20px 0 30px; border-top: 1px solid #62405725; }
+.memory-chapter-heading h2 { margin: 0; text-align: center; font-size: clamp(25px, 3vw, 45px); }
+.memory-chapter-heading > span:last-child { text-align: right; }
+.memory-composition { position: relative; display: grid; grid-template-columns: 2fr 1fr; gap: 5vw; align-items: center; padding-top: 28px; }
+.memory-print { margin: 0; min-width: 0; }
+.memory-print-main { padding: 8px 8px 0; background: #fffaf7; }
+.memory-photo-button { display: block; width: 100%; padding: 0; text-align: left; }
+.memory-print-small { align-self: end; width: 100%; margin-bottom: -60px; padding: 6px 6px 0; background: #fffaf7; rotate: -2deg; }
+.memory-print-small figcaption { padding: 9px 2px; }
+.memory-print-main figcaption { align-items: baseline; }
+.memory-print-main figcaption span:last-child { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 14px; }
+.memory-chapter-02 .memory-composition, .memory-chapter-04 .memory-composition { grid-template-columns: 1fr 2fr; }
+.memory-chapter-02 .memory-print-main, .memory-chapter-04 .memory-print-main { grid-column: 2; grid-row: 1; }
+.memory-chapter-02 .memory-print-small, .memory-chapter-04 .memory-print-small { grid-column: 1; grid-row: 1; rotate: 2deg; align-self: start; margin: 80px 0 0; }
+.memory-chapter-after { max-width: 470px; padding-top: 35px; }
+.memory-chapter-after p { max-width: 370px; margin: 0 0 15px; font: 17px/1.7 'Playfair Display', Georgia,serif; }
+.memory-chapter-after > small { display: block; margin-top: 14px; color: #805c70; font-size: 9px; }
+.memory-chapter-02 .memory-chapter-after, .memory-chapter-04 .memory-chapter-after { margin-left: calc(33.333% + 3.3vw); }
+.memory-image-fallback { display: grid; place-content: center; padding: 25px; background: #eadce2; text-align: center; }
+.memory-image-fallback p { font: 20px/1.4 'Playfair Display',Georgia,serif; }
+.memory-image-fallback small { font-size: 12px; line-height: 1.6; }
+.girlhood-originals { display: grid; grid-template-columns: 1fr 1.5fr; align-items: center; gap: 8vw; padding: 140px 12vw; background: #fff9f5; }
+.original-archive-mark { display: grid; place-items: center; aspect-ratio: 3/4; width: min(100%, 300px); color: #a86683; border: 1px solid #d0a7b9; outline: 1px solid #d0a7b9; outline-offset: -13px; border-radius: 50% 50% 0 0; font: italic clamp(72px, 9vw, 118px)/1 'Playfair Display',Georgia,serif; background: #f4e7eb; }
+.original-archive-mark span { font: 10px/1 'DM Mono',monospace; letter-spacing: .2em; }
+.girlhood-originals h2 { white-space: pre-line; font-size: clamp(36px, 4vw, 58px); line-height: 1.14; margin: 25px 0; }
+.girlhood-originals p:not(.memory-meta) { font-size: 13px; line-height: 1.9; max-width: 390px; }
+.girlhood-originals .garden-invitation { margin-top: 32px; font-size: 11px !important; color: #805c70; }
+.garden-invitation button { padding: 8px 0; min-height: 44px; border-bottom: 1px solid #c5a1b1; display: block; }
+.girlhood-flower-invitation { text-align: center; padding: 70px 24px 130px; background: #f4e4e9; }
+.girlie-fairy-logo { display: block; width: min(330px, 74vw); height: auto; margin: 0 auto 28px; object-fit: contain; mix-blend-mode: multiply; }
+.girlhood-flower-invitation h2 { max-width: 650px; margin: 28px auto 24px; font-size: clamp(40px, 4.5vw, 64px); line-height: 1.15; }
+.girlhood-flower-invitation > p:not(.memory-meta) { max-width: 370px; margin: 0 auto 26px; font-size: 13px; line-height: 1.8; }
+.girlhood-footer { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; padding: 38px 7vw; background: #fff9f5; }
+.girlhood-footer > span { font-size: 12px; }
+.girlhood-footer > small { margin-left: auto; font-size: 10px; color: #805c70; }
+.garden-back-link { position: fixed; bottom: 28px; left: 30px; z-index: 14; padding: 12px 18px; background: #fff9f5ee; color: #624057; border: 1px solid #dec6d0; border-radius: 30px; font-size: 12px; }
+.garden-scroll-track { height: 420vh; pointer-events: none; }
+.generative-garden { position: fixed; z-index: 0; inset: 0; overflow: hidden; background: #171b2c; }
+.generative-garden::before, .generative-garden::after { position: fixed; z-index: 1; inset: 0; pointer-events: none; content: ''; }
+.generative-garden::before { opacity: .13; background-image: repeating-linear-gradient(0deg, rgba(255,244,241,.12) 0 1px, transparent 1px 5px), repeating-linear-gradient(90deg, rgba(255,244,241,.08) 0 1px, transparent 1px 7px); mix-blend-mode: soft-light; }
+.generative-garden::after { background: radial-gradient(circle at 50% 45%, transparent 24%, rgba(8,11,23,.18) 66%, rgba(5,7,17,.55) 100%); }
+.museum-surface:has(.generative-garden) .girlhood-nav { color: #fff5f7; background: rgba(16,20,34,.54); border-bottom-color: rgba(255,255,255,.08); }
+.museum-surface:has(.generative-garden) .girlhood-nav button, .museum-surface:has(.generative-garden) .girlhood-nav-garden { color: #fff5f7 !important; }
+.museum-surface:has(.generative-garden) .girlhood-brand-logo img { mix-blend-mode: screen; }
+.museum-surface:has(.generative-garden) .locale-menu select { color: #fff5f7; }
+
+/* One calm, full-height reading surface. No photo is cropped or recolored. */
+.memory-reader { position: fixed; inset: 0; z-index: 75; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
+.memory-reader-nav { position: sticky; z-index: 2; top: 0; display: flex; justify-content: space-between; align-items: center; gap: 15px; min-height: 82px; padding: 12px 4vw; background: #fff9f5f7; border-bottom: 1px solid #62405717; }
+.memory-reader-nav > button { min-height: 44px; padding: 0; font-size: 12px; }
+.memory-reader-nav select { min-height: 44px; }
+.memory-reader-body { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); align-items: start; gap: 5vw; padding: 7vh 5vw; }
+.memory-sequence { position: sticky; top: 120px; min-width: 0; touch-action: pan-y; }
+.memory-sequence figure { margin: 0; }
+.memory-sequence .memory-photo { max-height: 62vh; object-fit: contain; }
+.memory-sequence figure > figcaption { display: flex; gap: 25px; justify-content: space-between; margin-top: 15px; font: 10px/1.7 'DM Mono',monospace; }
+.memory-sequence figure > figcaption span:first-child { flex-shrink: 0; }
+.memory-sequence figure > figcaption span:last-child { max-width: 370px; text-align: right; }
+.memory-sequence-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 25px; }
+.memory-sequence-controls button { min-width: 44px; min-height: 44px; padding: 8px; font: 11px 'DM Mono',monospace; }
+.memory-sequence-controls > button { font-size: 22px; }
+.memory-sequence-controls button[aria-current] { text-decoration: underline; text-underline-offset: 8px; }
+.memory-sequence-controls button:disabled { opacity: .3; cursor: default; }
+.memory-pack-story { padding: 10px 0 20px; }
+.memory-pack-story h1 { margin: 20px 0 42px; font-size: clamp(38px, 4.1vw, 62px); line-height: 1.1; }
+.memory-pack-story h2 { font-size: 25px; line-height: 1.3; letter-spacing: -.02em; }
+.memory-pack-story > p:not(.memory-meta) { font-size: 14px; line-height: 1.9; }
+.memory-pack-story > .memory-meta { display: block; margin: 25px 0; }
+.memory-pack-story .memory-editorial-note { font-size: 10px !important; color: #805c70; padding-top: 22px; border-top: 1px solid #62405720; }
+.memory-pack-next { display: grid; gap: 16px; justify-items: start; margin-top: 30px; }
+.story-footer > div { flex-wrap: wrap; }
+
+.flower-reflection { width: min(600px, 88vw); margin: 9vh auto; }
+.flower-reflection h1 { font-size: clamp(36px, 4vw, 54px); line-height: 1.2; margin: 30px 0; }
+.flower-moods { display: grid; gap: 12px; padding: 0; margin: 35px 0; border: 0; }
+.flower-moods label { display: flex; align-items: center; gap: 16px; padding: 18px; min-height: 58px; border: 1px solid #dfcad3; cursor: pointer; }
+.flower-moods label:has(input:checked) { background: #f5e3eb; border-color: #a56c88; }
+.flower-moods input { accent-color: #8f4f70; width: 17px; height: 17px; }
+.flower-moods span { font-size: 14px; }
+.flower-reader textarea { display: block; width: 100%; resize: vertical; min-height: 140px; max-height: 400px; background: #fffdfb; color: #624057; border: 1px solid #cbaabb; padding: 20px; font: 16px/1.8 'Plus Jakarta Sans',sans-serif; }
+.flower-form-actions { display: flex; align-items: center; justify-content: flex-end; gap: 25px; margin: 24px 0 40px; }
+.flower-form-actions > button { min-height: 44px; font-size: 13px; }
+.flower-fineprint { color: #805c70; font-size: 11px; line-height: 1.8; }
+.flower-result { width: min(900px, 88vw); margin: 40px auto 70px; }
+.flower-result-main { text-align: center; }
+.friendship-flower-drawing { display: block; width: 220px; height: 260px; margin: auto; }
+.flower-result h1 { font-size: clamp(34px, 4vw, 52px); margin: 20px 0; }
+.flower-result-main > p { font-size: 14px; line-height: 1.8; }
+.flower-result-main blockquote { max-width: 600px; margin: 30px auto 15px; font: italic 24px/1.6 'Playfair Display',Georgia,serif; white-space: pre-wrap; overflow-wrap: anywhere; }
+.flower-original-message { max-width: 550px; margin: 20px auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+.flower-next-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 45px; margin: 50px 0 35px; border-top: 1px solid #62405725; padding-top: 20px; }
+.flower-next-choices h2 { font-size: 29px; }
+.flower-next-choices p { font-size: 12px; line-height: 1.8; min-height: 64px; }
+.flower-interview-link { display: block; font-size: 11px; min-height: 44px; padding: 12px 0; }
+.flower-studio { width: min(1000px, 88vw); margin: 60px auto; display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 7vw; }
+.flower-card-preview { padding: 35px 25px; border: 1px solid #cbaabb; outline: 1px solid #e0cbd4; outline-offset: -10px; text-align: center; background: #fffcf9; box-shadow: 0 15px 30px #6240570b; }
+.flower-card-preview > p { white-space: pre-wrap; overflow-wrap: anywhere; font: 19px/1.8 'Playfair Display',Georgia,serif; }
+.flower-card-preview h2 { font-size: 26px; }
+.flower-studio h1 { font-size: clamp(38px, 4vw, 55px); line-height: 1.15; }
+.flower-studio > div > p { font-size: 13px; line-height: 1.9; }
+.studio-message-label { display: grid; gap: 12px; font-size: 12px; margin: 30px 0 20px; }
+@media (min-width: 1600px) { .girlhood-world { max-width: 1800px; margin: auto; } }
+@media (max-width: 800px) {
+  .girlhood-nav { height: 70px; padding: 0 5vw; gap: 14px; }.girlhood-nav nav { gap: 14px; }.girlhood-nav nav > button { font-size: 11px; }.girlhood-nav-stories { display: none; }.girlhood-brand-logo, .girlhood-brand-logo img { width: 62px; height: 62px; }.girlhood-menu { top: 64px; }.girlhood-nav-garden { max-width: 86px; line-height: 1.25; }.girlhood-nav-garden > span { display: none; }
+  .girlhood-hero { min-height: auto; display: flex; flex-direction: column; align-items: stretch; gap: 28px; padding: 120px 7vw 95px; }.girlhood-hero-copy { max-width: 520px; }.girlhood-hero h1 { max-width: 540px; font-size: clamp(42px, 8vw, 64px); margin: 22px 0; }.girlhood-intro { max-width: 300px; font-size: 12px; margin-bottom: 17px; }.girlhood-hero-print { margin: 0 0 0 6%; transform: rotate(1deg); }.girlhood-hero-bottom { bottom: 20px; }.girlhood-hero .memory-meta { font-size: 8px; }
+  .girlhood-exhibition-intro { padding: 100px 7vw; scroll-margin-top: 70px; }.girlhood-exhibition-intro h2 { font-size: 39px; }
+  .memory-chapter { padding: 25px 6vw 75px; }.memory-chapter-heading { grid-template-columns: 1fr; gap: 8px; padding-bottom: 15px; }.memory-chapter-heading h2 { text-align: left; font-size: 31px; }.memory-chapter-heading > span:last-child { text-align: left; font-size: 9px; }.memory-composition, .memory-chapter-02 .memory-composition, .memory-chapter-04 .memory-composition { display: flex; flex-direction: column; align-items: stretch; gap: 25px; padding-top: 20px; }.memory-print-small, .memory-chapter-02 .memory-print-small, .memory-chapter-04 .memory-print-small { width: 56%; align-self: flex-end; margin: 0; rotate: -2deg; }.memory-chapter-after, .memory-chapter-02 .memory-chapter-after, .memory-chapter-04 .memory-chapter-after { margin: 0; padding-top: 25px; }.memory-print figcaption { gap: 12px; padding: 10px 2px; font-size: 9px; }.memory-print-main figcaption span:last-child { font-size: 12px; }.memory-chapter-after p { font-size: 17px; }
+  .girlhood-originals { grid-template-columns: 1fr; padding: 85px 8vw; gap: 42px; }.original-archive-mark { width: 160px; font-size: 85px; }.girlhood-originals h2 { font-size: 40px; }.girlhood-flower-invitation { padding: 60px 8vw 95px; }.girlhood-flower-invitation h2 { font-size: 40px; }.girlhood-footer { gap: 18px; padding: 30px 7vw; }.girlhood-footer > small { margin-left: 0; width: 100%; line-height: 1.7; }
+  .memory-reader-nav { min-height: 70px; padding: 10px 5vw; }.memory-reader-nav .memory-meta { display: none; }.memory-reader-body { display: block; padding: 30px 5vw 55px; }.memory-sequence { position: static; }.memory-sequence .memory-photo { max-height: none; }.memory-sequence figure > figcaption { font-size: 9px; gap: 16px; }.memory-sequence-controls { margin-top: 18px; }.memory-sequence-controls button { min-width: 39px; }.memory-pack-story { margin-top: 40px; border-top: 1px solid #62405725; padding-top: 25px; }.memory-pack-story h1 { margin-bottom: 30px; font-size: 43px; }.memory-pack-story h2 { font-size: 29px; }
+  .flower-reflection { margin: 50px auto; }.flower-next-choices { grid-template-columns: 1fr; gap: 15px; }.flower-next-choices p { min-height: auto; }.flower-studio { grid-template-columns: 1fr; margin: 35px auto; gap: 40px; }.flower-card-preview { max-width: 430px; width: 100%; margin: auto; }.garden-back-link { bottom: 14px; left: 15px; font-size: 10px; }
+}
+@media (max-width: 480px) { .girlhood-nav-private { display: none; }.girlhood-nav nav { gap: 12px; }.girlhood-nav-garden { max-width: 78px; font-size: 10px !important; }.girlie-fairy-logo { width: min(280px, 78vw); } }
+@media (prefers-reduced-motion: reduce) { .girlhood-world *, .memory-reader * { scroll-behavior: auto !important; animation: none !important; transition: none !important; } }

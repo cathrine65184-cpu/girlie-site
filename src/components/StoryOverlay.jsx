@@ -26,7 +26,7 @@ function WeatherFact({ girl, chinese }) {
 }
 
 /** A slow, long-form archival reading room for each friendship. */
-export function StoryOverlay({ girl, onClose, onContinue, onStartInterview }) {
+export function StoryOverlay({ girl, onClose, onContinue, onStartInterview, onDiscoverFlower }) {
   const { locale, t } = useLocale();
   const rootRef = useRef(null);
   const sheetRef = useRef(null);
@@ -100,7 +100,7 @@ export function StoryOverlay({ girl, onClose, onContinue, onStartInterview }) {
 
         <footer className="story-footer">
           <p>{chinese ? '会生长的馆藏中的一则条目。' : 'An entry in the living collection.'}</p>
-          <div><button className="text-button" onClick={() => { onClose(); onStartInterview(); }}>{t('tellFriendship')} ↗</button><button className="text-button" onClick={() => { onClose(); onContinue(); }}>{chinese ? '继续参观 →' : 'Continue visiting →'}</button></div>
+          <div>{onDiscoverFlower && <button className="text-button" onClick={onDiscoverFlower}>{t('flowerCTA')} ↗</button>}<button className="text-button" onClick={() => { onClose(); onStartInterview(); }}>{t('tellFriendship')} ↗</button><button className="text-button" onClick={() => { onClose(); onContinue(); }}>{chinese ? '继续参观 →' : 'Continue visiting →'}</button></div>
         </footer>
       </div>
     </motion.article>

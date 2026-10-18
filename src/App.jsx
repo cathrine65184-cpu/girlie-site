@@ -1,24 +1,20 @@
-import { Canvas } from '@react-three/fiber';
-import { lazy, Suspense, useCallback, useState } from 'react';
-import { CameraController } from './components/CameraController';
-import { FloatingParticles } from './components/FloatingParticles';
-import { Lighting } from './components/Lighting';
-import { MemoryBloom } from './components/MemoryBloom';
+import { lazy, Suspense, useCallback, useRef, useState } from 'react';
 import { Navigation } from './components/Navigation';
 import { DepthStoriesGallery } from './components/DepthStoriesGallery';
-import { MuseumCanvasBoundary } from './components/MuseumCanvasBoundary';
+import { GirlhoodGallery } from './components/GirlhoodGallery';
+import { MemoryPackViewer } from './components/MemoryPackViewer';
+import { FriendshipFlower } from './components/FriendshipFlower';
 import { girls } from './data/girls';
 import { GalleryExperience } from './components/GalleryExperience';
 import { RoomOverlay } from './components/RoomOverlay';
 import { useScrollProgress } from './hooks/useScrollProgress';
 import { useStoryTransition } from './hooks/useStoryTransition';
-import { Journey } from './scenes/Journey';
-import { Landing } from './scenes/Landing';
 import { useLocale } from './locales.jsx';
 
 // Editorial sheets are loaded only when a visitor chooses to enter a memory.
 const StoryOverlay = lazy(() => import('./components/StoryOverlay').then((module) => ({ default: module.StoryOverlay })));
 const FriendshipInterview = lazy(() => import('./components/FriendshipInterview').then((module) => ({ default: module.FriendshipInterview })));
+const FlowerGarden = lazy(() => import('./components/FlowerGarden').then((module) => ({ default: module.FlowerGarden })));
 
 const museumHalls = {
   studio: { title: 'Private Girlie', source: 'legacy.html#private-house' },
@@ -29,7 +25,13 @@ export default function App() {
   const { activeId, openStory, closeStory } = useStoryTransition();
   const [activeHall, setActiveHall] = useState(() => window.location.hash === '#private-house' ? 'studio' : null);
   const galleryOpen = activeHall === 'archive';
-  const { progress, reducedMotion, scrollToProgress } = useScrollProgress(galleryOpen || Boolean(activeId));
+  const [publicMode, setPublicMode] = useState('photos');
+  const [activePack, setActivePack] = useState(null);
+  const [flowerOpen, setFlowerOpen] = useState(false);
+  const photoPosition = useRef(0);
+  const packReturnFocus = useRef(null);
+  const flowerReturnFocus = useRef(null);
+  const openPack = (pack) => { packReturnFocus.current = document.activeElement; setActivePack(pack); };
   const [galleryIndex, setGalleryIndex] = useState(0);
   const [galleryDestination, setGalleryDestination] = useState(null);
   const [interviewOpen, setInterviewOpen] = useState(false);
@@ -37,11 +39,9 @@ export default function App() {
   const [interviewSeed, setInterviewSeed] = useState([]);
   const [pendingArchive, setPendingArchive] = useState(null);
   const [pendingFriendshipDate, setPendingFriendshipDate] = useState(null);
+  const overlayOpen = Boolean(activeHall || activeId || activePack || flowerOpen || interviewOpen);
+  const { progress, reducedMotion, scrollToProgress } = useScrollProgress(overlayOpen);
   const activeGirl = girls.find((girl) => girl.id === activeId) || null;
-  const copy = progress < .1 ? { eyebrow: t('landingEyebrow'), title: t('landingTitle'), body: t('landingBody'), action: t('exploreMuseum'), target: .12 } : { eyebrow: t('archiveEyebrow'), title: t('archiveTitle'), body: t('archiveBody'), action: t('beginVisiting'), target: .35 };
-  // The entrance copy clears before the first exhibit becomes interactive.
-  // This keeps the opening invitation editorial without sitting over a flower label.
-  const copyOpacity = progress < .052 ? 1 : progress < .097 ? 1 - ((progress - .052) / .045) : 0;
   const beginInterview = (seed = []) => { setInterviewSeed(seed); setInterviewIntent(false); setInterviewOpen(true); };
   // A private room is the source of truth for an interview. Its existing
   // login and shared-room backend keep the resulting memories private.
@@ -64,6 +64,22 @@ export default function App() {
     if (hall === 'archive') setGalleryDestination(null);
     setActiveHall(hall);
   };
+  const showPhotos = (section) => {
+    setPublicMode('photos');
+    requestAnimationFrame(() => {
+      if (section) document.getElementById(section)?.scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth' });
+      else window.scrollTo(0, photoPosition.current);
+    });
+  };
+  const showGarden = () => {
+    if (publicMode === 'photos') photoPosition.current = window.scrollY;
+    setPublicMode('garden');
+    requestAnimationFrame(() => window.scrollTo(0, 0));
+  };
+  const showFlower = () => {
+    flowerReturnFocus.current = activePack ? packReturnFocus.current : activeHall ? document.querySelector('.girlhood-nav .girlhood-brand-logo') : document.activeElement;
+    closeStory(); setActiveHall(null); setActivePack(null); setFlowerOpen(true);
+  };
   const openNextStory = useCallback(() => {
     const index = activeGirl ? girls.findIndex((girl) => girl.id === activeGirl.id) : -1;
     if (galleryOpen) {
@@ -76,70 +92,20 @@ export default function App() {
   }, [activeGirl, galleryOpen, openStory, reducedMotion, scrollToProgress]);
 
   return <div className="app-shell">
-    <div className="museum-surface" inert={galleryOpen || activeGirl ? '' : undefined} aria-hidden={galleryOpen || Boolean(activeGirl) || undefined}>
-    <MuseumCanvasBoundary>
-    <Canvas className="world-canvas" frameloop={galleryOpen ? 'never' : 'always'} dpr={[1, 1.5]} shadows={!reducedMotion} camera={{ fov: 42, position: [0, 2.1, 14] }} gl={{ antialias: true, powerPreference: 'high-performance' }}>
-      <color attach="background" args={['#f8e5e8']} />
-      <fog attach="fog" args={['#f8e5e8', 8, 47]} />
-      <Suspense fallback={null}>
-        <Lighting reducedMotion={reducedMotion} />
-        <Landing />
-        <Journey girls={girls} activeId={activeId} onOpen={openStory} reducedMotion={reducedMotion} progress={progress} />
-        <FloatingParticles reducedMotion={reducedMotion} />
-        {progress > .62 && <MemoryBloom reducedMotion={reducedMotion} />}
-        <CameraController progress={progress} activeGirl={galleryOpen ? null : activeGirl} reducedMotion={reducedMotion} />
-      </Suspense>
-    </Canvas>
-    </MuseumCanvasBoundary>
-
-    <Navigation onJump={scrollToProgress} onOpenHall={openHall} onCreate={() => requestInterview()} onOpenPrivateRoom={() => setActiveHall('studio')} />
-
-    <main className="scroll-track" aria-label={t('storyJourney')}>
-      <section className="journey-copy" style={{ opacity: copyOpacity, pointerEvents: copyOpacity > .04 ? 'auto' : 'none' }}>
-        <p className="eyebrow">{copy.eyebrow}</p>
-        <h1>{copy.title}</h1>
-        <p>{copy.body}</p>
-        <div className="hero-actions">
-          <button className="journey-button hero-museum-button" style={{ pointerEvents: copyOpacity > .04 ? 'auto' : 'none' }} onClick={() => scrollToProgress(copy.target)}><strong>{copy.action} <span>↓</span></strong>{progress < .1 && <small>{t('exploreMuseumDesc')}</small>}</button>
-          <button className="journey-button create-archive-button" style={{ pointerEvents: copyOpacity > .04 ? 'auto' : 'none' }} onClick={() => requestInterview()}><i>{t('tellStory')}</i><strong>{t('tellFriendship')} <span>↗</span></strong>{progress < .1 && <small>{t('tellFriendshipDesc')}</small>}</button>
-        </div>
-      </section>
-      <section className="how-girlie-works" aria-label={t('howWorksTitle')}>
-        <div className="how-girlie-heading"><p>{t('storyBridge')}</p><h2>{t('howWorksTitle')}</h2></div>
-        <div className="how-girlie-steps">
-          <article><p>{t('howExploreNumber')}</p><h3>{t('howExploreTitle')}</h3><span>{t('howExploreBody')}</span><button onClick={() => scrollToProgress(.12)}>{t('exploreMuseum')} <b>↓</b></button><button onClick={() => openHall('archive')}>{t('depthEntry')} <b>↗</b></button></article>
-          <article><p>{t('howCreateNumber')}</p><h3>{t('howCreateTitle')}</h3><span>{t('howCreateBody')}</span><button onClick={() => setActiveHall('studio')}>{t('createPrivateGirlie')} <b>→</b></button></article>
-          <article><p>{t('howTalkNumber')}</p><h3>{t('howTalkTitle')}</h3><span>{t('howTalkBody')}</span><button onClick={() => requestInterview()}>{t('startInterview')} <b>→</b></button></article>
-          <article><p>{t('howGrowNumber')}</p><h3>{t('howGrowTitle')}</h3><span>{t('howGrowBody')}</span><button onClick={() => setActiveHall('studio')}>{t('exploreTimeline')} <b>→</b></button></article>
-        </div>
-        <div className="public-private-clarity">
-          <article><i>🌎</i><p>{t('publicGirlie')}</p><h3>{t('publicMuseumTitle')}</h3><span>{t('publicMuseumBody')}</span></article>
-          <b aria-hidden="true">→</b>
-          <article><i>🏠</i><p>{t('privateGirlieLabel')}</p><h3>{t('privateHomeTitle')}</h3><span>{t('privateHomeBody')}</span></article>
-        </div>
-      </section>
-      <section className="path-instruction" style={{ opacity: progress > .1 && progress < .76 ? 1 : 0 }}>
-        <span>{t('scrollArchive')}</span><b>{t('scrollPrompt')}</b>
-        <button className="depth-entry-button" tabIndex={progress > .1 && progress < .76 ? 0 : -1} style={{ pointerEvents: progress > .1 && progress < .76 ? 'auto' : 'none' }} onClick={() => openHall('archive')}>{t('depthEntry')} ↗</button>
-      </section>
-      <section className="ending-copy" style={{ opacity: progress > .76 ? 1 : 0, pointerEvents: progress > .76 ? 'auto' : 'none' }}>
-        <p>{t('endingEyebrow')}</p><h2>{t('endingTitle')}</h2>
-        <p className="ending-body">{t('endingBody')}</p>
-        <div className="gallery-doors">
-          <button onClick={() => openHall('archive')}>{t('depthEntry')} ↗</button>
-          <button onClick={() => openHall('language')}>{t('languageGallery')}</button>
-          <button onClick={() => openHall('stars')}>{t('starObservatory')}</button>
-          <button onClick={() => openHall('listening')}>{t('listeningRoom')}</button>
-          <button className="studio-door" onClick={() => requestInterview()}>{t('tellStory')} ↗</button>
-        </div>
-      </section>
-    </main>
+    <div className="museum-surface" inert={overlayOpen ? '' : undefined} aria-hidden={overlayOpen || undefined}>
+    <Navigation onHome={() => showPhotos('girlhood-home')} onStories={() => showPhotos('girlhood-moments')} onGarden={showGarden} onOpenHall={openHall} onCreate={() => requestInterview()} onOpenPrivateRoom={() => setActiveHall('studio')} />
+    {publicMode === 'photos' ? <GirlhoodGallery reducedMotion={reducedMotion} onOpenPack={openPack} onGirls={() => openHall('archive')} onGarden={showGarden} onFlower={showFlower} /> : <>
+    <Suspense fallback={null}><FlowerGarden paused={overlayOpen} reducedMotion={reducedMotion} progress={progress} activeId={activeId} activeGirl={activeGirl} onOpen={openStory} /></Suspense>
+    <button className="garden-back-link" onClick={() => showPhotos()}>← {t('photoBack')}</button>
+    <main className="scroll-track garden-scroll-track" aria-label={t('photoGarden')} /></>}
     </div>
 
-    {galleryOpen && <DepthStoriesGallery girls={girls} initialIndex={galleryIndex} destination={galleryDestination} paused={Boolean(activeGirl)} reducedMotion={reducedMotion} onOpenStory={openStory} onActiveChange={setGalleryIndex} onClose={() => setActiveHall(null)} />}
+    {activePack && <MemoryPackViewer key={activePack.id} pack={activePack} returnFocus={packReturnFocus.current} onClose={() => setActivePack(null)} onFlower={showFlower} onGirls={() => { setActivePack(null); openHall('archive'); }} />}
+    <FriendshipFlower open={flowerOpen} returnFocus={flowerReturnFocus.current} onClose={() => setFlowerOpen(false)} onPrivate={() => { setFlowerOpen(false); setActiveHall('studio'); }} onInterview={() => { setFlowerOpen(false); requestInterview(); }} />
+    {galleryOpen && <DepthStoriesGallery backLabel={t(publicMode === 'photos' ? 'photoBack' : 'depthBack')} girls={girls} initialIndex={galleryIndex} destination={galleryDestination} paused={Boolean(activeGirl)} reducedMotion={reducedMotion} onOpenStory={openStory} onActiveChange={setGalleryIndex} onClose={() => setActiveHall(null)} />}
 
     <Suspense fallback={null}>
-      <StoryOverlay girl={activeGirl} onClose={closeStory} onContinue={openNextStory} onStartInterview={() => requestInterview()} />
+      <StoryOverlay girl={activeGirl} onClose={closeStory} onContinue={openNextStory} onDiscoverFlower={showFlower} onStartInterview={() => { setActiveHall(null); requestInterview(); }} />
       <GalleryExperience hall={activeHall} girls={girls} onClose={() => setActiveHall(null)} />
       <FriendshipInterview open={interviewOpen} onClose={() => setInterviewOpen(false)} onArchived={archiveInterview} onConfirmFriendshipStart={setPendingFriendshipDate} seed={interviewSeed} />
       <RoomOverlay
